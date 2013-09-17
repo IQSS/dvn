@@ -91,7 +91,7 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
             if (studyVersion.getDeaccessionLink() != null) {
                 deaccessionLinkAuthority = studyVersion.getDeaccessionLinkAsGlobalId().getAuthority();
                 deaccessionLinkStudyId = studyVersion.getDeaccessionLinkAsGlobalId().getStudyId();
-                deaccessionLinkProtocol = studyVersion.getStudy().getProtocol();
+                deaccessionLinkProtocol = studyVersion.getDeaccessionLinkAsGlobalId().getProtocol();
             }
 
         } else {

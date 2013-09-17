@@ -80,6 +80,7 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
         String identifier = getIdentifierFromStudy(studyIn);
         System.out.print("identifier in : " + identifier);
         HashMap metadata = getMetadataFromStudy(studyIn);
+        metadata.put("_status", "reserved");
        try {
              retString=  ezidService.createIdentifier(identifier, metadata);
              System.out.print("create identifier retString : " + retString);
@@ -158,23 +159,6 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
             }
             return;
         }
-
-        if (idStatus.equals("public")) {
-            System.out.print("Delete status is public..");
-            try {
-                doiMetatdata.put("_status", "unavailable");
-                System.out.print("doiMetatdata status: " + doiMetatdata.get("_status"));
-                ezidService.setMetadata(identifier, doiMetatdata);
-            } catch (EZIDException e) {
-                System.out.print("modify failed");
-                System.out.print("String " + e.toString());
-                System.out.print("localized message " + e.getLocalizedMessage());
-                System.out.print("cause " + e.getCause());
-                System.out.print("message " + e.getMessage());
-            }
-            return;
-        }
-
     }
     
     private HashMap getMetadataFromStudy(Study studyIn) {
@@ -302,6 +286,22 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
         guid.append(random);
 
         return guid.toString();
+    }
+
+    @Override
+    public void publicizeIdentifier(Study studyIn) {
+        String identifier = getIdentifierFromStudy(studyIn);
+        HashMap metadata = getMetadataFromStudy(studyIn);
+        metadata.put("_status", "public");
+       try {
+               ezidService.setMetadata(identifier, metadata);
+            }  catch (EZIDException e){                
+            System.out.print("modifyMetadata failed");
+            System.out.print("String " + e.toString() );
+            System.out.print("localized message " + e.getLocalizedMessage());
+            System.out.print("cause " + e.getCause());
+            System.out.print("message " + e.getMessage());    
+        } 
     }
     
 }

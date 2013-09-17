@@ -256,7 +256,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         if (studyCreatorRole != null && studyCreatorRole.getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)) {
             mailService.sendStudyReleasedNotification(study.getCreator().getEmail(), latestVersion.getMetadata().getTitle(), study.getOwner().getName());
         }
-
+        //if DOI then publicize status
+        if (study.getProtocol().equals("doi")){
+            doiEZIdServiceLocal.publicizeIdentifier(study);
+        }
         
         // tweet release of study
         TwitterCredentials tc = study.getOwner().getTwitterCredentials();

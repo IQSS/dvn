@@ -4250,17 +4250,6 @@ provided, for automated validation of machine-generated XML.
 
 --- comments, suggestions are welcome! ---
 
-Data Sharing API
-===========
-
-As of version 3.0, a new API for programmatic access to the DVN data and
-metadata has been added. The API allows a remote, non-DVN
-archive/application to search the holdings and download files from a
-Dataverse Network.
-
-The API documentation is available here:
-
-`https://sourceforge.net/projects/dvn/files/dvn/3.0/dvnapi\_v1\_0.pdf <https://sourceforge.net/projects/dvn/files/dvn/3.0/dvnapi_v1_0.pdf>`__
 
 .. _metadata-references:
 

@@ -342,7 +342,7 @@ Retrieve SWORD service document
 Create a study with an Atom entry (XML file)
 ********************************************
 
-``curl -s --data-binary "@atom-entry-study.xml" -H "Content-Type: application/atom+xml" https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/collection/dataverse/sword``
+``curl -s --data-binary "@atom-entry-study.xml" -H "Content-Type: application/atom+xml" https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/collection/dataverse/$DATAVERSE_ALIAS``
 
 .. code-block:: guess
 
@@ -440,7 +440,7 @@ Replacing cataloging information (title, author, etc.) for a study
 List studies in a dataverse
 ***************************
 
-``curl -s https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/collection/dataverse/sword``
+``curl -s https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/collection/dataverse/$DATAVERSE_ALIAS``
 
 Delete a study (non-released studies only)
 ******************************************
@@ -462,7 +462,7 @@ Determine if a dataverse has been released
 
 Look for a `dataverseHasBeenReleased` boolean.
 
-``curl -s https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/collection/dataverse/sword``
+``curl -s https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/collection/dataverse/$DATAVERSE_ALIAS``
 
 `curl` reference
 ----------------

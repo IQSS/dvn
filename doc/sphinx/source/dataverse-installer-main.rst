@@ -570,7 +570,7 @@ Digital Object Identifiers
 
 Beginning with version 3.6, DVN will support the use of Digital Object Identifiers.  Similar to the currently enabled Handle System, these DOIs will enable a permanent link to studies in a DVN network.  
 
-DVN uses the EZID API (`www.n2t.net/ezid`) to facilitate the creation and maintenance of DOIs.  Network administrators will have to arrange to get their own account with EZID in order to implement creation of DOIs.  Once an account has been set up the following settings must be made in your DVN set-up:
+DVN uses the EZID API (`www.n2t.net/ezid <http://www.n2t.net/ezid>`__) to facilitate the creation and maintenance of DOIs.  Network administrators will have to arrange to get their own account with EZID in order to implement creation of DOIs.  Once an account has been set up the following settings must be made in your DVN set-up:
 
 Update your database with the following query:
 

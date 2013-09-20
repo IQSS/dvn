@@ -235,6 +235,9 @@ public class MediaResourceManagerImpl implements MediaResourceManager {
             }
             logger.fine("looking up study with globalId " + globalId);
             Study study = editStudyService.getStudyByGlobalId(globalId);
+            if (study == null) {
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Could not find study with global ID of " + globalId);
+            }
             StudyLock studyLock = study.getStudyLock();
             if (studyLock != null) {
                 String message = Util.getStudyLockMessage(studyLock, study.getGlobalId());

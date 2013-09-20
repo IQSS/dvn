@@ -93,8 +93,8 @@ public class UrlManager {
                 } else if (targetType.equals("study")) {
                     String globalId;
                     try {
-                        List<String> globalIdParts = targetTypeAndIdentifier.subList(1, 3);
-                        globalId = globalIdParts.get(0) + "/" + globalIdParts.get(1);
+                        List<String> globalIdParts = targetTypeAndIdentifier.subList(1, targetTypeAndIdentifier.size());
+                        globalId = StringUtils.join(globalIdParts, "/");
                     } catch (IndexOutOfBoundsException ex) {
                         throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Invalid study global id provided in URL: " + url);
                     }

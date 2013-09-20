@@ -565,6 +565,26 @@ Dataverse Network:
 #. Restart Glassfish.
 #. To verify that Automatic Tweets are now properly set up, you can go to the Dataverse Network Options page or any Dataverse Options page and see that their is a new option, "Enable Twitter".
 
+Digital Object Identifiers
+==========================
+
+Beginning with version 3.6, DVN will support the use of Digital Object Identifiers.  Similar to the currently enabled Handle System, these DOIs will enable a permanent link to studies in a DVN network.  
+
+DVN uses the EZID API (`www.n2t.net/ezid <http://www.n2t.net/ezid>`__) to facilitate the creation and maintenance of DOIs.  Network administrators will have to arrange to get their own account with EZID in order to implement creation of DOIs.  Once an account has been set up the following settings must be made in your DVN set-up:
+
+Update your database with the following query:
+
+Use ``psql`` or ``pgAdmin`` to execute the following SQL command: 
+``update vdcnetwork set handleregistration=true,  protocol = 'doi', authority='<the namespace associated with your EZID account> where id = 0;``
+
+Add the following JVM options:
+
+``-Ddoi.username=<username of your EZID account>``
+
+``-Ddoi.password=<password of your EZID account>``
+
+Note: The DVN app comes bundled with the EZID API client libraries. You do not need to install these separately.
+
 Appendix
 +++++++++++++++++++++++
 

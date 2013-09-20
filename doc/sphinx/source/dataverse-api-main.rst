@@ -337,6 +337,8 @@ The following `curl` commands demonstrate supported operations:
 Retrieve SWORD service document
 *******************************
 
+The service document enumerates the dataverses ("collections" from a SWORD perspective) the user can deposit data into. The "collectionPolicy" element for each dataverse contains the deposit terms of use for the network and dataverse.
+
 ``curl -s https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/service-document``
 
 Create a study with an Atom entry (XML file)
@@ -393,7 +395,7 @@ Add files to a study with a zip file
 Display a study atom entry
 **************************
 
- Contains data citation (bibliographicCitation), alternate URI [persistent URI of study], edit URI, edit media URI, statement URI.
+Contains data citation (bibliographicCitation), alternate URI [persistent URI of study], edit URI, edit media URI, statement URI.
 
 ``curl -s https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/edit/study/hdl:TEST/12345``
 

@@ -414,6 +414,8 @@ Delete a file by database id
 Replacing cataloging information (title, author, etc.) for a study
 ******************************************************************
 
+Please note that all cataloging information will be replaced, including fields that can not be expressed with "dcterms" fields.
+
 ``curl -s --upload-file "atom-entry-study2.xml" -H "Content-Type: application/atom+xml" https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/edit/study/hdl:TEST/12345``
 
 .. code-block:: guess

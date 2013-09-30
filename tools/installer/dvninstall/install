@@ -812,6 +812,10 @@ system ( "/bin/cp -Rf config/* ".$glassfish_dir."/glassfish/domains/domain1/conf
 # install pre-configured robots.txt blocking bot crawlers:
 system ( "/bin/cp -f robots.txt ".$glassfish_dir."/glassfish/domains/domain1/docroot"); 
 
+# install the DVN guides (HTML) into the application docroot: 
+system ( "/bin/cp -Rf doc/guides/* ".$glassfish_dir."/glassfish/domains/domain1/docroot/guides"); 
+
+
 print "done!\n";
 
 print "\nInstalling the Glassfish PostgresQL driver... ";

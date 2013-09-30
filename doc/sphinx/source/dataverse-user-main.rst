@@ -2137,9 +2137,10 @@ Keep in mind these tips when uploading study files to your dataverse:
 
 -  The following subsettable file types are supported:
 
-   -  SPSS ``sav`` - Versions 7.x to 16.x
+   -  SPSS ``sav`` - Versions 7.x to 18.x
    -  SPSS ``por`` - All versions
-   -  STATA ``dta`` - Versions 4 to 10
+   -  STATA ``dta`` - Versions 4 to 12
+   -  R ``RData`` - All versions (NEW as of DVN v.3.5!)
    -  GraphML ``xml`` - All versions
 
 

@@ -5,6 +5,9 @@ DVN_WAR_FILE=dvninstall/appdeploy/dist/DVN-web.war
 
 DVN_CONFIG_FILES=dvninstall/config/error.xsl dvninstall/config/fgdc2ddi.xsl dvninstall/config/graphml.props dvninstall/config/header.xsl dvninstall/config/jhove.conf dvninstall/config/logging.properties dvninstall/config/metadata.xsl dvninstall/config/mif2ddi.xsl dvninstall/config/neodb.props dvninstall/config/oai_dc2ddi.xsl dvninstall/config/oaicat.properties dvninstall/config/dvn_data_functions.R dvninstall/web-core.jar dvninstall/robots.txt
 
+DVN_DOC_GUIDES_DIR=dvninstall/doc/guides
+DVN_DOC_GUIDES_HTML=dvnguides.html.generated
+
 DVN_SQL_FILE_TEMPLATE=dvninstall/referenceData.sql.TEMPLATE
 DVN_SQL_FILE_SOURCE=../../src/DVN-EJB/src/conf/referenceData.sql
 
@@ -30,9 +33,9 @@ ${DVN_WAR_FILE}:	../../src/DVN-web/dist/DVN-web.war dvninstall/appdeploy/dist
 	@exit 1
 
 #@zip -r dvninstall.zip dvninstall
-dvninstall.zip: ${DVN_CONFIG_TEMPLATES} ${DVN_INSTALLER_SCRIPT} ${DVN_POSTGRES_DRIVERS} ${DVN_WAR_FILE} ${DVN_CONFIG_FILES} ${DVN_SQL_FILE_TEMPLATE} ${DVN_NETWORKDATA_LIBS} ${DVN_DEPLOYMENT_FRAMEWORK}
+dvninstall.zip: ${DVN_CONFIG_TEMPLATES} ${DVN_INSTALLER_SCRIPT} ${DVN_POSTGRES_DRIVERS} ${DVN_WAR_FILE} ${DVN_CONFIG_FILES} ${DVN_SQL_FILE_TEMPLATE} ${DVN_NETWORKDATA_LIBS} ${DVN_DEPLOYMENT_FRAMEWORK} ${DVN_DOC_GUIDES_HTML}
 	@echo making installer...
-	@zip dvninstall.zip ${DVN_CONFIG_TEMPLATES} ${DVN_INSTALLER_SCRIPT} ${DVN_POSTGRES_DRIVERS} ${DVN_WAR_FILE} ${DVN_CONFIG_FILES} ${DVN_SQL_FILE_TEMPLATE} ${DVN_NETWORKDATA_LIBS} ${DVN_DEPLOYMENT_FRAMEWORK}
+	@zip -r dvninstall.zip ${DVN_CONFIG_TEMPLATES} ${DVN_INSTALLER_SCRIPT} ${DVN_POSTGRES_DRIVERS} ${DVN_WAR_FILE} ${DVN_CONFIG_FILES} ${DVN_SQL_FILE_TEMPLATE} ${DVN_NETWORKDATA_LIBS} ${DVN_DEPLOYMENT_FRAMEWORK} ${DVN_DOC_GUIDES_DIR}
 	@echo 
 	@echo "Done!"
 
@@ -41,6 +44,14 @@ ${DVN_SQL_FILE_TEMPLATE}:	${DVN_SQL_FILE_SOURCE}
 
 ${DVN_CONFIG_FILES}: 	dvninstall/config ../../working_directory/error.xsl ../../working_directory/fgdc2ddi.xsl ../../working_directory/graphml.props ../../working_directory/header.xsl ../../working_directory/jhove.conf ../../working_directory/logging.properties ../../working_directory/metadata.xsl ../../working_directory/mif2ddi.xsl ../../working_directory/neodb.props ../../working_directory/oai_dc2ddi.xsl ../../working_directory/oaicat.properties ../../working_directory/dvn_data_functions.R
 		@/bin/cp ../../working_directory/error.xsl ../../working_directory/fgdc2ddi.xsl ../../working_directory/graphml.props ../../working_directory/header.xsl ../../working_directory/jhove.conf ../../working_directory/logging.properties ../../working_directory/metadata.xsl ../../working_directory/mif2ddi.xsl ../../working_directory/neodb.props ../../working_directory/oai_dc2ddi.xsl ../../working_directory/oaicat.properties ../../working_directory/dvn_data_functions.R dvninstall/config
+
+${DVN_DOC_GUIDES_HTML}:	${DVN_DOC_GUIDES_DIR}
+	@(cd ../../doc/sphinx; make html)
+	@/bin/cp -fR ../../doc/sphinx/build/html/* ${DVN_DOC_GUIDES_DIR}
+	
+
+${DVN_DOC_GUIDES_DIR}: 
+	@mkdir -p ${DVN_DOC_GUIDES_DIR}
 
 ${DVN_NETWORKDATA_LIBS}: dvninstall/config ../../lib/dvn-lib-NetworkData-EXTRA/collections-generic-4.01.jar ../../lib/dvn-lib-NetworkData-EXTRA/colt-1.2.0.jar ../../lib/dvn-lib-NetworkData-EXTRA/concurrent-1.3.4.jar ../../lib/dvn-lib-NetworkData-EXTRA/geronimo-jta_1.1_spec-1.1.1.jar ../../lib/dvn-lib-NetworkData-EXTRA/jung-algorithms-2.0.jar ../../lib/dvn-lib-NetworkData-EXTRA/jung-api-2.0.jar ../../lib/dvn-lib-NetworkData-EXTRA/jung-visualization-2.0.jar ../../lib/dvn-lib-NetworkData-EXTRA/junit-3.8.1.jar ../../lib/dvn-lib-NetworkData-EXTRA/neo4j-index-1.1.jar ../../lib/dvn-lib-NetworkData-EXTRA/neo4j-kernel-1.1.jar ../../lib/dvn-lib-NetworkData-EXTRA/neo4j-utils-1.1.jar ../../lib/dvn-lib-NetworkData-EXTRA/nestedvm-1.0.jar ../../lib/dvn-lib-NetworkData/network_utils-1.0-SNAPSHOT.jar ../../lib/dvn-lib-NetworkData/sqlite-jdbc-3.6.16.jar ../../lib/dvn-lib-NetworkData-EXTRA/lucene-core-2.9.2.jar
 	@mkdir -p dvninstall/config/networkData/lib

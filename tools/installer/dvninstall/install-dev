@@ -718,6 +718,11 @@ system ( "/bin/cp -f ../../../lib/dvn-lib-NetworkData-EXTRA/*.jar ".$glassfish_d
 # install pre-configured robots.txt blocking bot crawlers:
 system ( "/bin/cp -f robots.txt ".$glassfish_dir."/glassfish/domains/domain1/docroot"); 
 
+# TODO? - do we need to bother copying the generated HTML guides into the docroot? - or is it something the user 
+# is supposed to be doing manually? 
+# (it would be nice to do it here - but we don't even know if they have sphinx installed...)
+#    -- L.A., v3.6, Sep. 2013
+
 print "done!\n";
 
 print "\nInstalling the Glassfish PostgresQL driver... ";

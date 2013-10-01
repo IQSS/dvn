@@ -25,7 +25,7 @@ A dataverse is a container for studies that can be managed as a group by the dat
 Most often a dataverse represents a single organization or scholar and so their studies are often related. 
 On the right side of the page there are lists of both recently released studies and studies that have been 
 downloaded most often.  At the bottom of these lists, the View More link brings the user to a complete list 
-of released dateverses or studies as applicable.  The home page also includes a scrolling list of datverse 
+of released dataverses or studies as applicable.  The home page also includes a scrolling list of datverse 
 collections called subnetworks, if applicable.
 
 Clicking on the name of a dataverse, study or subnetwork displays its home page.

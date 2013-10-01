@@ -19,20 +19,16 @@ Searches.
 
 **Browsing the Site**
 
-The Network Homepage presents a view of published dataverses,
-listing newly released dataverse first. A dataverse is a container for
-studies that can be managed as a group by the dataverse administrator.
-Most often a dataverse represents a single organization or scholar and
-so their studies are often related.
 
+The Network Homepage presents a list of recently released dataverses on the left side of the page.  
+A dataverse is a container for studies that can be managed as a group by the dataverse administrator. 
+Most often a dataverse represents a single organization or scholar and so their studies are often related. 
+On the right side of the page there are lists of both recently released studies and studies that have been 
+downloaded most often.  At the bottom of these lists, the View More link brings the user to a complete list 
+of released dateverses or studies as applicable.  The home page also includes a scrolling list of datverse 
+collections called subnetworks, if applicable.
 
-The list of dataverses can be narrowed either by clicking on the
-alphabetical selector or by clicking on one of the classification
-filters to the left of the list.
-
-
-Clicking on a dataverse displays the dataverse's home page,
-listing it's studies.
+Clicking on the name of a dataverse, study or subnetwork displays its home page.
 
 **Search**
 

@@ -2708,6 +2708,7 @@ The following tasks can be performed from the Options page:
    edit, and manage standard and harvesting dataverses, manage
    harvesting schedules, set study export schedules, and manage OAI
    harvesting sets.
+-  Manage subnetworks - Create, edit, and manage subnetworks, manage network and subnetwork level study templates.
 -  Customize the Network pages and description - Brand your Network and
    set up your Network e-mail contact.
 -  Set and edit Terms of Use - Apply Terms of Use at the Network level
@@ -2784,6 +2785,52 @@ Dataverses subtab > Manage Dataverse table:
 -  Move through the list of dataverses by clicking a page number or the
    forward and back buttons.
 -  Click Delete to remove a dataverse.
+
+Subnetwork Section
+======================
+
+A subnetwork is a container for a group of dataverses.  Users will be able to create their dataverses in a particular subnetwork.  It may include its own branding and its own custom study templates.
+
+Create a New Subnetwork
+------------------------
+
+You must be a network admin in order to create a subnetwork.  These are the steps to create a subnetwork:
+
+#. Navigate to Create a New Subnetwork Page:
+    Network home page > Options page > Subnetworks tab> Create Subnetwork Link
+    
+#. Fill in required information:
+
+    **Subnetwork Name**
+    
+    The name to be displayed in the menubar. Please use a short name.
+
+    **Subnetwork Alias**
+    
+    Short name used to build the URL for this Subnetwork. It is case sensitive.
+
+    **Subnetwork Short Description**
+    
+    This short description is displayed on the Network Home page
+    
+#. Fill in Optional Branding
+    These fields include a logo file, Subnetwork affiliation, description, and custom banner and footer.
+    
+#. Click Save and you’re done!
+
+
+Manage Subnetworks
+--------------------
+
+The Manage Subnetworks page gives summary information about all of the subnetworks in your installation.
+
+Navigate to Network home page > Options Page > Subnetworks tab:
+
+-  Subnetworks are listed alphabetically
+-  Clicking on a column name sorts the list by that column
+-  Click Edit to edit the subnetwork’s information or branding
+-  Click Delete to remove a subnetwork.  Note: this will not remove the dataverses assigned to the subnetwork.  The dataverses will remain and may be reassigned to another subnetwork.
+
 
 Manage Classifications
 ------------------------

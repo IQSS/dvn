@@ -150,6 +150,10 @@ to this page at one time. It is recommended to upload only a few files
 at a time since this can take some time to complete, depending on file
 type.
 
+An alternative to selecting files individually is to first create an
+archive of files in ``.zip`` or ``.tar`` format and then select the
+appropriate "multiple files" Data Type when uploading your archive.
+
 If you upload an SPSS (``.por``, ``.sav``) or a Stata file (``.dta``), your
 study will be temporarily unavailable for editing until the additional
 processing on the file is completed. This can be brief or take some time

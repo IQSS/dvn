@@ -757,29 +757,6 @@ develop should not.
 FIXME: explain how to merge commits into master for a final release (and
 how to tag the release)
 
-Features
-========================
-
--  :ref:`API <api>`
-
-  -  :ref:`Data Deposit <data-deposit-api>`
-
--  `Search <http://devguide.thedata.org/features/search/>`__
-
-
-   -  `Faceted <http://devguide.thedata.org/features/search/faceted/>`__
-
-
-      -  `Feedback <http://devguide.thedata.org/features/search/faceted/feedback/>`__
-      -  `Roadmap <http://devguide.thedata.org/features/search/faceted/roadmap/>`__
-      -  `Status <http://devguide.thedata.org/features/search/faceted/status/>`__
-      -  `status.tsv <http://devguide.thedata.org/features/search/faceted/status.tsv>`__
-      -  `Testing
-         <http://devguide.thedata.org/features/search/faceted/testing/>`__
-
-         -  `status.tsv <http://devguide.thedata.org/features/search/faceted/testing/status.tsv>`__
-
-
 Tips
 =========
 

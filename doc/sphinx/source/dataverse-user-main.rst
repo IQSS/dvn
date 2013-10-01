@@ -2998,10 +2998,9 @@ To set any study template as the default template that applies
 automatically to the creation of new network templates:
 
 
-In the list of templates, click the Make Default link next to the name
-of the template that you choose to set as the default. The Default label
-is displayed in the Default column of the template that you set as the
-default.
+In the list of templates, click the Make Default Selection link next to the name
+of the template that you choose to set as the default for a subnetwork(s). A pop-up window with the names of the subnetworks will appear and you may select the appropriate subnetworks.  The subnetwork name(s) is displayed in the Default column of the template that you set as the
+default for each given subnetwork.
 
 **Remove Template**
 

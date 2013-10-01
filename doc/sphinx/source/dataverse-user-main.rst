@@ -2144,7 +2144,7 @@ Keep in mind these tips when uploading study files to your dataverse:
 
 -  The following subsettable file types are supported:
 
-   -  SPSS ``sav`` - Versions 7.x to 18.x
+   -  SPSS ``sav`` - Versions 7.x to 20.x
    -  SPSS ``por`` - All versions
    -  STATA ``dta`` - Versions 4 to 12
    -  R ``RData`` - All versions (NEW as of DVN v.3.5!)
@@ -2444,7 +2444,6 @@ fail and things to try.
    itself and so is not ingested. In these cases they should upload as other and we can test here.
 #. For subsettable files, there is something wrong with our ingest code that can't process something about that particular file,    
    format, version.
-#. For subsettable files, they are ingesting versions that we do not support such as Stata 12 and SPSS 18,19.
 #. There is a browser specific issue that is either a bug in our
    software that hasn't been discovered or it is something unique to their browser such as security settings or a conflict with a
    browser plugin like developer tools. Trying a different browser such as Firefox or Chrome would be a good step.

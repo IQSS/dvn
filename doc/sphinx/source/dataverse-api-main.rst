@@ -386,6 +386,31 @@ Create a study with an Atom entry (XML file)
            <!-- related materials -->
            <dcterms:relation>Peets, John. 2010. Roasting Coffee at the Coffee Shop. Coffeemill Press</dcterms:relation>
         </entry>
+        
+Dublin Core (DC), DDI and DVN Element Crosswalk Table
+******************************************************
+
++-----------------------------+----------------------------------------------+--------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------+
+|DC                           |                DVN DB Element                |        DDI Element 2.x         |                                                                    Note                                                                    |
++-----------------------------+----------------------------------------------+--------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------+
+|dcterms:title                |                    title                     |         2.1.1.1 title          |                                                                                                                                            |
+|dcterms:creator              |         author (LastName, FirstName)         |        2.1.2.1 AuthEnty        |                                                                                                                                            |
+|dcterms:subject              |                   keyword                    |        2.2.1.1. keyword        |                                                                                                                                            |
+|dcterms:description          |                   abstract                   |         2.2.2 abstract         |                                     Describing the purpose, scope or nature of the data collection...                                      |
+|dcterms:publisher            |                   producer                   |        2.1.3.1 producer        |                                personor agency financially or administratively responsible for the dataset                                 |
+|dcterms:contributor          |                     n/a                      |              n/a               |                                                         see dcterms:creator above                                                          |
+|dcterms:date                 |productionDate (YYYY-MM-DD or YYYY-MM or YYYY)|        2.1.3.3 prodDate        |                                                  production or published date of dataset                                                   |
+|dcterms:type                 |                  kindOfData                  |       2.2.3.10 dataKind        |                     Type of data included in the file: survey data, census/enumeration data, aggregate data, clinical                      |
+|dcterms:format               |                     n/a                      |              n/a               |                                                                                                                                            |
+|dcterms:identifier           |                   otherID                    |          2.1.1.5 IDNo          |                        Don't use this field to map a journal article ID. Only ID's that directly belong to dataset                         |
+|dcterms:source               |                 dataSources                  |       2.3.1.8.1 dataSrc        |                       List of books, articles, data files if any that served as the sources for the data collection                        |
+|dcterms:language             |                     n/a                      |              n/a               |                                                                                                                                            |
+|dcterms:relation             |               relatedMaterial                |          2.5.1 relMat          |                      any related material (journal article is not included here - see: dcterms:isReferencedBy below)                       |
+|dcterms:coverage             |              geographicCoverage              |       2.2.3.4 geogCover        |                                                Info on the geographic coverage of the data                                                 |
+|dcterms:rights               |                 restrictions                 |        2.4.2.3 restrctn        |                                            any restrictions on the access or use of the dataset                                            |
+|dcterms:bibliographicCitation|                 dataCitation                 |       ? (2.1.7 biblCit)        |                                            data citation for the study in the Dataverse Network                                            |
+|dcterms:isReferencedBy       |             studyRelPublications             |? (not set by DDI community yet)|the publication (journal article, book, other work) that uses this dataset (include citation, permanent identifier (DOI), and permanent URL)|
++-----------------------------+----------------------------------------------+--------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------+
 
 Add files to a study with a zip file
 ************************************

@@ -38,13 +38,16 @@ listing it's studies.
 
 For many purposes, Basic Search is sufficient. Enter keywords or
 complete sentences and click **Search**. A resulting list of studies is
-displayed. Further refinement can be made by checking "within these
-results" and searching on some other term. Basic Search can be found on
-the upper right of the network and dataverse home pages as well as on
-the search results and Advanced Search pages. Be aware that searching
-from a dataverse limits the scope of search to studies within that
-dataverse while searching from the network home page searches all
-released studies.
+displayed. Further refinement can be made by clicking facets such as
+"Original Dataverse" or "Author" under "Refine Results" on the left side
+of the page. After a facet has been clicked, it will appear at the top
+of the page under "Search Results for" and clicking the selected facet
+will remove it, restoring the previous results. In addition to the
+network homepage, Basic Search can be found on the upper right of the
+dataverse home pages as well as on the search results and Advanced
+Search pages.  Be aware that searching from a dataverse limits the scope
+of search to studies within that dataverse while searching from the
+network home page searches all released studies.
 
 When a more specific search is needed, use Advanced Search. Advanced
 Search allows searching on keywords found in specific cataloging

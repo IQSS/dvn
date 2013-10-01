@@ -30,6 +30,13 @@ collections called subnetworks, if applicable.
 
 Clicking on the name of a dataverse, study or subnetwork displays its home page.
 
+**Browsing Dataverses**
+
+If you click the View More link under the recently released dataverse list on the Network Homepage you'll be brought to 
+the Browse Dataverses page.  Here you can sort the dataverses by Name, Affiliation, Release Date and Download Count.  You 
+may also filter the dataverses by typing a filter term in the "filter" text box.  The filter will only display those 
+dataverses whose name or affiliation matches the filter term.  Clicking on the name of a dataverse displays its home page.
+
 **Search**
 
 For many purposes, Basic Search is sufficient. Enter keywords or

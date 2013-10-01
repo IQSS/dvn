@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.apache.http.impl.client</groupId>
+  <artifactId>httpclient</artifactId>
+  <versioning>
+    <release>4.2.5</release>
+    <versions>
+      <version>4.2.5</version>
+    </versions>
+    <lastUpdated>20130924165833</lastUpdated>
+  </versioning>
+</metadata>

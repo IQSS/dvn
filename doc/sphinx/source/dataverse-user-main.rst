@@ -3952,31 +3952,6 @@ this feature.
 - You will be redirected to `Google Analytics <http://www.google.com/analytics/>`__. Log in using your Gmail account used to
   create the profile.
 
-Read Only Mode
-----------------
-
-A Read Only Mode has been established in DVN to allow the application to remain available while deploying new versions or patches.  Users will be able to view data and metadata, but will not be able to add or edit anything.  Currently there is no way to switch to Read Only Mode through the application. 
-In order to change the application mode you must apply the following queries through ``psql`` or ``pgAdmin``:
-
-To set to Read Only Mode:
-
-
-``BEGIN; SET TRANSACTION READ WRITE;
--- Note database and user strings may have to be modified for your particular installation
--- You may also customize the status notice which will appear on all pages of the application
-update vdcnetwork set statusnotice = "This network is currently in Read Only state. No saving of data will be allowed.";
-ALTER DATABASE "dvnDb" set default_transaction_read_only=on;
-Alter user "dvnApp" set default_transaction_read_only=on;
-END;``
-
-To return to regular service:
-
-``BEGIN; SET TRANSACTION READ WRITE;
--- Note database and user strings may have to be modified for your particular installation
-ALTER DATABASE "dvnDb" set default_transaction_read_only=off;
-Alter user "dvnApp" set default_transaction_read_only=off;
-update vdcnetwork set statusnotice = "";
-END;``
 
 Appendix
 ++++++++

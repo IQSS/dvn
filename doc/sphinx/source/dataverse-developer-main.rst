@@ -239,29 +239,11 @@ Create the following 5 custom libraries using  ``Tools -> Libraries -> New Libr
 
 For each of these, simply select all the jar files from the directories respectively.
 
-| ``<YOUR SVN ROOT>/trunk/lib/dvn-lib-COMMON``
-| ``<YOUR SVN ROOT>/trunk/lib/dvn-lib-EJB``
-| ``<YOUR SVN ROOT>/trunk/lib/dvn-lib-WEB``
-| ``<YOUR SVN ROOT>/trunk/lib/dvn-lib-NetworkData``
-| ``<YOUR SVN ROOT>/trunk/lib/dvn-lib-NetworkData-EXTRA``
-
-Configure DVN-web project libraries
-===================================
-
-Under Projects, right-click DVN-web and choose "Resolve Reference
-Problems". You should see the following jars listed:
-
--  auto-depends.jar
--  common-util.jar
--  config-api.jar
--  grizzly-config.jar
--  internal-api.jar
-
-Highlight one of these jars and click Resolve. Then browse for the jar
-in the glassfish/glassfish/modules directory of your GlassFish
-installation. This *should* resolve the problem for all five jars above,
-but if it doesn't, the rest of the jars can be found in the same
-location.
+| ``lib/dvn-lib-COMMON``
+| ``lib/dvn-lib-EJB``
+| ``lib/dvn-lib-WEB``
+| ``lib/dvn-lib-NetworkData``
+| ``lib/dvn-lib-NetworkData-EXTRA``
 
 Open the DVN-web and DVN-ingest projects
 ========================================
@@ -301,6 +283,26 @@ need to point Netbeans to the locations of some of the library
 dependencies on your system; we will do this in the next step. **Just
 ignore** the error warning for now (**click Close** in the popup in the popup window). 
 
+Configure DVN-web project libraries
+===================================
+
+Please note: if you have any trouble completing this step, you might
+need to close Netbeans and re-open it.
+
+Under Projects, right-click DVN-web and choose "Resolve Reference
+Problems". You should see the following jars listed:
+
+-  auto-depends.jar
+-  common-util.jar
+-  config-api.jar
+-  grizzly-config.jar
+-  internal-api.jar
+
+Highlight one of these jars and click Resolve. Then browse for the jar
+in the glassfish3/glassfish/modules directory of your GlassFish
+installation. This *should* resolve the problem for all five jars above,
+but if it doesn't, the rest of the jars can be found in the same
+location.
 
 Build the application
 =====================

@@ -339,12 +339,12 @@ Retrieve SWORD service document
 
 The service document enumerates the dataverses ("collections" from a SWORD perspective) the user can deposit data into. The "collectionPolicy" element for each dataverse contains the deposit terms of use for the network and dataverse.
 
-``curl -s https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/service-document``
+``curl https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/service-document``
 
 Create a study with an Atom entry (XML file)
 ********************************************
 
-``curl -s --data-binary "@atom-entry-study.xml" -H "Content-Type: application/atom+xml" https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/collection/dataverse/$DATAVERSE_ALIAS``
+``curl --data-binary "@atom-entry-study.xml" -H "Content-Type: application/atom+xml" https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/collection/dataverse/$DATAVERSE_ALIAS``
 
 .. code-block:: guess
 
@@ -433,33 +433,33 @@ Dublin Core (DC) - DDI - Dataverse Network DB Element Crosswalk
 Add files to a study with a zip file
 ************************************
 
-``curl -s --data-binary @example.zip -H "Content-Disposition: filename=example.zip" -H "Content-Type: application/zip" -H "Packaging: http://purl.org/net/sword/package/SimpleZip" https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/edit-media/study/hdl:TEST/12345``
+``curl --data-binary @example.zip -H "Content-Disposition: filename=example.zip" -H "Content-Type: application/zip" -H "Packaging: http://purl.org/net/sword/package/SimpleZip" https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/edit-media/study/hdl:TEST/12345``
 
 Display a study atom entry
 **************************
 
 Contains data citation (bibliographicCitation), alternate URI [persistent URI of study], edit URI, edit media URI, statement URI.
 
-``curl -s https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/edit/study/hdl:TEST/12345``
+``curl https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/edit/study/hdl:TEST/12345``
 
 Display a study statement
 *************************
 
 Contains feed of file entries, latestVersionState, locked boolean
 
-``curl -s https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/statement/study/hdl:TEST/12345``
+``curl https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/statement/study/hdl:TEST/12345``
 
 Delete a file by database id
 ****************************
 
-``curl -i -s -X DELETE https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/edit-media/file/2325541``
+``curl -i -X DELETE https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/edit-media/file/2325541``
 
 Replacing cataloging information (title, author, etc.) for a study
 ******************************************************************
 
 Please note that all cataloging information will be replaced, including fields that can not be expressed with "dcterms" fields.
 
-``curl -s --upload-file "atom-entry-study2.xml" -H "Content-Type: application/atom+xml" https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/edit/study/hdl:TEST/12345``
+``curl --upload-file "atom-entry-study2.xml" -H "Content-Type: application/atom+xml" https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/edit/study/hdl:TEST/12345``
 
 .. code-block:: guess
 
@@ -487,29 +487,29 @@ Please note that all cataloging information will be replaced, including fields t
 List studies in a dataverse
 ***************************
 
-``curl -s https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/collection/dataverse/$DATAVERSE_ALIAS``
+``curl https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/collection/dataverse/$DATAVERSE_ALIAS``
 
 Delete a study (non-released studies only)
 ******************************************
 
-``curl -i -s -X DELETE https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/edit/study/hdl:TEST/12345``
+``curl -i -X DELETE https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/edit/study/hdl:TEST/12345``
 
 Deaccession a study (released studies only)
 ****************************************************
 
-``curl -i -s -X DELETE https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/edit/study/hdl:TEST/12345``
+``curl -i -X DELETE https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/edit/study/hdl:TEST/12345``
 
 Release a study
 ***************
 
-``curl -s -X POST -H "In-Progress: false" --upload-file zero-length-file.txt https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/edit/study/hdl:TEST/12345``
+``curl -X POST -H "In-Progress: false" --upload-file zero-length-file.txt https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/edit/study/hdl:TEST/12345``
 
 Determine if a dataverse has been released 
 ******************************************
 
 Look for a `dataverseHasBeenReleased` boolean.
 
-``curl -s https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/collection/dataverse/$DATAVERSE_ALIAS``
+``curl https://$USERNAME:$PASSWORD@$DVN_SERVER/dvn/api/data-deposit/v1/swordv2/collection/dataverse/$DATAVERSE_ALIAS``
 
 `curl` reference
 ----------------

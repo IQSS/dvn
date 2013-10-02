@@ -40,6 +40,13 @@ such a way that those who only need the most basic instructions would
 not have to read through it unnecessarily.  Instead we provide them with
 an easy way to get a bare-bones configuration of the DVN up and running.
 
+If you are interested in practicing a DVN installation in a Vagrant
+environment you can later throw away, please follow the instructions at
+https://github.com/dvn/dvn-install-demo to spin up a Linux virtual
+machine on your laptop with ``vagrant up``. When you are finished with
+this temporary DVN installation, you can delete the virtual machine with
+``vagrant destroy``.
+
 If you encounter any problems during installation, please contact the
 development team
 at `support@thedata.org <mailto:support@thedata.org>`__

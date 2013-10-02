@@ -177,7 +177,7 @@ account.
 Clone the repo
 -----------------------------
 
-Please see `branches <../branches/>`__ for detail, but in short, the
+Please see `branches <#branches>`__ for detail, but in short, the
 "develop" branch is where new commits go. Below we will assume you want
 to make commits to "develop".
 

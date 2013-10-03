@@ -4486,7 +4486,7 @@ wasn't defined explicitely, it implicitly becomes a time value in the
 "UTC" zone!), this means that it is **impossible** to have 2 time
 value vectors, in Stata/SPSS and R, that produce the same UNF.
 
-| **A pro tip:** if it is important to produce SPSS/Stata and R versions of
+**A pro tip:** if it is important to produce SPSS/Stata and R versions of
 the same data set that result in the same UNF when ingested, you may
 define the time variables as **strings** in the R data frame, and use
 the "YYYY-MM-DD HH:mm:ss" formatting notation. This is the formatting used by the UNF

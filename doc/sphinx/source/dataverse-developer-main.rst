@@ -23,9 +23,9 @@ Quick Checklist
 (the individual tasks are explained in detail in the sections below).
 
 #. Install Netbeans and Glassfish
-#. Install IceFaces 2.0 NetBeans plugins
 #. Install JUnit (if you haven't already)
 #. Check out new copy of the DVN source from GitHub
+#. Install IceFaces 2.0 NetBeans plugins
 #. Select Glassfish server
 #. Configure NetBeans Ant libraries
 #. Configure DVN-web project libraries
@@ -96,26 +96,6 @@ system, you can probably keep this configuration unchanged (admin on
 localhost only). If you need to be able to connect to the admin console
 remotely, please see the note in the Appendix section of the main
 Installers Guide.
-
-Install IceFaces 2.0 plugin for NetBeans
-========================================
-
-Download
-`http://dvn.iq.harvard.edu/dev/icefaces/ICEfaces-2.0.2-Netbeans-7.0.zip
-<http://dvn.iq.harvard.edu/dev/icefaces/ICEfaces-2.0.2-Netbeans-7.0.zip>`__
-and unzip it. Then click Tools, Plugins, Downloaded, Add Plugins, and
-select all three nbm files.
-
-Afterwards you'll need to fix one of the plugins:
-
--  Click Tools, then Ant Libraries
--  Click "ICEfaces Components (2.0.2)"
--  Click the red library
-   (``nbinst://org.netbeans.libs.commons_logging/modules/ext/commons-logging-1.1.jar``)
-   and click Remove
--  Click "Add JAR/folder" and add
-   ``~/NetBeansProjects/dvn/lib/dvn-lib-WEB/commons-logging.jar`` (to
-   replace the library you removed)
 
 Installing JUnit (if you haven't already)
 =========================================
@@ -218,6 +198,26 @@ Click Finish.
 You should see a message that the clone has completed and you will
 probably be asked if you'd like to open a project. Click "Close" for now
 and don't open a project.
+
+Install IceFaces 2.0 plugin for NetBeans
+========================================
+
+Download
+`http://dvn.iq.harvard.edu/dev/icefaces/ICEfaces-2.0.2-Netbeans-7.0.zip
+<http://dvn.iq.harvard.edu/dev/icefaces/ICEfaces-2.0.2-Netbeans-7.0.zip>`__
+and unzip it. Then click Tools, Plugins, Downloaded, Add Plugins, and
+select all three nbm files.
+
+Afterwards you'll need to fix one of the plugins:
+
+-  Click Tools, then Ant Libraries
+-  Click "ICEfaces Components (2.0.2)"
+-  Click the red library
+   (``nbinst://org.netbeans.libs.commons_logging/modules/ext/commons-logging-1.1.jar``)
+   and click Remove
+-  Click "Add JAR/folder" and add
+   ``~/NetBeansProjects/dvn/lib/dvn-lib-WEB/commons-logging.jar`` (to
+   replace the library you removed)
 
 Select Glassfish server
 =======================

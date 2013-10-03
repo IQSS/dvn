@@ -800,8 +800,6 @@ you probably have lost your project.properties and project.xml files.
 The :ref:`build <build>` page has instructions on putting them back
 into place.
 
-*Posted Thu May 2 13:33:33 2013*
-
 Duplicate class
 --------------------------
 
@@ -819,7 +817,3 @@ this:
 According to
 `https://netbeans.org/bugzilla/show_bug.cgi?id=197983 <https://netbeans.org/bugzilla/show_bug.cgi?id=197983>`__
 this might be fixed in NetBeans 7.3.
-
-*Posted Thu Apr 4 13:37:07 2013*
-
-

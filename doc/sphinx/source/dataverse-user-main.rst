@@ -4352,7 +4352,7 @@ Missing Values encoded in R vectors will be recognized and preserved
 in TAB files (as 'NA'), counted in the generated summary statistics
 and data analysis.
 
-In addition to Missing Values, R recognizes "Not a Value" (NaN) and
+In addition to Missing Values, R recognizes "Not a Number" (NaN) and
 positive and negative infinity for floating point values. These
 are now properly supported by the DVN.
 

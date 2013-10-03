@@ -4449,7 +4449,7 @@ the time zone that is current for the OS ... **BUT ONLY** if the OS
 where R is installed actually understands the time zone "PST", which
 is not by any means guaranteed! Otherwise, it will **quietly adjust**
 the stored GMT value to **the current time zone**, yet still
-display it with the "PST" tag attached!** One way to rephrase this is
+display it with the "PST" tag attached! One way to rephrase this is
 that R does a fairly decent job **storing** time values in a
 non-ambiguous, platform-independent manner - but gives no guarantee that 
 the values will be displayed in any way that is predictable or intuitive. 

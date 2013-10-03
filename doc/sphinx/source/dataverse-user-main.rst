@@ -4424,7 +4424,7 @@ be mapped to an exact point in real time.  R handles times in the
 resulting numeric value is stored in the data file; time zone
 adjustments are made in real time as needed.
 
-Things still get ambiguous and confusing when R **displays** this time
+Things get ambiguous and confusing when R **displays** this time
 value: unless the time zone was explicitly defined, R will adjust the
 value to the current time zone. The resulting behavior is often
 counter-intuitive: if you create a time value, for example:
@@ -4444,14 +4444,14 @@ zone is explicitly defined. For example:
 or 
    timevalue<-as.POSIXct("03/19/2013 12:57:00", format = "%m/%d/%Y %H:%M:%OS", tz="PST");
 
-Now the value will always be displayed as "15:57 PST", regardless of
+Now the value will always be displayed as "12:57 PST", regardless of
 the time zone that is current for the OS ... **BUT ONLY** if the OS
 where R is installed actually understands the time zone "PST", which
 is not by any means guaranteed! Otherwise, it will **quietly adjust**
-the stored GMT value to **the current time zone**, yet it will still
+the stored GMT value to **the current time zone**, yet still
 display it with the "PST" tag attached!** One way to rephrase this is
 that R does a fairly decent job **storing** time values in a
-non-ambiguous, platform-independent manner - but gives you no guarantee that 
+non-ambiguous, platform-independent manner - but gives no guarantee that 
 the values will be displayed in any way that is predictable or intuitive. 
 
 In practical terms, it is recommended to use the long/descriptive

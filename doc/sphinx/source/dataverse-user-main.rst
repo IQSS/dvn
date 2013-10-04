@@ -1322,6 +1322,11 @@ or edit mode on a tab, the tab will have an update or cancel button to
 update the “working copy” of a visualization or cancel the current
 update.)
 
+If you have a previously set up an exploration for a data file you may copy that exploration to a new file. 
+When you select a file for set up you will be asked if you want to copy an exploration from another data file 
+and will be presented a list of files from which to choose.  Please note that the data variable names must 
+be identical in both files for this migration to work properly. 
+
 **Time Variable**
 
 On the first tab you select the time variable of your data file.  The

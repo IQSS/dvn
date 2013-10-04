@@ -155,7 +155,9 @@ type.
 
 An alternative to selecting files individually is to first create an
 archive of files in ``.zip`` or ``.tar`` format and then select the
-appropriate "multiple files" Data Type when uploading your archive.
+appropriate "multiple files" Data Type when uploading your archive. The
+zip file or tarball will be unpacked so that the individual files will
+be added to the page.
 
 If you upload an SPSS (``.por``, ``.sav``) or a Stata file (``.dta``), your
 study will be temporarily unavailable for editing until the additional

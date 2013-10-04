@@ -2465,7 +2465,7 @@ fail and things to try.
 #. Does a small text file work?
 #. Which browser and operating system are you using? Can you try Firefox or Chrome?
 #. Does the problem affect some files or all files? If some files, do they work one at a time? Are they all the same type such as
-   Stata or SPSS? Which version? Can they be saved as a supported version, ie. Stata 10 or SPSS 16? Upload them as type "other"
+   Stata or SPSS? Which version? Can they be saved as a supported version, e.g. Stata 12 or SPSS 20? Upload them as type "other"
    and we'll test here.
 #. Can you try a different computer at a different location?
 #. Last, we'll try uploading it for you (may need DropBox to facilitate upload).

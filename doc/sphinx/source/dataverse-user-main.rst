@@ -2924,7 +2924,7 @@ Vocabulary table:
    vocabulary item to assign to a given custom field. In the Values
    field enter the controlled vocabulary values that you want to make
    available to users for a study field. Use the plus and minus buttons
-   to add or subtract values from the list.
+   to add or subtract values from the list.  You may also copy and paste a list of values separated by carriage returns.
 #. After you complete entry of values, click Save to create the
    controlled vocabulary.
 
@@ -2938,7 +2938,7 @@ To edit an existing controlled vocabulary:
    Controlled Vocabulary page, with the controlled vocabulary setup that
    you selected.
 #. Edit the controlled vocabulary items that you choose to change, add,
-   or remove.
+   or remove. You may also copy and paste a list of values separated by carriage returns.
 
 Manage Network Study Templates
 -------------------------------------

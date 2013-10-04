@@ -83,7 +83,7 @@ to the file and the file will download.
 
 **Subset or Analyze Files**
 
-Tabular and Network data files of recognized formats (Stata, SPSS,
+Tabular and Network data files of recognized formats (Stata, SPSS, RData,
 Graphml) can be further manipulated through downloading subsets of
 variables and by performing various statistical analyses. Where
 available these options appear as an additional link, Access
@@ -159,12 +159,13 @@ appropriate "multiple files" Data Type when uploading your archive. The
 zip file or tarball will be unpacked so that the individual files will
 be added to the page.
 
-If you upload an SPSS (``.por``, ``.sav``) or a Stata file (``.dta``), your
-study will be temporarily unavailable for editing until the additional
-processing on the file is completed. This can be brief or take some time
-depending on the size and complexity of the file. A message at the top
-of the file indicates it is unavailable for editing and an email will be
-sent when finished to the address you indicate on the add files page.
+If you upload an SPSS (``.por``, ``.sav``), Stata (``.dta``) or R
+(``.RData``) file, your study will be temporarily unavailable for
+editing until the additional processing on the file is completed. This
+can be brief or take some time depending on the size and complexity of
+the file. A message at the top of the file indicates it is unavailable
+for editing and an email will be sent when finished to the address you
+indicate on the add files page.
 
 **Release Studies**
 
@@ -2154,11 +2155,12 @@ Keep in mind these tips when uploading study files to your dataverse:
 
 -  The following subsettable file types are supported:
 
-   -  SPSS ``sav`` - Versions 7.x to 20.x
-   -  SPSS ``por`` - All versions
+   -  SPSS ``sav`` and ``por`` - Versions 7.x to 20.x (See the :ref:`Note on SPSS ingest <spss-datafile-ingest>` in the Appendix)
    -  STATA ``dta`` - Versions 4 to 12
-   -  GraphML ``xml`` - All versions
    -  R ``RData`` - All versions (NEW as of DVN v.3.5! See :ref:`Ingest of R data files <r-datafile-ingest>` in the Appendix)
+   -  GraphML ``xml`` - All versions
+   -  CSV data file with a :ref:`control card <controlcard-datafile-ingest>`
+   -  TAB-delimited data file with a :ref:`DDI XML control card <ddixml-datafile-ingest>` 
 
 - A custom ingest for FITS Astronomical data files has been added in v.3.4. (see :ref:`FITS File format Ingest <fits-datafile-ingest>` in the Appendix)
 
@@ -3987,6 +3989,10 @@ be supplied.
 
 The specifics of the formats are documented in the 2 sections below.
 
+
+
+.. _controlcard-datafile-ingest:
+
 CSV Data, SPSS-style Control Card
 ------------------------------
 
@@ -4221,6 +4227,7 @@ Is there any reason we may want to support ``RECODE`` command also?
 
 --- comments, suggestions are welcome! ---
 
+.. _ddixml-datafile-ingest:
 
 Tab Data, with DDI Metadata
 ------------------------
@@ -4313,6 +4320,22 @@ provided, for automated validation of machine-generated XML.
 
 
 --- comments, suggestions are welcome! ---
+
+.. _spss-datafile-ingest:
+
+SPSS Data File Ingest
+=====================
+
+Ingesting SPSS (.por) files with extended labels
+------------------------------------------------
+
+This feature has been added to work around the limit on the length of
+variable labels in the SPSS Portable (.por) files.  To use this
+feature, select "SPSS/POR,(w/labels)" from the list of file types on
+the AddFiles page.  You will be prompted to first upload a text file
+containing the extended, "long" versions of the labels, and then
+upload the .por file.  The label text file should contain one
+TAB-separated variable name/variable label pair per line.
 
 .. _r-datafile-ingest:
 

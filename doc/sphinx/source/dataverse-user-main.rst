@@ -2153,6 +2153,7 @@ Keep in mind these tips when uploading study files to your dataverse:
    -  GraphML ``xml`` - All versions
    -  R ``RData`` - All versions (NEW as of DVN v.3.5! See :ref:`Ingest of R data files <r-datafile-ingest>` in the Appendix)
 
+- A custom ingest for FITS Astronomical data files has been added in v.3.4. (see :ref:`FITS File format Ingest <fits-datafile-ingest>` in the Appendix)
 
 -  You can add information for each file, including:
 
@@ -4497,10 +4498,42 @@ Note: date values (dates only, without time) should be handled the
 exact same way as those in SPSS and Stata, and should produce the same
 UNFs.
 
+.. _fits-datafile-ingest:
+
+FITS File format Ingest
+=======================
+
+This custom ingest is an experiment in branching out into a discipline
+outside of the Social Sciences. It has been added in v.3.4 as part of the
+collaboration between the IQSS and the Harvard-Smithsonian Center for
+Astrophysics. FITS is a multi-part file format for storing
+Astronomical data (http://fits.gsfc.nasa.gov/fits_standard.html). DVN
+now offers an ingest plugin that parses FITS file headers for
+key-value metadata that are extracted and made searchable.
+
+FITS is now listed on the DVN AddFiles page as a recognized file
+format. The same asynchronous process is used as for "subsettable"
+files: the processing is done in the background, with an email
+notification sent once completed.
+
+Unlike with the "subsettable" file ingest, no format conversion takes
+place and the FITS file is ingested as is, similarly to "other
+materials" files. The process is limited to the extaction of the
+searchable metadata.  Once the file is ingested and the study is
+re-indexed, these file-level FITS metadata fields can be searched on
+from the Advanced Search page, on either the Dataverse or Network
+level. Choose one of the FITS file Information listed in the drop
+down, and enter the relevant search term. Search results that match
+the query will show individual files as well as studies.
+
+The ingest also generates a short summary of the file contents (number
+and type of Header-Data Units) and adds it to the file description.
+
+
 .. _metadata-references:
 
 Metadata References
-==============
+===================
 
 The Dataverse Network metadata is compliant with the `DDI schema
 version 2 <http://www.icpsr.umich.edu/DDI/>`__. The Cataloging

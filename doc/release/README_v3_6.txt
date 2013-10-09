@@ -70,10 +70,5 @@ like this:
 
 <jvm-options>-Dvdc.temp.file.dir=${com.sun.aas.instanceRoot}/config/files/temp</jvm-options>
 
-8. Ensure that the new dcmi_terms2ddi.xsl crosswalk is in place next to
-other crosswalks (i.e. glassfish/domains/domain1/config/dcmi_terms2ddi.xsl)
-The new crosswalk can be found at dvninstall/config/dcmi_terms2ddi.xsl
-in dvninstall_v3_6.zip
-
 As always, if you have any questions and/or run into problems, please
 contact us at dvn_support@help.hmdc.harvard.edu.

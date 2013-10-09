@@ -6,7 +6,7 @@ For a list and description of new features in this release, please consult
 http://thedata.org/pages/latest-release
 
 Please note that Digital Object Identifiers are supported in this release.
-Please consult the Intallers' Guide for instructions on how to implement this feature in your application
+Please consult the Intallers' Guide for instructions on how to implement this feature in your application.
 
 Installing the DVN. 
 ==================

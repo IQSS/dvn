@@ -231,9 +231,9 @@ $CONFIG_DEFAULTS{'HOST_DNS_ADDRESS'} = 'localhost';
 
 # 2. CHECK IF THE WAR FILE IS AVAILABLE:
 
-unless ( -f "../../../src/DVN-web/dist/DVN-web.war" )
+unless ( -f "../../../DVN-root/DVN-web/target/DVN-web.war" )
 {
-    print "\nWARNING: Can't find the project .war file in ../../../src/DVN-web/dist/!\n";
+    print "\nWARNING: Can't find the project .war file in ../../../DVN-root/DVN-web/target/!\n";
     print "\tAre you running the installer in the right directory?\n";
     print "\tHave you built the war file?\n";
     print "\t(if not, build the project and run the installer again)\n";
@@ -860,7 +860,7 @@ unless ( -d "appdeploy/dist" )
 {
     system ("mkdir appdeploy/dist"); 
 }
-system ("cp -f ../../../src/DVN-web/dist/DVN-web.war appdeploy/dist"); 
+system ("cp -f ../../../DVN-root/DVN-web/target/DVN-web.war appdeploy/dist"); 
 
 # TODO: 
 # check if succeeded!

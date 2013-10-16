@@ -39,7 +39,7 @@ dataverses whose name or affiliation matches the filter term.  Clicking on the n
 
 **Search**
 
-For many purposes, Basic Search is sufficient. Enter keywords or
+For many purposes, Basic Search is sufficient. On the center top of the network homepage enter keywords or
 complete sentences and click **Search**. A resulting list of studies is
 displayed. Further refinement can be made by clicking facets such as
 "Original Dataverse" or "Author" under "Refine Results" on the left side
@@ -202,7 +202,7 @@ At this point you have published one or more studies and their data and
 made them available for browsing or searching.
 
 Things to Consider, Next Steps
-==========================
+===============================
 
 The above tasks are fundamental activities and may be all that is
 needed for most users. Some situations are more complex and require
@@ -235,17 +235,20 @@ studies in the dataverse. Changes made by contributors need to be
 approved by a curator or admin before a study can be released.
 
 How the Guides Are Organized
-=========================
+============================
 
-The user guides are reference documents that explain how to use
-the DVN functionality: Installers Guide, Developers Guide, and Users
+The guides are reference documents that explain how to use
+the Dataverse Network functionality: Installers Guide, Developers Guide, APIs Guide, and Users
 Guide. The Users Guide is further divided into primary activities: using
 data, creating studies, administering dataverses or the network. Details
 on all of the above tasks can be found in the Users Guide. The
 Installers Guide is for people or organizations who want to host their
 own Dataverse Network. The Developers Guide contains instructions for
 people who want to contribute to the Open Source Dataverse Network
-project or who want to modify the code to suit their own needs
+project or who want to modify the code to suit their own needs. Finally, the 
+APIs Guide is for people who would like to use our APIs in order to build apps that 
+can work with the Dataverse Network web application. This `page <http://thedata.org/book/apps>`__ lists some current apps
+which have been developed with our APIs.
 
 Other Resources
 =========================
@@ -286,7 +289,7 @@ within one business day.
 .. _finding-and-using-data:
 
 Finding and Using Data
-++++++++++++++++++
++++++++++++++++++++++++
 
 Ends users, without need to login to the Dataverse Network, can browse
 dataverses, search studies, view study description and data files for
@@ -471,7 +474,7 @@ dataverse:
 
 
 View Studies / Download Data
-========================
+============================
 
 **Cataloging Information**
 
@@ -632,7 +635,7 @@ This is not a full citation for the variable, but it is one component of
 that citation. Note also that this does not apply to ``.xml`` data.
 
 Subset and Analysis
-==============
+====================
 
 Subsetting and analysis can be performed on tabular and network data
 files. Refer to the appropriate section for more details.
@@ -1242,7 +1245,7 @@ Use these guidelines when subsetting or analyzing network data:
    1/(2\*lambda).
 
 Data Visualization
-===============
+==================
 
 Data Visualization allows contributors to make time series
 visualizations available to end users. These visualizations may be
@@ -2927,7 +2930,7 @@ Vocabulary table:
    that will make it easier to identify a particular controlled
    vocabulary item to assign to a given custom field. In the Values
    field enter the controlled vocabulary values that you want to make
-   available to users for a study field. Use the plus and minus buttons
+   available to users for a study field. Here you can submit an entire list of terms at once. Use the "add" and "remove" buttons
    to add or subtract values from the list.  You may also copy and paste a list of values separated by carriage returns.
 #. After you complete entry of values, click Save to create the
    controlled vocabulary.
@@ -3666,12 +3669,39 @@ granting dataverse creator status during the create a dataverse
 workflow. That status can be granted afterwards by the network
 administrator if necessary.
 
-To create an account at the network level, navigate to the Create
+**Network Admin Level**
+
+To create an account at the **network admin level**, navigate to the Create
 Account page from the Options page:
 
 ``Network home page > Options page > Permissions tab > Users subtab > Create User link > Create Account page``
 
 Complete the required information denoted by the red asterisk and save.
+
+**Dataverse Admin Level**
+
+To create an account at the **Dataverse admin level**, navigate to your
+Permissions page from the Options page:
+
+``Dataverse home page > Options page > Permissions tab > Users subtab > Create User link > Create Account page``
+
+Complete the required information denoted by the red asterisk and save.
+
+**New User: Network Homepage**
+
+As a new user, to create an account at the **Dataverse Network homepage**, select "Create Account" 
+at the top-right hand side of the page.
+
+Complete the required information denoted by the red asterisk and save.
+
+**New User: Dataverse Level**
+
+As a new user, to create an account at the **Dataverse level**, select "Create Account" 
+at the top-right hand side of the page. Note: For Open Dataverses select "Create Account" in the orange box 
+on the top right hand side of the page labelled: "OPEN DATAVERSE".
+
+Complete the required information denoted by the red asterisk and save.
+
 
 Manage Users
 -------------------

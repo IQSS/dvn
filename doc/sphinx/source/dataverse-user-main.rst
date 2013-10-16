@@ -4366,11 +4366,11 @@ Ingesting SPSS (.por) files with extended labels
 ------------------------------------------------
 
 This feature has been added to work around the limit on the length of
-variable labels in the SPSS Portable (.por) files.  To use this
+variable labels in SPSS Portable (.por) files. To use this
 feature, select "SPSS/POR,(w/labels)" from the list of file types on
-the AddFiles page.  You will be prompted to first upload a text file
+the AddFiles page. You will be prompted to first upload a text file
 containing the extended, "long" versions of the labels, and then
-upload the .por file.  The label text file should contain one
+upload the .por file. The label text file should contain one
 TAB-separated variable name/variable label pair per line.
 
 .. _r-datafile-ingest:

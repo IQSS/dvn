@@ -604,12 +604,15 @@ function dataCitationWidgetSync(){
     jQuery(input_productionDateSync).val(inputProdDateVal);
     
     // Sync DATE label/links
+    var inputDistDateDisplay = (inputDistDateVal.substring(0,4));
+    var inputProdDateDisplay = (inputProdDateVal.substring(0,4));    
+    // Sync DATE label/links
     if (inputDistDateVal !== '' ){
-        jQuery(span_date).text(inputDistDateVal);
+        jQuery(span_date).text(inputDistDateDisplay);
     }
     else if (inputProdDateVal !== '' ){
-        jQuery(span_date).text(inputProdDateVal);
-    };
+        jQuery(span_date).text(inputProdDateDisplay);
+    }
     
     // Display one or the other date
     var widgetTwoFieldBind = function( inputField, primaryField, secondaryField, spanField, spanDefault ) { 
@@ -627,7 +630,7 @@ function dataCitationWidgetSync(){
             } else {
                 addText = spanDefault;
             }
-
+            addText = addText.substring(0,4);
             jQuery(spanField).text(addText);
         };
     }

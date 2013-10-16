@@ -23,22 +23,14 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyAuthor;
 import edu.harvard.iq.dvn.core.study.StudyProducer;
 import edu.harvard.iq.dvn.core.util.PropertyUtil;
-import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
-import edu.harvard.iq.dvn.core.web.common.VDCSessionBean;
-import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import edu.ucsb.nceas.ezid.EZIDClient;
 import edu.ucsb.nceas.ezid.EZIDException;
 import edu.ucsb.nceas.ezid.EZIDService;
 import edu.ucsb.nceas.ezid.EZIDServiceRequest;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
-import org.apache.commons.codec.binary.Base64;
 
 /**
  *
@@ -49,13 +41,9 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
     EZIDService ezidService;
     EZIDServiceRequest ezidServiceRequest;    
     String baseURLString = "https://n2t.net/ezid/";  
-    @Inject VDCSessionBean vdcSessionBean;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
-    public VDCSessionBean getVDCSessionBean() {
-        return vdcSessionBean;
-    }
-    //test environment shoulder identifier
-    // identifiers created here last two weeks
+    
+    // get username and password from system properties
     private String DOISHOULDER = "";
     private String USERNAME = "";
     private String PASSWORD = "";    
@@ -75,30 +63,29 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
         }
     }    
     
-    public String createIdentifier(Study studyIn){
+    public String createIdentifier(Study studyIn) {
         String retString = "";
         String identifier = getIdentifierFromStudy(studyIn);
-        System.out.print("identifier in : " + identifier);
-        HashMap metadata = getMetadataFromStudy(studyIn);
+        HashMap metadata = getMetadataFromStudyForCreateIndicator(studyIn);
         metadata.put("_status", "reserved");
-       try {
-             retString=  ezidService.createIdentifier(identifier, metadata);
-             System.out.print("create identifier retString : " + retString);
-            }  catch (EZIDException e){                
+        try {
+            retString = ezidService.createIdentifier(identifier, metadata);
+            System.out.print("create DOI identifier retString : " + retString);
+        } catch (EZIDException e) {
             System.out.print("create failed");
-            System.out.print("String " + e.toString() );
+            System.out.print("String " + e.toString());
             System.out.print("localized message " + e.getLocalizedMessage());
             System.out.print("cause " + e.getCause());
-            System.out.print("message " + e.getMessage());   
+            System.out.print("message " + e.getMessage());
             return "Identifier not created";
-        } 
-       System.out.print("createIdentifier return string : " + retString);
-       return retString;
+        }
+        System.out.print("createIdentifier return string : " + retString);
+        return retString;
     }
     
    
     public HashMap getIdentifierMetadata(Study studyIn){
-        String identifier = getIdentifierFromStudy(studyIn);
+        String identifier = getIdentifierFromStudy(studyIn);        
         HashMap metadata = new HashMap();
        try {
               metadata = ezidService.getMetadata(identifier);
@@ -113,11 +100,9 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
        return metadata;
     }
     
-
     
-    public void modifyIdentifier(Study studyIn){
+    public void modifyIdentifier(Study studyIn, HashMap metadata ){
         String identifier = getIdentifierFromStudy(studyIn);
-        HashMap metadata = getMetadataFromStudy(studyIn);
        try {
                ezidService.setMetadata(identifier, metadata);
             }  catch (EZIDException e){                
@@ -131,10 +116,9 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
     
     public void deleteIdentifier(Study studyIn) {
         String identifier = getIdentifierFromStudy(studyIn);
-        HashMap doiMetatdata = new HashMap();
+        HashMap doiMetadata = new HashMap();
         try {
-            doiMetatdata = ezidService.getMetadata(identifier);
-            System.out.print("Starting doiMetatdata status: " + doiMetatdata.get("_status"));
+            doiMetadata = ezidService.getMetadata(identifier);
         } catch (EZIDException e) {
             System.out.print("get matadata failed cannot delete");
             System.out.print("String " + e.toString());
@@ -144,8 +128,8 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
             return;
         }
 
-        String idStatus = (String) doiMetatdata.get("_status");
-
+        String idStatus = (String) doiMetadata.get("_status");
+        
         if (idStatus.equals("reserved")) {
             System.out.print("Delete status is reserved..");
             try {
@@ -159,9 +143,16 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
             }
             return;
         }
+        if (idStatus.equals("public")) { 
+            //if public then it has been released set to unavaialble and reset target to n2t url
+            updateIdentifierStatus(studyIn, "unavailable | withdrawn by author");
+            HashMap metadata = new HashMap();
+            metadata.put("_target", "http://n2t.net/ezid/id/" + studyIn.getProtocol() + ":" + studyIn.getAuthority() + "/" + studyIn.getStudyId());
+            modifyIdentifier(studyIn, metadata);
+        }
     }
     
-    private HashMap getMetadataFromStudy(Study studyIn) {
+    private HashMap getMetadataFromStudyForCreateIndicator(Study studyIn) {
         HashMap<String, String> metadata = new HashMap<String, String>();
         String authorString = "";
         for (StudyAuthor author: studyIn.getLatestVersion().getMetadata().getStudyAuthors()){
@@ -203,10 +194,31 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
         metadata.put("_target", targetUrl);
         return metadata;
     }
-    
+   
     private String getIdentifierFromStudy(Study studyIn){
         DOISHOULDER = "doi:" + studyIn.getAuthority();
         return DOISHOULDER + "/" + studyIn.getStudyId();
+    }
+    
+    @Override
+    public void publicizeIdentifier(Study studyIn) {
+        updateIdentifierStatus(studyIn, "public");
+    }
+    
+    private void updateIdentifierStatus(Study studyIn, String statusIn){
+        String identifier = getIdentifierFromStudy(studyIn);
+        HashMap metadata = new HashMap();
+        metadata.put("_status", statusIn);
+       try {
+               ezidService.setMetadata(identifier, metadata);
+            }  catch (EZIDException e){                
+            System.out.print("modifyMetadata failed");
+            System.out.print("String " + e.toString() );
+            System.out.print("localized message " + e.getLocalizedMessage());
+            System.out.print("cause " + e.getCause());
+            System.out.print("message " + e.getMessage());    
+        }
+        
     }
     
     public void test() {
@@ -287,21 +299,5 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
 
         return guid.toString();
     }
-
-    @Override
-    public void publicizeIdentifier(Study studyIn) {
-        String identifier = getIdentifierFromStudy(studyIn);
-        HashMap metadata = getMetadataFromStudy(studyIn);
-        metadata.put("_status", "public");
-       try {
-               ezidService.setMetadata(identifier, metadata);
-            }  catch (EZIDException e){                
-            System.out.print("modifyMetadata failed");
-            System.out.print("String " + e.toString() );
-            System.out.print("localized message " + e.getLocalizedMessage());
-            System.out.print("cause " + e.getCause());
-            System.out.print("message " + e.getMessage());    
-        } 
-    }
-    
+   
 }

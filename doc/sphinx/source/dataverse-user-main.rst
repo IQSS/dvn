@@ -1882,9 +1882,11 @@ As a registered user, you can:
 -  Add user comments to studies that have this option
 -  Create your own dataverse
 
+**Network Admin Level**
+
 Navigate to Create User Account from the Options page:
 
-``Dataverse home page > Options page > Permissions tab > Permissions subtab > Create User link``
+``Network home page > Options page > Permissions tab > Users subtab > Create User link``
 
 To create an account for a new user in your Network:
 
@@ -1893,6 +1895,36 @@ To create an account for a new user in your Network:
 #. Click Create Account to save your entries.
 #. Go to the Permissions tab on the Options page to give the user
    Contributor, Curator or Admin access to your dataverse.
+   
+**Dataverse Admin Level**
+
+Navigate to Create User Account from the Options page:
+
+``Dataverse home page > Options page > Permissions tab > Permissions subtab > Create User link``
+
+To create an account for a new user in your Dataverse:
+
+#. Complete the account information page.
+    Enter values in all required fields.
+#. Click Create Account to save your entries.
+#. Go to the Permissions tab on the Options page to give the user
+   Contributor, Curator or Admin access to your dataverse.
+   
+
+**New User: Network Homepage**
+
+As a new user, to create an account at the **Dataverse Network homepage**, select "Create Account" 
+at the top-right hand side of the page.
+
+Complete the required information denoted by the red asterisk and save.
+
+**New User: Dataverse Level**
+
+As a new user, to create an account at the **Dataverse level**, select "Create Account" 
+at the top-right hand side of the page. Note: For Open Dataverses select "Create Account" in the orange box 
+on the top right hand side of the page labelled: "OPEN DATAVERSE".
+
+Complete the required information denoted by the red asterisk and save.
 
 Download Tracking Data
 ======================
@@ -3669,36 +3701,10 @@ granting dataverse creator status during the create a dataverse
 workflow. That status can be granted afterwards by the network
 administrator if necessary.
 
-**Network Admin Level**
-
 To create an account at the **network admin level**, navigate to the Create
 Account page from the Options page:
 
 ``Network home page > Options page > Permissions tab > Users subtab > Create User link > Create Account page``
-
-Complete the required information denoted by the red asterisk and save.
-
-**Dataverse Admin Level**
-
-To create an account at the **Dataverse admin level**, navigate to your
-Permissions page from the Options page:
-
-``Dataverse home page > Options page > Permissions tab > Users subtab > Create User link > Create Account page``
-
-Complete the required information denoted by the red asterisk and save.
-
-**New User: Network Homepage**
-
-As a new user, to create an account at the **Dataverse Network homepage**, select "Create Account" 
-at the top-right hand side of the page.
-
-Complete the required information denoted by the red asterisk and save.
-
-**New User: Dataverse Level**
-
-As a new user, to create an account at the **Dataverse level**, select "Create Account" 
-at the top-right hand side of the page. Note: For Open Dataverses select "Create Account" in the orange box 
-on the top right hand side of the page labelled: "OPEN DATAVERSE".
 
 Complete the required information denoted by the red asterisk and save.
 

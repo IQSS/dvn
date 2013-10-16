@@ -2059,13 +2059,14 @@ public class Metadata implements java.io.Serializable {
         return this.productionDate;
     }
     
-    private String getDistributionYearForCitation() {
-        return this.distributionDate.substring( 0 , 4 );
+    /*
+     * This may have to be changed if other date formats are allowed
+     * 
+     */   
+    private String getYearForCitation(String dateIn){
+        return dateIn.substring( 0 , 4 );
     }
     
-    private String getProductionYearForCitation() {
-        return this.productionDate.substring( 0 , 4 );
-    }
     /**
      * Setter for property productionDate.
      * @param productionDate New value of property productionDate.
@@ -2536,13 +2537,13 @@ public class Metadata implements java.io.Serializable {
             if (!StringUtil.isEmpty(str)) {
                 str += ", ";
             }
-            str += getDistributionYearForCitation();
+            str += getYearForCitation(getDistributionDate());
         } else {
             if (!StringUtil.isEmpty(getProductionDate())) {
                 if (!StringUtil.isEmpty(str)) {
                     str += ", ";
                 }
-                str += getProductionYearForCitation();
+                str += getYearForCitation(getProductionDate());
             }
         }
         if (!StringUtil.isEmpty(getTitle())) {

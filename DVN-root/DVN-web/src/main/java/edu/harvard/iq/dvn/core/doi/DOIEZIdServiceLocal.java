@@ -27,8 +27,6 @@ import java.util.HashMap;
  */
 public interface DOIEZIdServiceLocal {
     
-    public void test();
-    
     public void modifyIdentifier(edu.harvard.iq.dvn.core.study.Study studyIn, HashMap metadata);
 
     public String createIdentifier(edu.harvard.iq.dvn.core.study.Study studyIn);    

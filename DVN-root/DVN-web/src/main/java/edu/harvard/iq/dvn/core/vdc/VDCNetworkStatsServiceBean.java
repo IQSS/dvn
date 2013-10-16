@@ -101,6 +101,14 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
                 } else {
                     logger.log(Level.FINE, "Stats update");
                     updateStats();
+                    updateStudyLists();
+                }
+            } else {
+                if (readOnly) {
+                    logger.log(Level.ALL, "Network is in read-only mode; skipping scheduled network stats job."); 
+                } else {
+                    logger.log(Level.FINE, "Stats update");
+                    updateStudyLists();
                 }
             }
         } catch (Throwable e) {
@@ -149,8 +157,13 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
                 vdcNetworkStats.setDownloadCount(downloadCount);
             }
         }
-        
+    }
+
+    @Override
+    public void updateStudyLists() {
+                
         // update the Lists stored in application scope
+        List<VDCNetwork> vdcNetworks = vdcNetworkService.getVDCNetworks();        
         Map<Long, List> downloadMap = new HashMap<Long, List>();
         Map<Long, List> recentlyReleasedMap = new HashMap<Long, List>();
         
@@ -164,5 +177,7 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
         vdcApplicationBean.setAllStudyIdsByDownloadCountMap(downloadMap);
         vdcApplicationBean.setAllStudyIdsByReleaseDateMap(recentlyReleasedMap);
     }
+    
+    
 
 }

@@ -29,6 +29,8 @@ import edu.ucsb.nceas.ezid.EZIDException;
 import edu.ucsb.nceas.ezid.EZIDService;
 import edu.ucsb.nceas.ezid.EZIDServiceRequest;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -42,6 +44,7 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
     EZIDServiceRequest ezidServiceRequest;    
     String baseURLString = "https://n2t.net/ezid/";  
     @EJB VDCNetworkServiceLocal vdcNetworkService;
+    private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.index.DOIEZIdServiceBean");
     
     // get username and password from system properties
     private String DOISHOULDER = "";
@@ -55,11 +58,11 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
         try {
            ezidService.login(USERNAME, PASSWORD);  
         } catch(Exception e){
-            System.out.print("login failed ");
-            System.out.print("String " + e.toString() );
-            System.out.print("localized message " + e.getLocalizedMessage());
-            System.out.print("cause " + e.getCause());
-            System.out.print("message " + e.getMessage());           
+            logger.log(Level.INFO, "login failed ");
+            logger.log(Level.INFO, "String " + e.toString() );
+            logger.log(Level.INFO, "localized message " + e.getLocalizedMessage());
+            logger.log(Level.INFO, "cause " + e.getCause());
+            logger.log(Level.INFO, "message " + e.getMessage());           
         }
     }    
     
@@ -70,13 +73,13 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
         metadata.put("_status", "reserved");
         try {
             retString = ezidService.createIdentifier(identifier, metadata);
-            System.out.print("create DOI identifier retString : " + retString);
+            logger.log(Level.INFO, "create DOI identifier retString : " + retString);
         } catch (EZIDException e) {
-            System.out.print("create failed");
-            System.out.print("String " + e.toString());
-            System.out.print("localized message " + e.getLocalizedMessage());
-            System.out.print("cause " + e.getCause());
-            System.out.print("message " + e.getMessage());
+            logger.log(Level.INFO, "create failed");
+            logger.log(Level.INFO, "String " + e.toString());
+            logger.log(Level.INFO, "localized message " + e.getLocalizedMessage());
+            logger.log(Level.INFO, "cause " + e.getCause());
+            logger.log(Level.INFO, "message " + e.getMessage());
             return "Identifier not created";
         }
         System.out.print("createIdentifier return string : " + retString);
@@ -90,12 +93,12 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
        try {
               metadata = ezidService.getMetadata(identifier);
             }  catch (EZIDException e){                
-            System.out.print("getIdentifierMetadata failed");
-            System.out.print("String " + e.toString() );
-            System.out.print("localized message " + e.getLocalizedMessage());
-            System.out.print("cause " + e.getCause());
-            System.out.print("message " + e.getMessage());    
-                   return metadata;
+            logger.log(Level.INFO, "getIdentifierMetadata failed");
+            logger.log(Level.INFO, "String " + e.toString() );
+            logger.log(Level.INFO, "localized message " + e.getLocalizedMessage());
+            logger.log(Level.INFO, "cause " + e.getCause());
+            logger.log(Level.INFO, "message " + e.getMessage());    
+            return metadata;
         }         
        return metadata;
     }
@@ -106,11 +109,11 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
        try {
                ezidService.setMetadata(identifier, metadata);
             }  catch (EZIDException e){                
-            System.out.print("modifyMetadata failed");
-            System.out.print("String " + e.toString() );
-            System.out.print("localized message " + e.getLocalizedMessage());
-            System.out.print("cause " + e.getCause());
-            System.out.print("message " + e.getMessage());    
+            logger.log(Level.INFO, "modifyMetadata failed");
+            logger.log(Level.INFO, "String " + e.toString() );
+            logger.log(Level.INFO, "localized message " + e.getLocalizedMessage());
+            logger.log(Level.INFO, "cause " + e.getCause());
+            logger.log(Level.INFO, "message " + e.getMessage());    
         }                
     }
     
@@ -120,26 +123,26 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
         try {
             doiMetadata = ezidService.getMetadata(identifier);
         } catch (EZIDException e) {
-            System.out.print("get matadata failed cannot delete");
-            System.out.print("String " + e.toString());
-            System.out.print("localized message " + e.getLocalizedMessage());
-            System.out.print("cause " + e.getCause());
-            System.out.print("message " + e.getMessage());
+            logger.log(Level.INFO, "get matadata failed cannot delete");
+            logger.log(Level.INFO, "String " + e.toString());
+            logger.log(Level.INFO, "localized message " + e.getLocalizedMessage());
+            logger.log(Level.INFO, "cause " + e.getCause());
+            logger.log(Level.INFO, "message " + e.getMessage());
             return;
         }
 
         String idStatus = (String) doiMetadata.get("_status");
         
         if (idStatus.equals("reserved")) {
-            System.out.print("Delete status is reserved..");
+            logger.log(Level.INFO, "Delete status is reserved..");
             try {
                 ezidService.deleteIdentifier(identifier);
             } catch (EZIDException e) {
-                System.out.print("delete failed");
-                System.out.print("String " + e.toString());
-                System.out.print("localized message " + e.getLocalizedMessage());
-                System.out.print("cause " + e.getCause());
-                System.out.print("message " + e.getMessage());
+                logger.log(Level.INFO, "delete failed");
+                logger.log(Level.INFO, "String " + e.toString());
+                logger.log(Level.INFO, "localized message " + e.getLocalizedMessage());
+                logger.log(Level.INFO, "cause " + e.getCause());
+                logger.log(Level.INFO, "message " + e.getMessage());
             }
             return;
         }
@@ -212,50 +215,15 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
        try {
                ezidService.setMetadata(identifier, metadata);
             }  catch (EZIDException e){                
-            System.out.print("modifyMetadata failed");
-            System.out.print("String " + e.toString() );
-            System.out.print("localized message " + e.getLocalizedMessage());
-            System.out.print("cause " + e.getCause());
-            System.out.print("message " + e.getMessage());    
+            logger.log(Level.INFO, "modifyMetadata failed");
+            logger.log(Level.INFO, "String " + e.toString() );
+            logger.log(Level.INFO, "localized message " + e.getLocalizedMessage());
+            logger.log(Level.INFO, "cause " + e.getCause());
+            logger.log(Level.INFO, "message " + e.getMessage());    
         }
         
     }
     
-    public void test() {
-        System.out.print("calling test");
-        try {
-            System.out.print("in test");
-            HashMap<String, String> metadata = new HashMap<String, String>();
-            metadata.put("datacite.creator", "testAuthor");
-            metadata.put("datacite.title", "test title");
-            metadata.put("datacite.publisher", "testProd");
-            metadata.put("datacite.publicationyear", "2013");
-            metadata.put("datacite.resourcetype", "Text");
-            String timestamp = generateTimeString();
-            String identifier = DOISHOULDER + "/" + "TEST" + "/" + timestamp;
-            //Required metadata for DOI identifier
-
-            metadata.put("timestamp", timestamp);
-                        if(ezidService == null){
-                           ezidService = new  EZIDService();
-                        }
-            String newId = ezidService.createIdentifier(identifier, metadata);
-            System.out.print("createdIdentifier: " + newId);
-            HashMap<String, String> moreMetadata = new HashMap<String, String>();
-            moreMetadata.put("datacite.title", "This is a test identifier");
-            ezidService.setMetadata(newId, moreMetadata);
-            HashMap<String, String> getMetadata = ezidService.getMetadata(identifier);
-            
-            System.out.print("gotten metadata title: " + getMetadata.get("datacite.title"));
-        }
-        catch (Exception e){
-            System.out.print("test exceptions - regular exception");
-            System.out.print("String " + e.toString() );
-            System.out.print("localized message " + e.getLocalizedMessage());
-            System.out.print("cause " + e.getCause());
-            System.out.print("message " + e.getMessage());
-        }       
-    }
     
     public static String generateYear()
     {

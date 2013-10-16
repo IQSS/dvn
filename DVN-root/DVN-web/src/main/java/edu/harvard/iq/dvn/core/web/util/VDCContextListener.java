@@ -37,6 +37,8 @@ import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkStatsServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBs;
 import javax.naming.InitialContext;
@@ -58,60 +60,72 @@ import javax.servlet.ServletRequestAttributeListener;
 })
 public class VDCContextListener implements ServletContextListener,ServletRequestAttributeListener, java.io.Serializable   {
 
+    private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.index.VDCContextListener");
+    
     public void contextDestroyed(ServletContextEvent event) {
     
     }
     
-    public void contextInitialized(ServletContextEvent event) {
-            
-        if (PropertyUtil.isTimerServer()) {
-            System.out.println("dvn.timerServer== true, Setting DVN timers.");
-            initTimers();
-           
-        } else {
-            System.out.println("dvn.timerServer== false; DVN Timers not set.");
-        }
+    
+    public void contextInitialized(ServletContextEvent event) { 
+        //call init timers with boolean of timerserver
+        initTimers(PropertyUtil.isTimerServer());
+        logger.log(Level.INFO,"Initializing Context (is TimerServer?) " + PropertyUtil.isTimerServer());
     }
      
     
-    private void initTimers() {
-    
-        HarvesterServiceLocal harvesterService = null;
-        HarvestingDataverseServiceLocal harvestingDataverseService = null;
-        IndexServiceLocal indexService = null;
-        VDCNetworkStatsServiceLocal vdcNetworkStatsService= null;
-        VDCNetworkServiceLocal vdcNetworkService=null;
-         
-        try {
-            vdcNetworkService = (VDCNetworkServiceLocal)new InitialContext().lookup("java:comp/env/vdcNetworkService");        
-  
-            if (vdcNetworkService.defaultTransactionReadOnly()) {
-                System.out.println("Network is in read-only mode; skipping timer initialization.");
-            } else {
-                harvesterService = (HarvesterServiceLocal) new InitialContext().lookup("java:comp/env/harvesterService");
-                harvestingDataverseService = (HarvestingDataverseServiceLocal) new InitialContext().lookup("java:comp/env/harvestingDataverseService");
-                indexService = (IndexServiceLocal) new InitialContext().lookup("java:comp/env/indexService");
-                vdcNetworkStatsService = (VDCNetworkStatsServiceLocal) new InitialContext().lookup("java:comp/env/vdcNetworkStatsService");
+    private void initTimers(boolean timerServer) {
 
+        if (timerServer) {
+            HarvesterServiceLocal harvesterService = null;
+            HarvestingDataverseServiceLocal harvestingDataverseService = null;
+            IndexServiceLocal indexService = null;
+            VDCNetworkStatsServiceLocal vdcNetworkStatsService = null;
+            VDCNetworkServiceLocal vdcNetworkService = null;
+            try {
+                vdcNetworkService = (VDCNetworkServiceLocal) new InitialContext().lookup("java:comp/env/vdcNetworkService");
+                if (vdcNetworkService.defaultTransactionReadOnly()) {
+                    System.out.println("Network is in read-only mode; skipping timer initialization.");
+                } else {
+                    harvesterService = (HarvesterServiceLocal) new InitialContext().lookup("java:comp/env/harvesterService");
+                    harvestingDataverseService = (HarvestingDataverseServiceLocal) new InitialContext().lookup("java:comp/env/harvestingDataverseService");
+                    indexService = (IndexServiceLocal) new InitialContext().lookup("java:comp/env/indexService");
+                    vdcNetworkStatsService = (VDCNetworkStatsServiceLocal) new InitialContext().lookup("java:comp/env/vdcNetworkStatsService");
 
-                harvestingDataverseService.resetAllHarvestingStatus();
-                harvesterService.createScheduledHarvestTimers();
+                    harvestingDataverseService.resetAllHarvestingStatus();
+                    harvesterService.createScheduledHarvestTimers();
 
-                indexService.createIndexTimer();
-                indexService.createCollectionIndexTimer(); 
-                indexService.createIndexNotificationTimer();
+                    indexService.createIndexTimer();
+                    indexService.createCollectionIndexTimer();
+                    indexService.createIndexNotificationTimer();
 
-                vdcNetworkService.updateExportTimer();
+                    vdcNetworkService.updateExportTimer();
 
-                vdcNetworkStatsService.updateStats();
-                vdcNetworkStatsService.createStatsTimer();
+                    vdcNetworkStatsService.updateStats();
+                    vdcNetworkStatsService.updateStudyLists();
+                    vdcNetworkStatsService.createStatsTimer();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            VDCNetworkStatsServiceLocal vdcNetworkStatsService = null;
+            VDCNetworkServiceLocal vdcNetworkService = null;//just do stats timer
+            try {
+                vdcNetworkService = (VDCNetworkServiceLocal) new InitialContext().lookup("java:comp/env/vdcNetworkService");
+                if (vdcNetworkService.defaultTransactionReadOnly()) {
+                    System.out.println("Network is in read-only mode; skipping timer initialization.");
+                } else {
+                    vdcNetworkStatsService.updateStudyLists();
+                    vdcNetworkStatsService.createStatsTimer();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-                      
     }
+
   public void attributeAdded(ServletRequestAttributeEvent event) {
       Object value = event.getValue();
         if (value != null) {

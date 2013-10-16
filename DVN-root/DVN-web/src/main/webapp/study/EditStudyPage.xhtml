@@ -614,7 +614,9 @@ function dataCitationWidgetSync(){
         jQuery(span_date).text(inputProdDateDisplay);
     }
     
-    // Display one or the other date
+    // Display one or the other date in Year only format
+    // will need to be updated if used by other fields 
+    // or if date format changes
     var widgetTwoFieldBind = function( inputField, primaryField, secondaryField, spanField, spanDefault ) { 
         return function() { 
             jQuery(inputField).val(jQuery(this).val()); 

@@ -40,7 +40,7 @@ my @CONFIG_VARIABLES = ();
 my %CONFIG_DEFAULTS = 
     (       
 #	    'HOST_DNS_ADDRESS', 'localhost',
-	    'GLASSFISH_DIRECTORY', '/Applications/NetBeans/glassfish-3.1.1',
+	    'GLASSFISH_DIRECTORY', '/Applications/NetBeans/glassfish-3.1.2.2',
 
 	    'POSTGRES_SERVER',  'localhost',
 	    'POSTGRES_PORT',    5432,
@@ -361,13 +361,13 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 
     # 4b. CHECK IF THE SQL FILES ARE IN PLACE: 
 
-    $SQL_FILE_DIRECTORY = "../../../src/DVN-EJB/src/conf";
+    $SQL_FILE_DIRECTORY = "../../../sql";
     $SQL_REFERENCE_DATA_FILE = "referenceData.sql"; 
     $SQL_REFERENCE_DATA = $SQL_FILE_DIRECTORY . "/" . $SQL_REFERENCE_DATA_FILE;
 
     unless ( -f $SQL_REFERENCE_DATA )
     {
-	print "\nWARNING: Can't find .sql files in ../../../src/DVN-EJB/src/conf!\n"; 
+	print "\nWARNING: Can't find .sql files in $SQL_FILE_DIRECTORY!\n";
 	print "(are you running the installer in the right directory?)\n";
     
 	exit 0; 

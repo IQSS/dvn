@@ -2,113 +2,93 @@
 DVN Developers Guide
 ====================================
 
-This is the updated guide for setting up a developers environment for
-DVN version 3.6 (released September 2013).
-
-There are three main sections: 
-
-| **Build Environment (Configuring NetBeans)**
-| **Application Environment (Configuring Glassfish)**
-| **Developing with Git (How to commit changes, create branches, etc.)**
+Please note: This guide was updated in October 2013 to reflex the switch
+from Ant to Maven in DVN 3.6.1.
 
 Build Environment (Configuring NetBeans)
-++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++
 
 This chapter describes setting up the build environment that you will
 need to build the DVN application from source code. 
 
-Quick Checklist
-===============
-
-(the individual tasks are explained in detail in the sections below).
-
-#. Install Netbeans and Glassfish
-#. Install JUnit (if you haven't already)
-#. Check out new copy of the DVN source from GitHub
-#. Install IceFaces 2.0 NetBeans plugins
-#. Select Glassfish server
-#. Configure NetBeans Ant libraries
-#. Configure DVN-web project libraries
-#. Open the projects
-#. Build the application
-
-Install Netbeans and Glassfish
+Install NetBeans and GlassFish
 ==============================
 
-As of DVN version 3.1, the development environment requires NetBeans
-7+ and Glassfish 3.1.2+ (but not Glassfish 4!). Most of the current
-(as of September 2013, DVN v.3.6) developers are using NetBeans
-7.2.1. NetBeans project is currently offering an installer bundle that
-also contains a supported version of Glassfish (see below). If they
-choose to discontinue the bundle, you will have to download and
-install the 2 packages separately. Note that you can have multiple
-versions of both NetBeans and Glassfish on your system.
+As of DVN version 3.6.1 and the switch to Maven, a DVN development
+environment should not have any dependency on a particular IDE, but use
+of NetBeans 7.2.1 is encouraged because it's the version used by most of
+the current developers (on Mac OS X).
 
-We strongly recommend that you run both installs **as a regular user.** There's no reason to run your development environment as root.
+NetBeans project is currently offering an installer bundle that contains
+both NetBeans 7.2.1 and a supported version of GlassFish (3.1.2.2). If
+they choose to discontinue the bundle, you will have to download and
+install the two packages separately. Note that you can have multiple
+versions of both NetBeans and GlassFish on your system.
 
-| **Install NetBeans bundle:**
+Please note: While we intend to investigate NetBeans 7.4 and GlassFish
+4, these are not yet known to provide a suitable development
+environment.
 
-Download NetBeans 7.2.1 Java EE + Glassfish Open Source Edition 3.1.2.2
-bundle from
-`https://netbeans.org/downloads/7.2.1/index.html <https://netbeans.org/downloads/7.2.1/index.html/>`__.
+We strongly recommend that you run both installs **as a regular user**. There's no reason to run your development environment as root.
 
-For MacOS, you will download a .dmg disk image that will open
+Install NetBeans bundle
+-----------------------
+
+Download NetBeans 7.2.1 Java EE + GlassFish Open Source Edition 3.1.2.2
+bundle from https://netbeans.org/downloads/7.2.1
+
+For Mac OS X, you will download a .dmg disk image that will open
 automatically and start the installer for you. Choose the typical
-installation.
+installation but be sure to install GlassFish and JUnit when prompted.
 
-Note that you don’t have to uninstall your existing NetBeans version.
-You can have as many versions installed as you need in parallel. So it
-is very easy to preserve your current NB6 development environment.
+Note that you don't have to uninstall your existing NetBeans version.
+You can have as many versions installed as you need in parallel.
 
-When you start your new NetBeans 7 for the first time, you will be
-asked if you want to import the settings from the previous
-installations. If you have an existing, pre-DVN 3.\* development
-environment on your system,  **answer “no” -- we want to create the new
-configuration from scratch.**
+When you start NetBeans 7.2.1 for the first time, you will be asked if
+you want to import the settings from the previous installations. If you
+have an existing, pre-DVN 3.\* development environment on your system, 
+**answer "no" -- we want to create the new configuration from scratch.**
 
-| **[If you have to] Install Glassfish 3.1.2**
+[If you have to] Install GlassFish 3.1.2.2
+------------------------------------------
 
-We **strongly** recommend that you install GlassFish Server 3.1.2,
-Open Source Edition, **Full Platform**. If you have to install it separately from Netbeans, it can be obtained from:
+We **strongly** recommend that you install GlassFish Server 3.1.2.2,
+Open Source Edition, **Full Platform**. If you have to install it
+separately from NetBeans, it can be obtained from
+http://glassfish.java.net/downloads/3.1.2-final.html
 
-`http://glassfish.java.net/downloads/3.1.2-final.html <http://glassfish.java.net/downloads/3.1.2-final.html>`__
-
-The page above contains a link to the installation instructions; but the
+The page above contains a link to the installation instructions, but the
 process is very straightforward - just download and run the installer.
 
-It is strongly recommended that you use Sun/Oracle Java JDK version
-1.6. Please make sure you have the newest (or at least, recent) build
-number available for your platform. (As of writing this, the latest
-build number available is 51. On MacOS X, since the JDK is part of OS
-distribution, the version currently provided by Apple should be
-sufficient). In other words, we do not recommend building the DVN under JDK 1.7.
+It is strongly recommended that you use Sun/Oracle Java JDK version 1.6.
+Please make sure you have the newest (or at least, recent) build number
+available for your platform. (As of writing this, the latest build
+number available is 51. On Mac OS X 10.8, since the JDK can be installed
+as part of OS distribution, the version currently provided by Apple
+should be sufficient). In other words, we do not recommend building DVN
+under JDK 1.7 until the ticket regarding the move from Java 6 to 7 has
+been closed: https://redmine.hmdc.harvard.edu/issues/3306
 
-Note that you don't have to uninstall older versions of Glassfish you may still have around. It's ok to have multiple versions
-installed. But make sure you have the 3.1.2 installation selected as the
-active server in NetBeans (see section 4 of this guide).
+Note that you don't have to uninstall older versions of GlassFish you
+may still have around. It's ok to have multiple versions installed. But
+make sure you have the 3.1.2.2 installation selected as the active
+server in NetBeans.
 
 **Important:** During the installation, leave the admin password fields
-blank. This is not a security risk, since out of the box, Glassfish
-3.1.2 will only be accepting admin connections on the localhost
-interface. Choosing password at this stage however will complicate the
-installation process unnecessarily. Since this is a development
+blank. This is not a security risk since out of the box, GlassFish
+3.1.2.2 will only be accepting admin connections on the localhost
+interface. Choosing a password at this stage, however, will complicate
+the installation process unnecessarily. Since this is a development
 system, you can probably keep this configuration unchanged (admin on
 localhost only). If you need to be able to connect to the admin console
 remotely, please see the note in the Appendix section of the main
 Installers Guide.
 
-Installing JUnit (if you haven't already)
-=========================================
+Install JUnit (if you haven't already)
+--------------------------------------
 
-Depending on how you installed NetBeans, you migtht already have JUnit
-installed.
-
-In the same "Resolve Reference Problems dialog" if you see problems with
-junit or junit\_4, click Resolve and follow the prompts to install JUnit
-from the NetBeans plugin portal.
-
-GlassFish to add the server
-
+Depending on how you installed NetBeans, you might already have JUnit
+installed. JUnit can be installed from Tools -> Plugins.
 
 Check out a new copy of the DVN source tree
 ===========================================
@@ -116,15 +96,13 @@ Check out a new copy of the DVN source tree
 Create a GitHub account [if you don't have one already]
 -------------------------------------------------------
 
-Sign up at `https://github.com <https://github.com>`__
+Sign up at https://github.com
 
 Please note that primary audience of this guide (for now) is people who
-have push access to
-`https://github.com/IQSS/dvn <https://github.com/IQSS/dvn>`__ . If you
-do not have push access and want to contribute (and we hope you do!)
-please fork the repo per
-`https://help.github.com/articles/fork-a-repo <https://help.github.com/articles/fork-a-repo>`__
-and make adjustments below when cloning the repo.
+have push access to https://github.com/IQSS/dvn . If you do not have
+push access and want to contribute (and we hope you do!) please fork the
+repo per https://help.github.com/articles/fork-a-repo and make
+adjustments below when cloning the repo.
 
 Set up an ssh keypair (if you haven't already)
 -----------------------------------------------------
@@ -132,10 +110,9 @@ Set up an ssh keypair (if you haven't already)
 You *can* use git with passwords over HTTPS but it's much nicer to set
 up SSH keys.
 
-`https://github.com/settings/ssh <https://github.com/settings/ssh>`__ is
-the place to manage the ssh keys GitHub knows about for you. That page
-also links to a nice howto:
-`https://help.github.com/articles/generating-ssh-keys <https://help.github.com/articles/generating-ssh-keys>`__
+https://github.com/settings/ssh is the place to manage the ssh keys
+GitHub knows about for you. That page also links to a nice howto:
+https://help.github.com/articles/generating-ssh-keys
 
 From the terminal, ``ssh-keygen`` will create new ssh keys for you:
 
@@ -146,8 +123,7 @@ From the terminal, ``ssh-keygen`` will create new ssh keys for you:
       and make commits as you! Ideally, you'll store your ssh keys on an
       encrypted volume and protect your private key with a password when
       prompted for one by ``ssh-keygen``. See also "Why do passphrases
-      matter" at
-      `https://help.github.com/articles/generating-ssh-keys <https://help.github.com/articles/generating-ssh-keys>`__
+      matter" at https://help.github.com/articles/generating-ssh-keys
 
 -  public key: ``~/.ssh/id_rsa.pub``
 
@@ -155,16 +131,16 @@ After you've created your ssh keys, add the public key to your GitHub
 account.
 
 Clone the repo
------------------------------
+--------------
 
 Please see `branches <#branches>`__ for detail, but in short, the
 "develop" branch is where new commits go. Below we will assume you want
 to make commits to "develop".
 
-In NetBeans 7.1.1 or higher, click Team, then Git, then Clone.
+In NetBeans, click Team, then Git, then Clone.
 
 Remote Repository
-*************************************
+*****************
 
 -  Repository URL: ``github.com:IQSS/dvn.git``
 -  Username: ``git``
@@ -176,170 +152,70 @@ Remote Repository
 
 Click Next.
 
+If you are prompted about the authenticity of github.com's RSA key fingerprint, answer "Yes" to continue connecting. GitHub's RSA key fingerprint is listed at https://help.github.com/articles/generating-ssh-keys
+
 Remote Branches
-*******************************
+***************
 
-Under Select Remote Branches check both of these:
+Under Select Remote Branches check the "develop" branch.
 
--  ``develop*``
--  ``master*``
+Please note: You may see other branches listed, such as "master", but
+there is no need to check them out at this time.
 
 Click Next.
 
 Destination Directory
-*******************************************
+*********************
+
+The defaults should be fine:
 
 -  Parent Directory: ``/Users/[YOUR_USERNAME]/NetBeansProjects``
 -  Clone Name: ``dvn``
 -  Checkout Branch: ``develop*``
+-  Remote Name: ``origin``
 
 Click Finish.
 
-You should see a message that the clone has completed and you will
-probably be asked if you'd like to open a project. Click "Close" for now
-and don't open a project.
+You should see a message that 3 projects were cloned. Click "Open
+Project".
 
-Install IceFaces 2.0 plugin for NetBeans
-========================================
+Open Projects
+=============
 
-Download
-`http://dvn.iq.harvard.edu/dev/icefaces/ICEfaces-2.0.2-Netbeans-7.0.zip
-<http://dvn.iq.harvard.edu/dev/icefaces/ICEfaces-2.0.2-Netbeans-7.0.zip>`__
-and unzip it. Then click Tools, Plugins, Downloaded, Add Plugins, and
-select all three nbm files.
+In the "Open Projects" dialog you should see three projects, DVN-lockss,
+DVN-root, and DVN-web (a child of DVN-root).
 
-Afterwards you'll need to fix one of the plugins:
+Highlight DVN-root and check "Open Required" (to include DVN-web) and click "Open".
 
--  Click Tools, then Ant Libraries
--  Click "ICEfaces Components (2.0.2)"
--  Click the red library
-   (``nbinst://org.netbeans.libs.commons_logging/modules/ext/commons-logging-1.1.jar``)
-   and click Remove
--  Click "Add JAR/folder" and add
-   ``~/NetBeansProjects/dvn/lib/dvn-lib-WEB/commons-logging.jar`` (to
-   replace the library you removed)
+At this point, you should have two (and only two) projects open in
+NetBeans: DVN-root and DVN-web. If you hover over the projects, it's
+normal at this point to see warnings such as "Some dependency artifacts
+are not in the local repository" or "Cannot find application server:
+GlassFish Server 3+". We'll correct these next.
 
-Select Glassfish server
-=======================
+Build for the first time
+========================
 
-When prompted to choose from the list of available Glassfish servers,
-make sure you choose the version 3.1.2 - which may not be the the default version that came
-with the NetBeans bundle. 
+In NetBeans, right-click DVN-root and click "Build". This will download
+many dependencies via Maven and may take several minutes.
 
-Configure NetBeans Ant libraries
-================================
+When this process has completed, right-click DVN-web and click "Build".
+You should expect to see "BUILD SUCCESS". This means you have
+successfully built the .war application package, but do not attempt to
+deploy the application just yet! We need to configure the server
+environment first, which consists of GlassFish and PostgreSQL
 
-Create the following 5 custom libraries using  ``Tools -> Libraries -> New Library``:
-
-| ``dvn-lib-COMMON``
-| ``dvn-lib-EJB``
-| ``dvn-lib-WEB``
-| ``dvn-lib-NETWORKDATA``
-| ``dvn-lib-NETWORKDATA-EXTRA``
-
-For each of these, simply select all the jar files from the directories respectively.
-
-| ``lib/dvn-lib-COMMON``
-| ``lib/dvn-lib-EJB``
-| ``lib/dvn-lib-WEB``
-| ``lib/dvn-lib-NetworkData``
-| ``lib/dvn-lib-NetworkData-EXTRA``
-
-Open the DVN-web and DVN-ingest projects
-========================================
-
-From the command line (show below) or otherwise, copy the
-``project.properties`` and ``project.xml`` files into place for both the
-"DVN-web" and "DVN-ingest" projects:
-
-.. code-block:: guess
-
-    murphy:~ pdurbin$ cd ~/NetBeansProjects/dvn/src/DVN-web/nbproject
-    murphy:nbproject pdurbin$ cp project.properties.DIST project.properties
-    murphy:nbproject pdurbin$ cp project.xml.DIST project.xml
-    murphy:nbproject pdurbin$ cd ~
-    murphy:~ pdurbin$ cd ~/NetBeansProjects/dvn/src/DVN-ingest/nbproject
-    murphy:nbproject pdurbin$ cp project.properties.DIST project.properties
-    murphy:nbproject pdurbin$ cp project.xml.DIST project.xml
-    murphy:nbproject pdurbin$ 
-
-Click Open Project. In NetBeansProjects select dvn, the src, then
-DVN-web and Open Project.
-
-Expect to see a dialog about reference problems. You can close this
-dialog for now.
-
-You may also see a dialog about missing server if you have not added a
-GlassFish server in NetBeans yet.
-
-Under Projects on the left you should now see DVN-web. Right-click it
-and click Open Required Projects. This should also open
-DVN-ingest. These two projects are the only ones you need open for a
-build. Other Netbeans projects found in the DVN source tree (DVN-EAR,
-DVN-EJB, and DVN-lockss) are there for legacy/historical reasons.
-
-**Note that the project will open with errors!** That's because we
-need to point Netbeans to the locations of some of the library
-dependencies on your system; we will do this in the next step. **Just
-ignore** the error warning for now (**click Close** in the popup in the popup window). 
-
-Configure DVN-web project libraries
-===================================
-
-Please note: if you have any trouble completing this step, you might
-need to close Netbeans and re-open it.
-
-Under Projects, right-click DVN-web and choose "Resolve Reference
-Problems". You should see the following jars listed:
-
--  auto-depends.jar
--  common-util.jar
--  config-api.jar
--  grizzly-config.jar
--  internal-api.jar
-
-Highlight one of these jars and click Resolve. Then browse for the jar
-in the glassfish3/glassfish/modules directory of your GlassFish
-installation. This *should* resolve the problem for all five jars above,
-but if it doesn't, the rest of the jars can be found in the same
-location.
-
-Build the application
-=====================
-
-At this point, under Projects, the DVN-web icon should no longer
-indicate any errors and you can try a build. Hit F11 or click Run, then
-Build Project. 
-
-If you get "BUILD SUCCESSFUL", it means you have successfully built the .war application package. 
-But do not attempt to deploy the application just yet! We need to configure
-the server environment first. This process is described in the next
-chapter.
-
-Application Environment (Configuring Glassfish)
-+++++++++++++++++++++++++++++++++++++++++++++++
+Application Environment (Configuring GlassFish and PostgreSQL)
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 In this chapter, we describe the process of setting up your own local
-DVN server. You will be using it to deploy and test the DVN application,
-once you compile and build it as described in Chapter I.
+application environment into which you will deploy the DVN application. 
 
-.. _automated-installer-new-in-v-3-0:
+Install PostgreSQL database server 
+==================================
 
-Automated Installer
-===================
-
-An automated installer script is now provided. It will perform various
-configuration tasks and deploy the DVN application (the .war file that
-you built per the instructions in the previous chapter).
-
-Among other things, the installer will create a Postgres database for the DVN application. Please make sure to 
-
-Install Postgres database server 
---------------------------------
-
-For the MacOS X (our default development OS), you can get the
-installer here:
-`http://www.postgresql.org/download/macosx <http://www.postgresql.org/download/macosx>`__.
+For Mac OS X (our default development OS), you can get the installer
+from http://www.postgresql.org/download/macosx
 
 The installation is very straightforward; just make sure you answer
 "yes" when asked if Postgres should be accepting network connections.
@@ -362,17 +238,22 @@ cautious, you may use instead:
 
 Restart Postgres for the changes to take effect!
 
-[TODO: right psql in the PATH?]
+Please note: if you have any problems with the PostgreSQL setup, please
+ensure the right ``psql`` is in your ``$PATH``.
 
 You can check the instructions in the main Installers Guide for more info:
 :ref:`PostgreSQL section<postgresql>`;
 but the above should be sufficient to get your environment set up.
 
-The installer is supplied with the DVN source, in the tools directory of the SVN tree. You must run it as root (for direct access to
-Postgres).
+Run the install-dev script
+==========================
+
+The installer is supplied with the DVN source in the tools directory.
+You must run it as root (for direct access to Postgres).
 
 | To run the script:
-| ``cd <YOUR SVN ROOT>/trunk/tools/installer/dvninstall``
+| ``sudo su -``
+| ``cd /Users/[YOUR_USERNAME]/NetBeansProjects/dvn/tools/installer/dvninstall``
 
 | then execute
 | ``./install-dev``
@@ -381,13 +262,22 @@ When prompted for various settings, you will likely be able to accept
 all the default values (in a development environment, they are for the
 most part the same for everybody).
 
-Note: If the script above refuses to run, you may have to manually
-turn the executable mode on:
+Testing login
+=============
 
-``chmod +x install-dev``
+Once the ``install-dev`` script has completed successfully, you will
+have a fully functional Dataverse Network server. After making sure
+GlassFish has been started per the output of the script, you should be
+able to log in DVN with these credentials:
 
-Once this process is completed, you will have a fully functional
-Dataverse Network server.
+- http://localhost:8080/dvn/
+- username: networkAdmin
+- password: networkAdmin
+
+Please note that when deploying from NetBeans for the first time, you
+will be prompted to select a deployment server. From the drop down,
+select "GlassFish Server 3.1.2", click "Remember in Current IDE Session"
+and click "OK". 
 
 Developing with Git
 ++++++++++++++++
@@ -423,15 +313,17 @@ Push
 
 **Pushing your commits to GitHub**
 
-After making your :ref:`commit <commit>`, push it to GitHub by clicking Team -> Remote -> Push, then Next (to use your configured remote
+After making your :ref:`commit <commit>`, push it to GitHub by clicking
+Team -> Remote -> Push, then Next (to use your configured remote
 repository), then checking **develop** and Finish.
 
 Your commit should now appear on GitHub in the develop branch:
-`https://github.com/IQSS/dvn/commits/develop <https://github.com/IQSS/dvn/commits/develop>`__
+https://github.com/IQSS/dvn/commits/develop
 
 Your commit should **not** appear in the master branch on GitHub:
-`https://github.com/IQSS/dvn/commits/master
-<https://github.com/IQSS/dvn/commits/master>`__. Not yet anyway. Remember, we only merge commits into master when we are ready to release.
+https://github.com/IQSS/dvn/commits/master . Not yet anyway. We only
+merge commits into master when we are ready to release.  Please see the
+`branches <#branches>`__ section for for detail.
 
 
 Release
@@ -486,8 +378,6 @@ On dvn-build:
 .. code-block:: guess
 
     cd tools/installer
-    mkdir dvninstall/config
-    mkdir dvninstall/appdeploy/dist
     make installer
 
 Rename the resulting "dvninstall.zip" to include the release number
@@ -756,9 +646,6 @@ root of the tree should say ``dvn [master]`` and you should see two
 branches under Branches -> Local. **master** should be in bold and
 develop should not.
 
-FIXME: explain how to merge commits into master for a final release (and
-how to tag the release)
-
 Tips
 =========
 
@@ -785,23 +672,8 @@ After the build is working again, you can simply do a pull as normal.
 Errors
 ===========
 
-Unable to open DVN Web Project
--------------------------------------------
-
-If you are seeing errors such as:
-
-"Unable to find the sources roots for the project DVN-web"
-
-or
-
-"DVN-web: Cannot find the Web Pages folder. Open the project properties and in the Sources category browse the correct Web Pages folder"
-
-you probably have lost your project.properties and project.xml files.
-The :ref:`build <build>` page has instructions on putting them back
-into place.
-
 Duplicate class
---------------------------
+---------------
 
 The error "duplicate class" can result whenever you resolve a merge
 conflict in git.
@@ -814,6 +686,4 @@ this:
     cd ~/Library/Caches/NetBeans
     mv 7.2.1 7.2.1.moved
 
-According to
-`https://netbeans.org/bugzilla/show_bug.cgi?id=197983 <https://netbeans.org/bugzilla/show_bug.cgi?id=197983>`__
-this might be fixed in NetBeans 7.3.
+According to https://netbeans.org/bugzilla/show_bug.cgi?id=197983 this might be fixed in NetBeans 7.3.

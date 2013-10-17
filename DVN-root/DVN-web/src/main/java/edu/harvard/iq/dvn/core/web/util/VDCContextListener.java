@@ -114,6 +114,7 @@ public class VDCContextListener implements ServletContextListener,ServletRequest
             VDCNetworkServiceLocal vdcNetworkService = null;//just do stats timer
             try {
                 vdcNetworkService = (VDCNetworkServiceLocal) new InitialContext().lookup("java:comp/env/vdcNetworkService");
+                vdcNetworkStatsService = (VDCNetworkStatsServiceLocal) new InitialContext().lookup("java:comp/env/vdcNetworkStatsService");
                 if (vdcNetworkService.defaultTransactionReadOnly()) {
                     System.out.println("Network is in read-only mode; skipping timer initialization.");
                 } else {

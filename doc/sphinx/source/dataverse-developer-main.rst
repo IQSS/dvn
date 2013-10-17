@@ -19,11 +19,11 @@ environment should not have any dependency on a particular IDE, but use
 of NetBeans 7.2.1 is encouraged because it's the version used by most of
 the current developers (on Mac OS X).
 
-NetBeans project is currently offering an installer bundle that contains
-both NetBeans 7.2.1 and a supported version of GlassFish (3.1.2.2). If
-they choose to discontinue the bundle, you will have to download and
-install the two packages separately. Note that you can have multiple
-versions of both NetBeans and GlassFish on your system.
+The NetBeans project is currently offering an installer bundle that
+contains both NetBeans 7.2.1 and a supported version of GlassFish
+(3.1.2.2). If they choose to discontinue the bundle, you will have to
+download and install the two packages separately. Note that you can have
+multiple versions of both NetBeans and GlassFish on your system.
 
 Please note: While we intend to investigate NetBeans 7.4 and GlassFish
 4, these are not yet known to provide a suitable development
@@ -55,19 +55,18 @@ have an existing, pre-DVN 3.\* development environment on your system, 
 We **strongly** recommend that you install GlassFish Server 3.1.2.2,
 Open Source Edition, **Full Platform**. If you have to install it
 separately from NetBeans, it can be obtained from
-http://glassfish.java.net/downloads/3.1.2-final.html
+http://glassfish.java.net/downloads/3.1.2.2-final.html
 
 The page above contains a link to the installation instructions, but the
 process is very straightforward - just download and run the installer.
 
 It is strongly recommended that you use Sun/Oracle Java JDK version 1.6.
 Please make sure you have the newest (or at least, recent) build number
-available for your platform. (As of writing this, the latest build
-number available is 51. On Mac OS X 10.8, since the JDK can be installed
-as part of OS distribution, the version currently provided by Apple
-should be sufficient). In other words, we do not recommend building DVN
-under JDK 1.7 until the ticket regarding the move from Java 6 to 7 has
-been closed: https://redmine.hmdc.harvard.edu/issues/3306
+available for your platform. (On Mac OS X 10.8, since the JDK can be
+installed as part of OS distribution, the version currently provided by
+Apple should be sufficient). In other words, we do not recommend
+building DVN under JDK 1.7 until the ticket regarding the move from Java
+6 to 7 has been closed: https://redmine.hmdc.harvard.edu/issues/3306
 
 Note that you don't have to uninstall older versions of GlassFish you
 may still have around. It's ok to have multiple versions installed. But

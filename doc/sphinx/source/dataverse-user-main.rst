@@ -520,6 +520,12 @@ consist of the following:
    owned by that dataverse. In that case, the conditions are inherited
    by the study and you must accept these conditions before downloading
    files or analyzing the data.
+   
+Study metadata can be downloaded in XML format using a link at the bottom 
+of the study Cataloging Information tab:  `DDI (without variables) <https://thedata.harvard.edu/dvn/api/metadata/91148?partialExclude=codeBook/dataDscr>`__
+/ `DDI (full) <https://thedata.harvard.edu/dvn/api/metadata/91148>`__. 
+These links appear for released studies whose metadata has been exported. 
+Studies are typically exported on a daily basis.
 
 **List of Study Files**
 
@@ -1891,7 +1897,7 @@ Navigate to Create User Account from the Options page:
 To create an account for a new user in your Network:
 
 #. Complete the account information page.
-    Enter values in all required fields.
+    Enter values in all required fields. Note: an email address can also be used as a username
 #. Click Create Account to save your entries.
 #. Go to the Permissions tab on the Options page to give the user
    Contributor, Curator or Admin access to your dataverse.
@@ -1905,7 +1911,7 @@ Navigate to Create User Account from the Options page:
 To create an account for a new user in your Dataverse:
 
 #. Complete the account information page.
-    Enter values in all required fields.
+    Enter values in all required fields. Note: an email address can also be used as a username
 #. Click Create Account to save your entries.
 #. Go to the Permissions tab on the Options page to give the user
    Contributor, Curator or Admin access to your dataverse.
@@ -2084,10 +2090,17 @@ Enter at minimum a study title and click Save. Your draft study is now
 created. Add additional cataloging information and upload files as
 needed. Release the study when ready to make it viewable by others.
 
+**Data Citation widget**
+
+At the top of the edit study form, there is a data citation widget that 
+allows a user to quickly enter fields that appear in the data citation, 
+ie. title, author, date, distributor Otherwise, the information can be 
+entered as the fields appear in the data entry form.
+
 See the information below for more details and recommendations for
 creating a study.
 
-The steps to creating a study are:
+**Steps to Create a Study**
 
 #. Enter Cataloging Information, including an abstract of the study.
    Set Terms of Use for the study in the Cataloging fields, if you choose.
@@ -3706,7 +3719,8 @@ Account page from the Options page:
 
 ``Network home page > Options page > Permissions tab > Users subtab > Create User link > Create Account page``
 
-Complete the required information denoted by the red asterisk and save.
+Complete the required information denoted by the red asterisk and save. 
+Note: an email address can also be used as a username.
 
 
 Manage Users

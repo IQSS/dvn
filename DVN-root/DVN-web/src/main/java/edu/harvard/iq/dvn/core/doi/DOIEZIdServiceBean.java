@@ -70,15 +70,15 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
         String retString = "";
         String identifier = getIdentifierFromStudy(studyIn);
         HashMap metadata = getMetadataFromStudyForCreateIndicator(studyIn);
-        metadata.put("_status", "reserved");
+        metadata.put("_status", "reserved");;
+        logger.log(Level.INFO, "metadata author: " + metadata.get("datacite.creator"));
+        logger.log(Level.INFO, "metadata title: " + metadata.get("datacite.title"));
+        logger.log(Level.INFO, "metadata publisher: " + metadata.get("datacite.publisher"));
         try {
             retString = ezidService.createIdentifier(identifier, metadata);
-            logger.log(Level.INFO, "create identifier targetUrl: " + metadata.get("_target"));
             logger.log(Level.INFO, "create DOI identifier retString : " + retString);
         } catch (EZIDException e) {
-            logger.log(Level.INFO, "targetUrl: " + metadata.get("_target"));
             logger.log(Level.INFO, "Identifier not created: create failed");
-            logger.log(Level.INFO, "Exception getCause.getMessage: " + e.getCause().getMessage());
             logger.log(Level.INFO, "String " + e.toString());
             logger.log(Level.INFO, "localized message " + e.getLocalizedMessage());
             logger.log(Level.INFO, "cause " + e.getCause());

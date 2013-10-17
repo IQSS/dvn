@@ -2724,20 +2724,36 @@ User Restricted Study Settings section on the study permissions page.
 
 Last, they would need access to the file. If the file is public,
 everyone has access. If the file is restricted, then the user must be
-granted access. There are two ways a file can be restricted.
+granted access. 
+
+**There are two ways a file can be restricted.**
 
 First, on the dataverse permissions page, all files in the dataverse
 could be restricted using Restrict ALL files in this Dataverse. To
 enable user access in this case, add the username to the Restricted File
 User Access section on this page.
 
-Second, an individual file can be restricted at the study level on the
-study permissions page. If this is the case, the file will be displayed
+Second, individual files can be restricted at the study level on the
+study permissions page in the "Files" subtab. These can be restricted on a file-by-file basis. 
+If this is the case, the file(s) will be displayed
 as restricted in the Individual File Permission Settings section. To
 enable user access to a particular file in this case, check the file to
 grant access to, type the username in the Restricted File User Access
 section, click update so their name appears next to the file, then click
 save.
+
+Another option at the study level when restricting files is to allow users the ability to 
+request access to restricted files. This can be done in the study Permissions page in the "Files" subtab where 
+you must first select the files you want to restrict, click on "update permissions" to restrict, and then under 
+"File Permission Settings" check off the box to "Allow users to request access..." and click on Save at the bottom 
+of the page. The contact(s) set for the Dataverse (``Dataverse Options > Settings > General``) will get an email 
+notification each time a user sends a request. The request access email will displays a list of the file(s) 
+requested and a DOI or Handle for the study. To approve or deny access to these file(s) go back to the study 
+permissions page under the "Files" subtab and Approve or Deny the specific files that were requested. If you 
+choose to deny any files you will have the option to add a reason why. Be sure to remember to click on the "update" 
+button and then select Save so that your selections are saved and an email is sent to the requestor granting or 
+denying them access. The email then sent to the requestor will list out which files were approved with a DOI or 
+Handle URL, and any files which were denied along with any reasons that may have been provided.
 
 Finally, a somewhat unusual configuration could exist where both
 Restrict all files in a dataverse is set and an individual file is
@@ -2745,7 +2761,6 @@ restricted. In this case access would need to be granted in both places
 -think of it as two locks. This last situation is an artifact of
 integrating these two features and will be simplified in a future
 release.
-
 
 Network Administration
 +++++++++++++++++++++++

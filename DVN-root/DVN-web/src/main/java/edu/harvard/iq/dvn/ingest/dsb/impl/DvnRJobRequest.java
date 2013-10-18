@@ -101,13 +101,13 @@ public class DvnRJobRequest {
         categoryValueOrders=categoryOrders;
         zeligModelSpec = zp;
         
-        dbgLog.info("***** DvnRJobRequest: within the default constructor : initial *****");
-        dbgLog.info("DvnRJobRequest: variables="+dataVariablesForRequest);
-        dbgLog.info("DvnRJobRequest: map="+listParametersForRequest);
-        dbgLog.info("DvnRJobRequest: value table="+valueTables);
-        dbgLog.info("DvnRJobRequest: recodeSchema"+recodeSchema);
-        dbgLog.info("DvnRJobRequest: category value orders="+categoryValueOrders);
-        dbgLog.info("DvnRJobRequest: model spec="+zeligModelSpec);
+        dbgLog.fine("***** DvnRJobRequest: within the default constructor : initial *****");
+        dbgLog.fine("DvnRJobRequest: variables="+dataVariablesForRequest);
+        dbgLog.fine("DvnRJobRequest: map="+listParametersForRequest);
+        dbgLog.fine("DvnRJobRequest: value table="+valueTables);
+        dbgLog.fine("DvnRJobRequest: recodeSchema"+recodeSchema);
+        dbgLog.fine("DvnRJobRequest: category value orders="+categoryValueOrders);
+        dbgLog.fine("DvnRJobRequest: model spec="+zeligModelSpec);
         
         
         checkVariableNames();
@@ -121,7 +121,7 @@ public class DvnRJobRequest {
                 }
             }
         }
-        dbgLog.info("***** DvnRJobRequest: within the default constructor ends here *****");
+        dbgLog.fine("***** DvnRJobRequest: within the default constructor ends here *****");
     }
 
     public DvnRJobRequest(

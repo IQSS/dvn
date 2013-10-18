@@ -279,10 +279,10 @@ public class DvnRforeignFileConversionServiceImpl{
              * R "logical" vectors.
              */
             
-            dbgLog.info("raw variable type="+sro.getVariableTypesWithBoolean());
+            dbgLog.fine("raw variable type="+sro.getVariableTypesWithBoolean());
             c.assign("vartyp", new REXPInteger(sro.getVariableTypesWithBoolean()));
             String [] tmpt = c.eval("vartyp").asStrings();
-            dbgLog.info("vartyp length="+ tmpt.length + "\t " +
+            dbgLog.fine("vartyp length="+ tmpt.length + "\t " +
                 StringUtils.join(tmpt,","));
         
             // variable format (date/time)
@@ -350,11 +350,11 @@ public class DvnRforeignFileConversionServiceImpl{
             // colClassesx -> Arrays.deepToString((new REXPInteger(sro.getVariableTypes())).asStrings())
             // varFormat -> Arrays.deepToString((new REXPString(getValueSet(tmpFmt, tmpFmt.keySet().toArray(new String[tmpFmt.keySet().size()])))).asStrings())
 
-            dbgLog.info("<<<<<<<<<<<<<<<<<<<<<<<<<");
-            dbgLog.info("col.names = " + Arrays.deepToString((new REXPString(jvnames)).asStrings()));
-            dbgLog.info("colClassesx = " + Arrays.deepToString((new REXPInteger(sro.getVariableTypesWithBoolean())).asStrings()));
-            dbgLog.info("varFormat = " + Arrays.deepToString((new REXPString(getValueSet(tmpFmt, tmpFmt.keySet().toArray(new String[tmpFmt.keySet().size()])))).asStrings()));
-            dbgLog.info(">>>>>>>>>>>>>>>>>>>>>>>>>");
+            dbgLog.fine("<<<<<<<<<<<<<<<<<<<<<<<<<");
+            dbgLog.fine("col.names = " + Arrays.deepToString((new REXPString(jvnames)).asStrings()));
+            dbgLog.fine("colClassesx = " + Arrays.deepToString((new REXPInteger(sro.getVariableTypesWithBoolean())).asStrings()));
+            dbgLog.fine("varFormat = " + Arrays.deepToString((new REXPString(getValueSet(tmpFmt, tmpFmt.keySet().toArray(new String[tmpFmt.keySet().size()])))).asStrings()));
+            dbgLog.fine(">>>>>>>>>>>>>>>>>>>>>>>>>");
             
             String readtableline = "x<-read.table141vdc(file='"+tempFileName+
                 "', col.names=vnames, colClassesx=vartyp, varFormat=varFmt )";
@@ -1067,7 +1067,7 @@ if (tmpv.length > 0){
         dbgLog.fine("targetFilename="+targetFilename);
         int fileSize = 0;
         try {
-            String fileSizeLine = "round(file.info('"+targetFilename+"')$size)";
+            String fileSizeLine = "round(file.fine('"+targetFilename+"')$size)";
             fileSize = c.eval(fileSizeLine).asInteger();
         } catch (RserveException rse) {
             rse.printStackTrace();

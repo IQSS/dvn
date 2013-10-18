@@ -55,8 +55,6 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
         ezidService = new EZIDService (baseURLString); 
         USERNAME  = System.getProperty("doi.username");
         PASSWORD  = System.getProperty("doi.password");
-        logger.log(Level.INFO, "create bean username: " + USERNAME);
-        logger.log(Level.INFO, "PASSWORD:  " + PASSWORD);
         try {
            ezidService.login(USERNAME, PASSWORD);  
         } catch(Exception e){
@@ -72,11 +70,7 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
         String retString = "";
         String identifier = getIdentifierFromStudy(studyIn);
         HashMap metadata = getMetadataFromStudyForCreateIndicator(studyIn);
-        metadata.put("_status", "reserved");;
-        logger.log(Level.INFO, "metadata author: " + metadata.get("datacite.creator"));
-        logger.log(Level.INFO, "metadata title: " + metadata.get("datacite.title"));
-        logger.log(Level.INFO, "metadata publisher: " + metadata.get("datacite.publisher"));
-        logger.log(Level.INFO, "Create identifier : " + identifier);        
+        metadata.put("_status", "reserved");;       
         try {
             retString = ezidService.createIdentifier(identifier, metadata);
             logger.log(Level.INFO, "create DOI identifier retString : " + retString);

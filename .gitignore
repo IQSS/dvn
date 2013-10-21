@@ -19,3 +19,6 @@
 /src/DVN-ingest/nbproject/build-impl.xml
 /src/DVN-ingest/nbproject/genfiles.properties
 /src/DVN-ingest/nbproject/project.properties
+DVN-root/DVN-web/target
+doc/sphinx/build
+DVN-root/DVN-web/nb-configuration.xml

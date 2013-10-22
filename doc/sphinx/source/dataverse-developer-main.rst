@@ -363,7 +363,7 @@ Here is an example of how the 3.4 tag (
     To git@github.com:IQSS/dvn.git
      * [new tag]         3.4 -> 3.4
     murphy:dvn pdurbin$ 
-    murphy:dvn pdurbin$ git push
+    murphy:dvn pdurbin$ git push origin master
     Total 0 (delta 0), reused 0 (delta 0)
     To git@github.com:IQSS/dvn.git
        fdbfe57..6ceb24f  master -> master

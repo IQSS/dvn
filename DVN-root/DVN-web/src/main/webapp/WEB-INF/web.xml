@@ -494,4 +494,46 @@
         <location>/faces/NotFoundPage.xhtml</location>
     </error-page>
  -->
+   <!-- OIOSAML Settings -->
+   <!--<context-param>-->
+       <!--<description>Path to configuration files for OIOSAML</description>-->
+       <!--<param-name>oiosaml-j.home</param-name>-->
+       <!--FIXME: don't put this in /tmp!-->
+       <!--<param-value>/tmp/oiosaml/</param-value>-->
+   <!--</context-param>-->
+   <context-param>
+       <param-name>oiosaml-j.name</param-name>
+       <param-value>Dataverse</param-value>
+       <!--<param-value>/tmp/oiosaml-settings</param-value>-->
+   </context-param>
+   <listener>
+       <listener-class>dk.itst.oiosaml.sp.service.session.SessionDestroyListener</listener-class>
+   </listener>
+   <servlet>
+       <servlet-name>SAMLDispatcherServlet</servlet-name>
+       <servlet-class>dk.itst.oiosaml.sp.service.DispatcherServlet</servlet-class>
+   </servlet>
+   <servlet-mapping>
+       <servlet-name>SAMLDispatcherServlet</servlet-name>
+       <url-pattern>/saml/*</url-pattern>
+   </servlet-mapping>
+   <filter>
+       <filter-name>SamlLoginFilter</filter-name>
+       <filter-class>dk.itst.oiosaml.sp.service.SPFilter</filter-class>
+   </filter>
+   <filter-mapping>
+       <filter-name>SamlLoginFilter</filter-name>
+       <url-pattern>/faces/login/SamlLoginPage.xhtml</url-pattern>
+       <dispatcher>REQUEST</dispatcher>
+       <dispatcher>FORWARD</dispatcher>
+   </filter-mapping>
+   <!--FIXME: remove, for testing-->
+
+   <filter-mapping>
+       <filter-name>SamlLoginFilter</filter-name>
+       <url-pattern>/faces/login/SamlTestPage.xhtml</url-pattern>
+       <dispatcher>REQUEST</dispatcher>
+       <dispatcher>FORWARD</dispatcher>
+   </filter-mapping>
+
 </web-app>

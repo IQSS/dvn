@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    </h:head>
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:param name="pageTitle" value="SAML Test Intro"/>
+            <ui:define name="body">
+                <h2>DVN SAML/Shibboleth Testing Introduction</h2>
+                <p>Many DVN users are interested in SAML/Shibboleth support: <a href="https://redmine.hmdc.harvard.edu/issues/2657">https://redmine.hmdc.harvard.edu/issues/2657</a></p>
+                <p><a href="https://svn.softwareborsen.dk/oiosaml.java/sp/trunk/docs/index.html">OIOSAML</a> is currently being investigated as an underlying technology as announced at <a href="https://lists.iq.harvard.edu/pipermail/dvn-auth/2013-October/000001.html">https://lists.iq.harvard.edu/pipermail/dvn-auth/2013-October/000001.html</a></p>
+                <p>To begin testing compatibility with Shibboleth Identity Providers (especially from institutions who have <a href="https://lists.iq.harvard.edu/mailman/roster/dvn-auth">people subscribed to the dvn-auth list</a>), we have set up a test page that simply displays attributes from an Identity Provider (IdP) that OIOSAML has been been configured to use. At this time, only one IdP can be tested at at time.</p>
+                <p>If you run an IdP and are looking for the Service Provider (SP) metadata for this instance of DVN, please download it from <a href="/dvn/saml/metadata">here</a>.</p>
+                <p>If you are interested in seeing the attributes that the IdP is sending (and have a username and password for that IdP), please proceed to the <a href="SamlTestPage.xhtml">SamlTestPage</a> page.</p>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

@@ -507,7 +507,36 @@
             <artifactId>httpmime</artifactId>
             <version>4.2.5</version>
         </dependency>
-        
+
+       <!-- OIOSAML jar and dependencies -->
+       <!-- mvn deploy:deploy-file -DgroupId=dk.itst -DartifactId=oiosaml.java -Dversion=8501 -Dpackaging=jar -Dfile=/tmp//oiosaml.java-8501.jar -DrepositoryId=dvn.private -Durl=file:///Users/$USER/NetBeansProjects/dvn/DVN-root/DVN-web/local_lib -->
+       <!--FIXME: 8501 is not the latest version of OIOSAML. Attempts to use version 11330 have failed as explained on the OIOSAML forum at at http://digitaliser.dk/forum/2526560#comment_2530913-->
+       <dependency>
+           <groupId>dk.itst</groupId>
+           <artifactId>oiosaml.java</artifactId>
+           <version>8501</version>
+       </dependency>
+       <dependency>
+           <groupId>xerces</groupId>
+           <artifactId>xercesImpl</artifactId>
+           <version>2.9.1</version>
+       </dependency>
+       <dependency>
+           <groupId>org.opensaml</groupId>
+           <artifactId>opensaml</artifactId>
+           <version>2.5.1-1</version>
+       </dependency>
+       <dependency>
+           <groupId>commons-configuration</groupId>
+           <artifactId>commons-configuration</artifactId>
+           <version>1.5</version>
+       </dependency>
+       <dependency>
+           <groupId>log4j</groupId>
+           <artifactId>log4j</artifactId>
+           <version>1.2.14</version>
+       </dependency>
+
        <!-- non-public fits.jar -->
        <dependency>
             <groupId>nom.tam.fits</groupId>

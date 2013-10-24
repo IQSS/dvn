@@ -2063,8 +2063,12 @@ public class Metadata implements java.io.Serializable {
      * This may have to be changed if other date formats are allowed
      * 
      */   
-    private String getYearForCitation(String dateIn){
-        return dateIn.substring( 0 , 4 );
+    private String getYearForCitation(String dateString){
+        //get date to first dash only
+        if (dateString.indexOf("-") > -1){
+            return dateString.substring( 0 , dateString.indexOf("-"));
+        }
+        return dateString;
     }
     
     /**

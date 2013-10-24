@@ -604,8 +604,14 @@ function dataCitationWidgetSync(){
     jQuery(input_productionDateSync).val(inputProdDateVal);
     
     // Sync DATE label/links
-    var inputDistDateDisplay = (inputDistDateVal.substring(0,4));
-    var inputProdDateDisplay = (inputProdDateVal.substring(0,4));    
+    var inputDistDateDisplay = inputDistDateVal;
+    if (inputDistDateDisplay.indexOf('-')> 0){
+        inputDistDateDisplay = inputDistDateDisplay.substring(0,inputDistDateDisplay.indexOf('-'));
+    }
+    var inputProdDateDisplay = inputProdDateVal; 
+    if (inputProdDateDisplay.indexOf('-')> 0){
+        inputProdDateDisplay = inputProdDateDisplay.substring(0,inputProdDateDisplay.indexOf('-'));
+    }
     // Sync DATE label/links
     if (inputDistDateVal !== '' ){
         jQuery(span_date).text(inputDistDateDisplay);
@@ -617,6 +623,7 @@ function dataCitationWidgetSync(){
     // Display one or the other date in Year only format
     // will need to be updated if used by other fields 
     // or if date format changes
+    // we will only use up to the first dash
     var widgetTwoFieldBind = function( inputField, primaryField, secondaryField, spanField, spanDefault ) { 
         return function() { 
             jQuery(inputField).val(jQuery(this).val()); 
@@ -632,7 +639,10 @@ function dataCitationWidgetSync(){
             } else {
                 addText = spanDefault;
             }
-            addText = addText.substring(0,4);
+            //addText = addText.substring(0,4);
+            if (addText.indexOf('-')> 0){
+                addText = addText.substring(0,addText.indexOf('-'));
+            }
             jQuery(spanField).text(addText);
         };
     }

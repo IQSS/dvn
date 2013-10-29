@@ -24,6 +24,7 @@ import dk.itst.oiosaml.sp.UserAttribute;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.faces.bean.ViewScoped;
@@ -39,9 +40,9 @@ public class SamlTestPage extends VDCBaseBean implements java.io.Serializable {
     private static final Logger logger = Logger.getLogger(SamlTestPage.class.getCanonicalName());
     private final String assertName = "dk.itst.oiosaml.userassertion";
     // an IdP is a Shibboleth Identity Provider
-    private Map<String, String> attributesFromIdp = new HashMap<String, String>();
+    private Map<String, List<String>> attributesFromIdp = new HashMap<String, List<String>>();
 
-    public Map<String, String> getAttributesFromIdp() {
+    public Map<String, List<String>> getAttributesFromIdp() {
         return attributesFromIdp;
     }
 
@@ -52,7 +53,7 @@ public class SamlTestPage extends VDCBaseBean implements java.io.Serializable {
         UserAssertion userAssert = (UserAssertion) session.getAttribute(assertName);
         Collection<UserAttribute> allAttributesCollection = userAssert.getAllAttributes();
         for (UserAttribute userAttribute : allAttributesCollection) {
-            logger.info(userAttribute.getName() + "/" + userAttribute.getValue());
+            logger.info(userAttribute.getName() + "/" + userAttribute.getValues());
             /*
              urn:oid:1.3.6.1.4.1.5923.1.1.1.10/<?xml version="1.0" encoding="UTF-8"?><saml2:NameID xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion" Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" NameQualifier="https://idp.testshib.org/idp/shibboleth" SPNameQualifier="dvn-alpha.hmdc.harvard.edu">8n0ZErIMuWAc6Plj76IMMam3fAw=</saml2:NameID>
              urn:oid:1.3.6.1.4.1.5923.1.1.1.1/Member
@@ -65,7 +66,7 @@ public class SamlTestPage extends VDCBaseBean implements java.io.Serializable {
              urn:oid:2.5.4.42/Me Myself
              urn:oid:2.5.4.4/And I
              */
-            attributesFromIdp.put(userAttribute.getName(), userAttribute.getValue());
+            attributesFromIdp.put(userAttribute.getName(), userAttribute.getValues());
 //            attributeValueList.add(userAttribute.getValue());
         }
         /**

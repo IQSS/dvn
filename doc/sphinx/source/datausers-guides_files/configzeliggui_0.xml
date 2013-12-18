@@ -1,0 +1,991 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zelig xmlns="http://gking.harvard.edu/zelig" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://gking.harvard.edu/zelig http://thedata.org/files/thedata/schema/ZeligInterfaceDefinition_1_1.xsd">
+<model name="aov" label="Models for Continuous Dependent Variables">
+<description>Fit an Analysis of Variance Model</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/aov.pdf"/>
+<packageDependency name= "stats" version= "2.5.0"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome >
+<modelingType>continuous</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="cloglog.net" label="Models for Dichotomous Dependent Variables">
+<description>Social Network Complementary Log Log Regression for Dichotomous Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/cloglog.net.pdf"/>
+<packageDependency name= "sna" version= "1.4"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="pi">
+<outcome >
+<modelingType>binary</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="coxph" label="Models for Continous Bounded Dependent Variables" specialFunction="Surv">
+<description>Cox Proportional Hazard Regression for Duration Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/coxph.pdf"/>
+<packageDependency name= "survival" version= "2.34"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome maxVar="2" minVar="2" >
+<modelingType>continuous</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="ei.dynamic" label="Ecological Inference Models" specialFunction="cbind">
+<description>Quinn's Dynamic Ecological Inference Model</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/ei.dynamic.pdf"/>
+<packageDependency name= "MCMCpack" version= "0.8-2"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome minVar="2" >
+<modelingType>continuous</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="ei.hier" label="Ecological Inference Models" specialFunction="cbind">
+<description>Hierarchical Ecological Inference Model for  2 x 2 Tables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/ei.hier.pdf"/>
+<packageDependency name= "MCMCpack" version= "0.8-2"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome minVar="2" >
+<modelingType>continuous</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="ei.RxC" label="Ecological Inference Models" specialFunction="cbind">
+<description>Hierarchical Multinomial-Dirichlet Ecological Inference Model for R x C Tables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/ei.RxC.pdf"/>
+<packageDependency name= "stats" version= "0.1"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome minVar="2" >
+<modelingType>continuous</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="exp" label="Models for Continous Bounded Dependent Variables" specialFunction="Surv">
+<description>Exponential Regression for Duration Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/exp.pdf"/>
+<packageDependency name= "survival" version= "2.0"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+ <outcome minVar="1" maxVar="1" label="Duration">
+<modelingType>continuous</modelingType>
+</outcome>
+<outcome maxVar="1" minVar="0" label="Censored">
+<modelingType>binary</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="factor.bayes" label="Models for Continuous Dependent Variables" specialFunction="cbind">
+<description>Bayesian Factor Analysis</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/factor.bayes.pdf"/>
+<packageDependency name= "MCMCpack" version= "0.6"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome minVar="3" >
+<modelingType>continuous</modelingType>
+</outcome>
+</equation>
+</formula>
+<setx maxSetx="0"/>
+ </model>
+<model name="factor.mix" label="Models for Mixed Dependent Variables" specialFunction="cbind">
+<description>Mixed Data Factor Analysis</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/factor.mix.pdf"/>
+<packageDependency name= "MCMCpack" version= "0.6"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome minVar="2" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</outcome>
+</equation>
+</formula>
+<setx maxSetx="0"/>
+ </model>
+<model name="factor.ord" label="Models for Ordinal Dependent Variables" specialFunction="cbind">
+<description>Ordinal Data Factor Analysis</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/factor.ord.pdf"/>
+<packageDependency name= "MCMCpack" version= "0.6"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome minVar="2" >
+<modelingType>ordinal</modelingType>
+</outcome>
+</equation>
+</formula>
+<setx maxSetx="0"/>
+ </model>
+<model name="gamma" label="Models for Continous Bounded Dependent Variables">
+<description>Gamma Regression for Continuous, Positive Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/gamma.pdf"/>
+<packageDependency name= "stats" version= "0.1"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="lambda">
+<outcome >
+<modelingType>continuous</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="gamma.gee" label="Models for Continous Bounded Dependent Variables">
+<description>General Estimating Equation for Gamma Regression</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/gamma.gee.pdf"/>
+<packageDependency name= "gee" version= "4.13-12"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="lambda">
+<outcome >
+<modelingType>continuous</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="gamma.net" label="Models for Continous Bounded Dependent Variables">
+<description>Social Network Gamma Regression for Continuous, Positive Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/gamma.net.pdf"/>
+<packageDependency name= "sna" version= "1.4"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="lambda">
+<outcome >
+<modelingType>continuous</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="gamma.survey" label="Models for Continous Bounded Dependent Variables">
+<description>Survey-Weighted Gamma Regression for Continuous, Positive Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/gamma.survey.pdf"/>
+<packageDependency name= "survey" version= "3.6-13"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="lambda">
+<outcome >
+<modelingType>continuous</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="irt1d" label="Models for Dichotomous Dependent Variables" specialFunction="cbind">
+<description>One Dimensional Item Response Model</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/irt1d.pdf"/>
+<packageDependency name= "MCMCpack" version= "0.6"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="pi">
+<outcome minVar="1" >
+<modelingType>binary</modelingType>
+</outcome>
+</equation>
+</formula>
+<setx maxSetx="0"/>
+ </model>
+<model name="logit" label="Models for Dichotomous Dependent Variables">
+<description>Logistic Regression for Dichotomous Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/logit.pdf"/>
+<packageDependency name= "stats" version= "0.1"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="pi">
+<outcome >
+<modelingType>binary</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="logit.bayes" label="Models for Dichotomous Dependent Variables">
+<description>Bayesian Logistic Regression for Dichotomous Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/logit.bayes.pdf"/>
+<packageDependency name= "MCMCpack" version= "0.6"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="pi">
+<outcome >
+<modelingType>binary</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="logit.gam" label="Models for Dichotomous Dependent Variables">
+<description>Generalized Additive Model for Dichotomous Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/logit.gam.pdf"/>
+<packageDependency name= "mgcv" version= "0.1"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="pi">
+<outcome >
+<modelingType>binary</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="logit.gee" label="Models for Dichotomous Dependent Variables">
+<description>General Estimating Equation for Logistic Regression</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/logit.gee.pdf"/>
+<packageDependency name= "gee" version= "4.13-12"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="pi">
+<outcome >
+<modelingType>binary</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="logit.net" label="Models for Dichotomous Dependent Variables">
+<description>Social Network Logistic Regression for Dichotomous Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/logit.net.pdf"/>
+<packageDependency name= "sna" version= "1.4"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="pi">
+<outcome >
+<modelingType>binary</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="logit.survey" label="Models for Dichotomous Dependent Variables">
+<description>Survey-Weighted Logistic Regression for Dichotomous Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/logit.survey.pdf"/>
+<packageDependency name= "survey" version= "3.6-13"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="pi">
+<outcome >
+<modelingType>binary</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="lognorm" label="Models for Continous Bounded Dependent Variables" specialFunction="Surv">
+<description>Log-Normal Regression for Duration Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/lognorm.pdf"/>
+<packageDependency name= "survival" version= "2.2"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+ <outcome minVar="1" maxVar="1" label="Duration">
+<modelingType>continuous</modelingType>
+</outcome>
+<outcome maxVar="1" minVar="0" label="Censored">
+<modelingType>binary</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="ls" label="Models for Continuous Dependent Variables">
+<description>Least Squares Regression for Continuous Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/ls.pdf"/>
+<packageDependency name= "stats" version= "0.1"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome >
+<modelingType>continuous</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="ls.net" label="Models for Continuous Dependent Variables">
+<description>Social Network Least Squares Regression for Continuous Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/ls.net.pdf"/>
+<packageDependency name= "sna" version= "1.4"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome >
+<modelingType>continuous</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="mlogit.bayes" label="Multinomial Choice Models" specialFunction="as.factor">
+<description>Bayesian Multinomial Logistic Regression for Dependent Variables with Unordered Categorical Values</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/mlogit.bayes.pdf"/>
+<packageDependency name= "MCMCpack" version= "0.6"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome maxVar="1" minVar="1" >
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="mloglm" label="Multinomial Choice Models">
+<description>Multinomial Log-Linear Regression for Contingency Table Models</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/mloglm.pdf"/>
+<packageDependency name= "nnet" version= "0.6"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome >
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="negbin" label="Event Count Models">
+<description>Negative Binomial Regression for Event Count Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/negbin.pdf"/>
+<packageDependency name= "MASS" version= "0.1"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome >
+<modelingType>discrete</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="normal.gam" label="Models for Continuous Dependent Variables">
+<description>Generalized Additive Model for Continuous Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/normal.gam.pdf"/>
+<packageDependency name= "mgcv" version= "0.1"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome >
+<modelingType>continuous</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="normal.gee" label="Models for Continuous Dependent Variables">
+<description>General Estimating Equation for Normal Regression</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/normal.gee.pdf"/>
+<packageDependency name= "gee" version= "4.13-12"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome >
+<modelingType>continuous</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="normal.net" label="Models for Continuous Dependent Variables">
+<description>Social Network Normal Regression for Continuous Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/normal.net.pdf"/>
+<packageDependency name= "sna" version= "1.4"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome >
+<modelingType>continuous</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="normal.survey" label="Models for Continuous Dependent Variables">
+<description>Survey-Weighted Normal Regression for Continuous Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/normal.survey.pdf"/>
+<packageDependency name= "survey" version= "3.6-13"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome >
+<modelingType>continuous</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="ologit" label="Models for Ordinal Dependent Variables" specialFunction="as.factor">
+<description>Ordinal Logistic Regression for Ordered Categorical Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/ologit.pdf"/>
+<packageDependency name= "MASS" version= "0.1"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome maxVar="1" minVar="1" >
+<modelingType>ordinal</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="oprobit" label="Models for Ordinal Dependent Variables" specialFunction="as.factor">
+<description>Ordinal Probit Regression for Ordered Categorical Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/oprobit.pdf"/>
+<packageDependency name= "MASS" version= "0.1"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome maxVar="1" minVar="1" >
+<modelingType>ordinal</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="oprobit.bayes" label="Models for Ordinal Dependent Variables" specialFunction="as.factor">
+<description>Bayesian Ordered Probit Regression</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/oprobit.bayes.pdf"/>
+<packageDependency name= "MCMCpack" version= "0.6"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome maxVar="1" minVar="1" >
+<modelingType>ordinal</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="poisson" label="Event Count Models">
+<description>Poisson Regression for Event Count Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/poisson.pdf"/>
+<packageDependency name= "stats" version= "0.1"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="lambda">
+<outcome >
+<modelingType>discrete</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="poisson.bayes" label="Event Count Models">
+<description>Bayesian Poisson Regression</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/poisson.bayes.pdf"/>
+<packageDependency name= "MCMCpack" version= "0.6"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="lambda">
+<outcome >
+<modelingType>discrete</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="poisson.gam" label="Event Count Models">
+<description>Generalized Additive Model for Event Count Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/poisson.gam.pdf"/>
+<packageDependency name= "mgcv" version= "0.1"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="lambda">
+<outcome >
+<modelingType>discrete</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="poisson.gee" label="Event Count Models">
+<description>General Estimating Equation for Poisson Regression</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/poisson.gee.pdf"/>
+<packageDependency name= "gee" version= "4.13-12"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="lambda">
+<outcome >
+<modelingType>discrete</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="poisson.net" label="Event Count Models">
+<description>Social Network Poisson Regression for Event Count Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/poisson.net.pdf"/>
+<packageDependency name= "sna" version= "1.4"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="lambda">
+<outcome >
+<modelingType>discrete</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="poisson.survey" label="Event Count Models">
+<description>Survey-Weighted Poisson Regression for Event Count Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/poisson.survey.pdf"/>
+<packageDependency name= "survey" version= "3.6-13"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="lambda">
+<outcome >
+<modelingType>discrete</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="probit" label="Models for Dichotomous Dependent Variables">
+<description>Probit Regression for Dichotomous Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/probit.pdf"/>
+<packageDependency name= "stats" version= "0.1"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome >
+<modelingType>binary</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="probit.bayes" label="Models for Dichotomous Dependent Variables">
+<description>Bayesian Probit Regression for Dichotomous Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/probit.bayes.pdf"/>
+<packageDependency name= "MCMCpack" version= "0.6"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome >
+<modelingType>binary</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="probit.gam" label="Models for Dichotomous Dependent Variables">
+<description>Generalized Additive Model for Dichotomous Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/probit.gam.pdf"/>
+<packageDependency name= "mgcv" version= "0.1"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome >
+<modelingType>binary</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="probit.gee" label="Models for Dichotomous Dependent Variables">
+<description>General Estimating Equation for Probit Regression</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/probit.gee.pdf"/>
+<packageDependency name= "gee" version= "4.13-12"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="pi">
+<outcome >
+<modelingType>binary</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="probit.net" label="Models for Dichotomous Dependent Variables">
+<description>Social Network Probit Regression for Dichotomous Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/probit.net.pdf"/>
+<packageDependency name= "stats" version= "0.1"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome >
+<modelingType>binary</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="probit.survey" label="Models for Dichotomous Dependent Variables">
+<description>Survey-Weighted Probit Regression for Dichotomous Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/probit.survey.pdf"/>
+<packageDependency name= "survey" version= "3.6-13"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome >
+<modelingType>binary</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="relogit" label="Models for Dichotomous Dependent Variables">
+<description>Rare Events Logistic Regression for Dichotomous Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/relogit.pdf"/>
+<packageDependency name= "stats" version= "0.1"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="pi">
+<outcome >
+<modelingType>binary</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="tobit" label="Models for Continuous Dependent Variables">
+<description>Linear regression for Left-Censored Dependent Variable</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/tobit.pdf"/>
+<packageDependency name= "survival" version= "2.2"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome >
+<modelingType>continuous</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="tobit.bayes" label="Models for Continuous Dependent Variables">
+<description>Bayesian Linear Regression for a Censored Dependent Variable</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/tobit.bayes.pdf"/>
+<packageDependency name= "MCMCpack" version= "0.6"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="mu">
+<outcome >
+<modelingType>continuous</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+<model name="weibull" label="Models for Continous Bounded Dependent Variables" specialFunction="Surv">
+<description>Weibull Regression for Duration Dependent Variables</description>
+<helpLink url="http://gking.harvard.edu/zelig/doc/weibull.pdf"/>
+<packageDependency name= "survival" version= "2.2"/>
+<formula minEquations="1" maxEquations="1" simulEq="0">
+<equation name="lambda">
+ <outcome minVar="1" maxVar="1" label="Duration">
+<modelingType>continuous</modelingType>
+</outcome>
+<outcome maxVar="1" minVar="0" label="Censored">
+<modelingType>binary</modelingType>
+</outcome>
+ <explanatory  minVar="1" >
+<modelingType>continuous</modelingType>
+<modelingType>discrete</modelingType>
+<modelingType>nominal</modelingType>
+<modelingType>ordinal</modelingType>
+<modelingType>binary</modelingType>
+</explanatory>
+</equation>
+</formula>
+<setx maxSetx="2"/>
+ </model>
+
+</zelig>

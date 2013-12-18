@@ -234,7 +234,7 @@ public class FileDownloadServlet extends HttpServlet {
             // step 4c. or if it's a request for a thumbnail of an image:
             
             else if (imageThumb != null) {
-                fileDownloadObject = getImageThumb(file, fileDownloadObject, vdc);
+                fileDownloadObject = getImageThumb(file, fileDownloadObject);
             }
 
             // step 5. create error response if any of the above has failed:
@@ -1307,9 +1307,9 @@ public class FileDownloadServlet extends HttpServlet {
 
     }
     
-    public FileDownloadObject getImageThumb (StudyFile file, FileDownloadObject fileDownload, VDC vdc) {
+    public FileDownloadObject getImageThumb (StudyFile file, FileDownloadObject fileDownload) {
         if (file != null && file.getFileType().substring(0, 6).equalsIgnoreCase("image/")) {
-            if (generateImageThumb(file.getFileSystemLocation(), vdc)) {
+            if (generateImageThumb(file)) {
                 File imgThumbFile = new File(file.getFileSystemLocation() + ".thumb");
 
                 if (imgThumbFile != null && imgThumbFile.exists()) {
@@ -1729,8 +1729,12 @@ public class FileDownloadServlet extends HttpServlet {
         return "";
     }
 
-    private boolean generateImageThumb(String fileLocation, VDC vdc) {
+    private boolean generateImageThumb(StudyFile file) {
 
+        String fileLocation = file.getFileSystemLocation();
+        if (fileLocation == null || fileLocation.trim().equals("")) {
+            return false; 
+        }
         String thumbFileLocation = fileLocation + ".thumb";
 
         // see if the thumb is already generated and saved:
@@ -1766,6 +1770,8 @@ public class FileDownloadServlet extends HttpServlet {
         
         // it is also possible to configure the thumbnail size for a 
         // specific dataverse: 
+        
+        VDC vdc = file.getStudy().getOwner(); 
         
         if (vdc != null) {
             thumbSizeOption = System.getProperty("dvn.image.thumbnail.size."+vdc.getAlias());

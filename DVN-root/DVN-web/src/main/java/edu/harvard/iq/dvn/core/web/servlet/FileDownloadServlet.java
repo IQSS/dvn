@@ -234,7 +234,7 @@ public class FileDownloadServlet extends HttpServlet {
             // step 4c. or if it's a request for a thumbnail of an image:
             
             else if (imageThumb != null) {
-                fileDownloadObject = getImageThumb(file, fileDownloadObject);
+                fileDownloadObject = getImageThumb(file, fileDownloadObject, vdc);
             }
 
             // step 5. create error response if any of the above has failed:
@@ -1307,9 +1307,9 @@ public class FileDownloadServlet extends HttpServlet {
 
     }
     
-    public FileDownloadObject getImageThumb (StudyFile file, FileDownloadObject fileDownload) {
+    public FileDownloadObject getImageThumb (StudyFile file, FileDownloadObject fileDownload, VDC vdc) {
         if (file != null && file.getFileType().substring(0, 6).equalsIgnoreCase("image/")) {
-            if (generateImageThumb(file.getFileSystemLocation())) {
+            if (generateImageThumb(file.getFileSystemLocation(), vdc)) {
                 File imgThumbFile = new File(file.getFileSystemLocation() + ".thumb");
 
                 if (imgThumbFile != null && imgThumbFile.exists()) {
@@ -1729,7 +1729,7 @@ public class FileDownloadServlet extends HttpServlet {
         return "";
     }
 
-    private boolean generateImageThumb(String fileLocation) {
+    private boolean generateImageThumb(String fileLocation, VDC vdc) {
 
         String thumbFileLocation = fileLocation + ".thumb";
 
@@ -1748,6 +1748,7 @@ public class FileDownloadServlet extends HttpServlet {
         
         Long thumbSize = Long.valueOf(64);
 
+        
         String thumbSizeOption = System.getProperty("dvn.image.thumbnail.size");
 
         if ( thumbSizeOption != null ) {
@@ -1760,6 +1761,26 @@ public class FileDownloadServlet extends HttpServlet {
             }
             if ( thumbSizeOptionValue != null && thumbSizeOptionValue.longValue() > 0 ) {
                 thumbSize = thumbSizeOptionValue;
+            }
+        }
+        
+        // it is also possible to configure the thumbnail size for a 
+        // specific dataverse: 
+        
+        if (vdc != null) {
+            thumbSizeOption = System.getProperty("dvn.image.thumbnail.size."+vdc.getAlias());
+
+            if ( thumbSizeOption != null ) {
+                Long thumbSizeOptionValue = null;
+                try {
+                    thumbSizeOptionValue = new Long(thumbSizeOption);
+                } catch (NumberFormatException nfe) {
+                // if the supplied option value is invalid/unparseable, we
+                // ignore it and fall back to the default value. 
+                }
+                if ( thumbSizeOptionValue != null && thumbSizeOptionValue.longValue() > 0 ) {
+                    thumbSize = thumbSizeOptionValue;
+                }
             }
         }
         

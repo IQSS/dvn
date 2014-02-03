@@ -420,11 +420,11 @@ Some extra configuration steps will be required if the PostgreSQL database is be
 
 It will most likely only work on the supported platforms, RedHat and Mac OS X.
 
-It is only guaranteed to work on a fresh Glassfish installation. If you already have more than one Glassfish domains created and/or have applications other than the DVN running under Glassfish, please consult the “Manual Installation and Configuration” in the Addendum.
+It is only guaranteed to work on a fresh Glassfish installation. If you already have more than one Glassfish domains created and/or have applications other than the DVN running under Glassfish, please consult the :ref:`"What does the Installer do?" <what-does-the-intstaller-do>` section.
 
 It does not install any of the optional components (:ref:`see Chapter 4<optional-components>`.) 
 
-For the detailed explanation of the tasks performed by the Installer, see the “Manual Installation and Configuration” in the Addendum.
+For the detailed explanation of the tasks performed by the Installer, see the :ref:`"What does the Installer do?" <what-does-the-intstaller-do>` section.
 
 | **[/Advanced]**
 

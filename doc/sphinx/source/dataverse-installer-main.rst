@@ -420,7 +420,7 @@ Some extra configuration steps will be required if the PostgreSQL database is be
 
 It will most likely only work on the supported platforms, RedHat and Mac OS X.
 
-It is only guaranteed to work on a fresh Glassfish installation. If you already have more than one Glassfish domains created and/or have applications other than the DVN running under Glassfish, please consult the “Manual Installation and Configuration” in the Addendum.
+It is only guaranteed to work on a fresh Glassfish installation. If you already have more than one Glassfish domains created and/or have applications other than the DVN running under Glassfish, please consult the :ref:`"What does the Installer do?" <what-does-the-intstaller-do>` section.
 
 It does not install any of the optional components (:ref:`see Chapter 4<optional-components>`.) 
 
@@ -918,7 +918,7 @@ your need to perform them manually:
   
   ``[DB_NAME]`` and ``[USER_NAME]`` are the names you choose for your DVN database and database user. These, together with the password you have assigned, will be used in the Glassfish configuration so that the application can talk to the database.
 
-2. Before Glassfish can be configured for the DVN app, the Postgres driver needs to be installed in the <GLASSFISH ROOT>/lib directory. We supply a version of the driver known to work with the DVN in the dvninstall/pgdriver directory of the Installer bundle. (This is the :ref:`"What does the Installer do?" <what-does-the-intstaller-do>` section of this appendix) An example of the installed location of the driver:
+2. Before Glassfish can be configured for the DVN app, the Postgres driver needs to be installed in the <GLASSFISH ROOT>/lib directory. We supply a version of the driver known to work with the DVN in the dvninstall/pgdriver directory of the Installer bundle. (This is the :ref:`"What does the Installer do?" <what-does-the-intstaller-do>` section) An example of the installed location of the driver:
 
   ``/usr/local/glassfish/lib/postgresql-8.3-603.jdbc4.jar``
 

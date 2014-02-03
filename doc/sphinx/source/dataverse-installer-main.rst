@@ -424,7 +424,7 @@ It is only guaranteed to work on a fresh Glassfish installation. If you already 
 
 It does not install any of the optional components (:ref:`see Chapter 4<optional-components>`.) 
 
-For the detailed explanation of the tasks performed by the Installer, see the “Manual Installation and Configuration” in the Addendum.
+For the detailed explanation of the tasks performed by the Installer, see the :ref:`"What does the Installer do?" <what-does-the-intstaller-do>` section.
 
 | **[/Advanced]**
 

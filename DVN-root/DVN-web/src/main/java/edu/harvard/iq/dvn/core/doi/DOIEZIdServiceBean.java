@@ -42,7 +42,7 @@ import javax.ejb.Stateless;
 public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdServiceLocal {
     EZIDService ezidService;
     EZIDServiceRequest ezidServiceRequest;    
-    String baseURLString = "https://n2t.net/ezid/";  
+    String baseURLString =  "https://ezid.cdlib.org";  
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.index.DOIEZIdServiceBean");
     
@@ -52,9 +52,11 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
     private String PASSWORD = "";    
     
     public DOIEZIdServiceBean(){
+        baseURLString = System.getProperty("doi.baseurlstring");
         ezidService = new EZIDService (baseURLString); 
         USERNAME  = System.getProperty("doi.username");
         PASSWORD  = System.getProperty("doi.password");
+        logger.log(Level.INFO, "baseURLString " + baseURLString);
         try {
            ezidService.login(USERNAME, PASSWORD);  
         } catch(Exception e){

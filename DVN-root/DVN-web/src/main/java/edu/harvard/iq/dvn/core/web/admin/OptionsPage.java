@@ -36,6 +36,7 @@ import edu.harvard.iq.dvn.core.web.site.VDCUI;
 import edu.harvard.iq.dvn.core.web.study.StudyCommentUI;
 import edu.harvard.iq.dvn.core.web.util.CharacterValidator;
 import edu.harvard.iq.dvn.core.web.util.XhtmlValidator;
+import edu.harvard.iq.dvn.core.doi.DOIEZIdServiceLocal;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -117,6 +118,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     @EJB StudyFileServiceLocal studyFileService;
     @EJB HarvestStudyServiceLocal harvestStudyService;
     @EJB GNRSServiceLocal gnrsService;
+    @EJB DOIEZIdServiceLocal doiEZIdServiceLocal;
     @Inject EditNetworkNamePage editNetworkNamePage;
     @Inject EditNetworkAnnouncementsPage editNetworkAnnouncementsPage;
     @Inject EditBannerFooterPage editBannerFooterPage;
@@ -3337,6 +3339,7 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
     
     String indexDVId;
     String indexStudyIds;
+    String reRegisterStudyIds;
     private String fixGlobalId; 
     private String studyIdRange;
     private String handleCheckReport; 
@@ -3357,6 +3360,13 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
         this.indexStudyIds = indexStudyIds;
     }
     
+    public String getReRegisterStudyIds() {
+        return reRegisterStudyIds;
+    }
+    
+    public void setReRegisterStudyIds(String reRegisterStudyIds) {
+        this.reRegisterStudyIds = reRegisterStudyIds;
+    }
     public String getFixGlobalId() {
         return fixGlobalId; 
     }
@@ -4272,6 +4282,80 @@ public class OptionsPage extends VDCBaseBean  implements java.io.Serializable {
 
         return null;
     }
+    
+    public String reRegisterStudies_action() {
+        String statusMessage = "";
+
+        Map tokenizedLists = determineStudyIds(reRegisterStudyIds);
+        for (Iterator<Long> iter = ((List<Long>) tokenizedLists.get("idList")).iterator(); iter.hasNext();) {
+            Long studyId = iter.next();
+            Study study = null;
+            try {
+                study = studyService.getStudy(studyId);
+            } catch (Exception ex) {
+                study = null;
+            }
+
+            if (study != null) {
+                // determine the "protocol" of the global name (i.e., "hdl" or "doi"):
+                String namingProtocol = study.getProtocol();
+                if (namingProtocol != null) {
+                    if (namingProtocol.equals("hdl")) {
+                        String studyHandle = study.getAuthority() + "/" + study.getStudyId();
+                        try {
+                            gnrsService.fixHandle(studyHandle);
+                        } catch (Exception gnrsEx) {
+                            statusMessage = statusMessage + "registration failed for " + studyHandle + "; ";
+                        }
+                    } else if (namingProtocol.equals("doi")) {
+                        String studyDOI = "doi:" + study.getAuthority() + "/" + study.getStudyId();
+                        if (study.isReleased()) {
+                            // Check if already registered: 
+                            String createStatus = "";
+                            HashMap regMetadata = doiEZIdServiceLocal.getIdentifierMetadata(study);
+                            if (regMetadata == null 
+                                    || !("reserved".equals(regMetadata.get("_status")) 
+                                    || "public".equals(regMetadata.get("_status")))) {
+                                // And register the identifier if not:
+                                doiEZIdServiceLocal.createIdentifier(study);
+                            }
+                            
+                            if (!createStatus.equals("Identifier not created")) {
+                                doiEZIdServiceLocal.publicizeIdentifier(study);
+                                // Note: publicizeIdentifier does not provide any diagnostics!
+                                statusMessage = statusMessage + "publicized " + studyId + " (" + studyDOI + "); ";
+                            } else {
+                                statusMessage = statusMessage + "failed to create doi for " + studyId + " (" + studyDOI + "); ";
+                            }
+                        } else if (study.isDraft() || study.isInReview()) {
+                            // This is an unreleased study; so we need to create 
+                            // a DOI with the status "reserved" (as opposed to 
+                            // "public").
+                            // Check if already registered: 
+                            String createStatus = "";
+                            HashMap regMetadata = doiEZIdServiceLocal.getIdentifierMetadata(study);
+                            if (regMetadata == null 
+                                    || !("reserved".equals(regMetadata.get("_status")) 
+                                    || "public".equals(regMetadata.get("_status")))) {
+                                // And register the identifier if not:
+                                doiEZIdServiceLocal.createIdentifier(study);
+                            }
+                            if (!createStatus.equals("Identifier not created")) {
+                                statusMessage = statusMessage + "created doi for unreleased study " + studyId + " (" + studyDOI + "); ";
+                            } else {
+                                statusMessage = statusMessage + "failed to create doi for unreleased study " + studyId + " (" + studyDOI + "); ";
+                            }                            
+                        }
+                    }
+                }
+            }
+        }
+
+        addMessage("handleMessage", "Request completed; " + statusMessage);
+
+
+        return null;
+    } 
     
     
     public String handleCheckRange_action() {

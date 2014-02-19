@@ -91,7 +91,7 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
    
     public HashMap getIdentifierMetadata(Study studyIn){
         String identifier = getIdentifierFromStudy(studyIn);        
-        HashMap metadata = new HashMap();
+        HashMap metadata;
        try {
               metadata = ezidService.getMetadata(identifier);
             }  catch (EZIDException e){                
@@ -100,7 +100,7 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
             logger.log(Level.INFO, "localized message " + e.getLocalizedMessage());
             logger.log(Level.INFO, "cause " + e.getCause());
             logger.log(Level.INFO, "message " + e.getMessage());    
-            return metadata;
+            return null;
         }         
        return metadata;
     }
@@ -207,7 +207,18 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
     
     @Override
     public void publicizeIdentifier(Study studyIn) {
-        updateIdentifierStatus(studyIn, "public");
+        String identifier = getIdentifierFromStudy(studyIn);
+        HashMap metadata = getMetadataFromStudyForCreateIndicator(studyIn);
+        metadata.put("_status", "public");
+        try {
+            ezidService.setMetadata(identifier, metadata);
+        } catch (EZIDException e) {
+            logger.log(Level.INFO, "modifyMetadata failed");
+            logger.log(Level.INFO, "String " + e.toString());
+            logger.log(Level.INFO, "localized message " + e.getLocalizedMessage());
+            logger.log(Level.INFO, "cause " + e.getCause());
+            logger.log(Level.INFO, "message " + e.getMessage());
+        }
     }
     
     private void updateIdentifierStatus(Study studyIn, String statusIn){
@@ -226,7 +237,7 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
         
     }
     
-    
+      
     public static String generateYear()
     {
         StringBuffer guid = new StringBuffer();

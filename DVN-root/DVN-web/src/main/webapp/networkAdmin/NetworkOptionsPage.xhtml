@@ -695,6 +695,20 @@
                                                         <ice:inputTextarea value="#{OptionsPage.handleCheckReport}" rows="8" cols="32" readonly="true" rendered="#{! empty OptionsPage.handleCheckReport}"/>
                                                     </div>
                                                 </ice:column>
+                                                
+                                                <ice:column>
+                                                    <ice:outputText value="Re-register Individual Studies (Supports DOIs too!)"/>
+                                                </ice:column>
+                                                <ice:column>
+                                                    <img class="dvn_icon" src="/dvn/resources/images/icon_information.18.png" alt=""/>
+                                                    <ice:outputText value=" Input the db IDs of studies to re-register."/>
+                                                    <div>
+                                                        <ice:inputTextarea value="#{OptionsPage.reRegisterStudyIds}" rows="8" cols="80"/>
+                                                        <div class="dvnFormPadding">
+                                                            <ice:commandButton value="Reregister Studies" action="#{OptionsPage.reRegisterStudies_action}"/>
+                                                        </div>
+                                                    </div>
+                                                </ice:column>
                                             </ice:panelGrid>
                                         </ice:panelTab>
                                     </ice:panelTabSet>

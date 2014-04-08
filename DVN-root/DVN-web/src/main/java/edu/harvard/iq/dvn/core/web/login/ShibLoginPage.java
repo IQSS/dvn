@@ -1,0 +1,722 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package edu.harvard.iq.dvn.core.web.login;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.icesoft.faces.component.ext.HtmlInputHidden;
+
+import edu.harvard.iq.dvn.core.admin.GroupServiceLocal;
+import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
+import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
+import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import edu.harvard.iq.dvn.core.web.util.AccessExpressionParser;
+
+/**
+ *
+ * @author mpieters
+ */
+@ViewScoped
+@Named("ShibLoginPage")
+public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
+
+
+    private final static Logger LOGGER = Logger.getLogger(ShibLoginPage.class.getPackage().getName());
+    @EJB
+    UserServiceLocal userService;
+    @EJB
+    GroupServiceLocal groupService;
+    @EJB
+    VDCNetworkServiceLocal vdcNetworkService;
+    // ---
+    String refererUrl = "";
+    private String errMessage = "";
+    String userId = "";
+    HttpServletRequest request;
+    HttpServletResponse response;
+    private boolean loginFailed;
+    private String redirect;
+    private Long studyId;
+    protected String tab;
+    private HtmlInputHidden hiddenStudyId;
+    private Boolean clearWorkflow = true;
+    private String ATTR_NAME_EMAIL = "mail";
+    private String ATTR_NAME_SURNAME = "sn";
+    private String ATTR_NAME_PREFIX = "prefix";
+    private String ATTR_NAME_GIVENNAME = "givenName";
+    private String ATTR_NAME_ROLE = "eduPersonAffiliation";
+    private String ATTR_NAME_ORG = "schacHomeOrganization";
+    private String ATTR_NAME_PRINCIPAL = "eduPersonPrincipalName";
+    private String ACL_ADMIN = null;
+    private String ACL_CREATOR = null;
+    private String ACL_USER = null;
+    private Boolean ALLOW_ADMIN = false;
+    private Boolean USE_REFERER = false;
+    private String USERID_METHOD = "attr";
+    private String USERID_ATTR = "email";
+    private String USERID_PREFIX = "";
+    private HashMap userdata = new HashMap();
+    private Map<String, String> shibProps;
+
+    /**
+     * <p>Construct a new Page bean instance.</p>
+     */
+    public ShibLoginPage() {
+        super();
+        LOGGER.log(Level.FINE, "Instantiating ShibLogin");
+        readPropertiesFile();
+        System.out.println("XXXXXXXXXXXXXXXXXXXXXX userService" + userService );
+        if (shibProps != null)
+        	init();
+    }
+
+    /**
+     * <p>Callback method that is called whenever a page is navigated to,
+     * either directly via a URL, or indirectly via page navigation.
+     * Customize this method to acquire resources that will be needed
+     * for event handlers and lifecycle methods, whether or not this
+     * page is performing post back processing.</p>
+     *
+     * <p>Note that, if the current request is a postback, the property
+     * values of the components do <strong>not</strong> represent any
+     * values submitted with this request.  Instead, they represent the
+     * property values that were saved for this view when it was rendered.</p>
+     */
+    @Override
+    public void init() {
+        super.init();
+        if (clearWorkflow != null) {
+            LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");
+            lwf.clearWorkflowState();
+        }
+        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+        HttpSession session = (HttpSession) context.getSession(true);
+        request = (HttpServletRequest) context.getRequest();
+        response = (HttpServletResponse) context.getResponse();
+        int x = request.getServerPort();
+        String s = request.getContextPath();
+        //String protocol = resolveProtocol(request.getServerPort());
+        String defaultPage = "";
+        //String serverPort = (request.getServerPort() != 80) ? ":" + request.getServerPort() : "";
+        if (getVDCRequestBean() != null && getVDCRequestBean().getCurrentVDC() != null) {
+            defaultPage = "http" + "://" + request.getServerName() + request.getContextPath() + "/dv/" + getVDCRequestBean().getCurrentVDC().getAlias();
+        } else {
+            defaultPage = "https" + "://" + request.getServerName() + request.getContextPath();
+        }
+        if (USE_REFERER && request.getHeader("referer") != null && !request.getHeader("referer").equals("")) {
+            if (request.getHeader("referer").indexOf("/login/") != -1 || request.getHeader("referer").contains("/admin/") || request.getHeader("referer").contains("/networkAdmin/")) {
+                refererUrl = defaultPage;
+            } else {
+                refererUrl = request.getHeader("referer");
+            }
+        } else {
+            refererUrl = defaultPage;
+        }
+
+        // see if SAML login has completed already
+        
+        if (shibProps == null) {
+            errMessage = "No assertion; this stage should never be reached; check the Shibboleth configuration";
+            loginFailed = true;
+            LOGGER.log(Level.SEVERE, errMessage);
+        } else {
+            // SAML login complete
+            //LOGGER.log(Level.FINE, "Reading email attribute as \"{0}\"", ATTR_NAME_EMAIL);
+        	LOGGER.log(Level.INFO, "Reading email attribute as ", shibProps.get(ATTR_NAME_EMAIL));
+        	//final UserAttribute attr_email = userAssert.getAttribute(ATTR_NAME_EMAIL);
+            String attr_email = shibProps.get(ATTR_NAME_EMAIL);
+            //dumpUserAssertAttributes(userAssert);
+            //final Iterator email_list = attr_email.getValues().iterator();
+            
+            final Iterator email_list = Arrays.asList(attr_email.split(",")).iterator();//EKO, todo: CHECK IF NULL
+            VDCUser user = null;
+            try {
+                while (email_list.hasNext() && user == null) {
+                    String email = (String) email_list.next();
+                    user = userService.findByEmail(email);
+                }
+                if (user != null) {
+                    if (user.isActive()) {
+                        LOGGER.log(Level.INFO, "User {0} is active!", user.getUserName());
+                        if (!user.isNetworkAdmin() || ALLOW_ADMIN) {
+                            final String forward = dvnLogin(user, studyId);
+                            LOGGER.log(Level.INFO, "User forwarded to {0}", forward);
+                            redirect = forward;
+                            if (forward != null && forward.startsWith("/HomePage")) {
+                                try {
+                                    response.sendRedirect(refererUrl);
+                                    //response.sendRedirect(refererUrl + redirect);
+                                } catch (IOException ex) {
+                                    errMessage = ex.toString();
+                                    LOGGER.log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        } else {
+                            loginFailed = true;
+                            errMessage = "Admin access is not allowed using federated login";
+                        }
+                    } else {
+                        loginFailed = true;
+                        errMessage = "Account is not active";
+                        LOGGER.log(Level.INFO, "User {0} not active!", user.getUserName());
+                    }
+                } else {
+                    final String usrgivenname = shibProps.get(ATTR_NAME_GIVENNAME);
+                    final String usrprefix = shibProps.get(ATTR_NAME_PREFIX);
+                    final String usrsurname = shibProps.get(ATTR_NAME_SURNAME);
+                    final String usremail = shibProps.get(ATTR_NAME_EMAIL);
+                    final String usrprincipal = shibProps.get(ATTR_NAME_PRINCIPAL);
+                    final String usrrole = shibProps.get(ATTR_NAME_ROLE);
+                    final String usrorg = shibProps.get(ATTR_NAME_ORG);
+
+                    if (usrgivenname != null) {
+                        LOGGER.log(Level.FINE, "Given Name: {0}", usrgivenname);
+                        userdata.put("givenname", usrgivenname);
+                    }
+                    if (usrprefix != null) {
+                        LOGGER.log(Level.FINE, "Prefix: {0}", usrprefix);
+                        userdata.put("prefix", usrprefix);
+                    }
+                    if (usrsurname != null) {
+                        LOGGER.log(Level.FINE, "Surname: {0}", usrsurname);
+                        userdata.put("surname", usrsurname);
+                    }
+                    if (usremail != null) {
+                        LOGGER.log(Level.FINE, "Email: {0}", usremail);
+                        userdata.put("email", usremail);
+                    }
+                    if (usrprincipal != null) {
+                        LOGGER.log(Level.FINE, "Principal Name: {0}", usrprincipal);
+                        userdata.put("principal", usrprincipal);
+                    }
+                    if (usrrole != null) {
+                        LOGGER.log(Level.FINE, "Role: {0}", usrrole);
+                        userdata.put("role", usrrole);
+                    }
+                    if (usrorg != null) {
+                        LOGGER.log(Level.FINE, "Organization: {0}", usrorg);
+                        userdata.put("organization", usrorg);
+                    }
+                    final String usertype = getUserType(userdata);
+                    LOGGER.log(Level.FINE, "User type: {0}", usertype);
+                    final String tempusername = uniqueUserId(userdata);
+
+                    if (!ALLOW_ADMIN && "admin".equals(usertype)) {
+                        loginFailed = true;
+                        errMessage = "Admin access is not allowed using federated login";
+                        String name = ((usrprincipal != null) ? usrprincipal : ((usremail != null) ? usremail : "unknown"));
+                        LOGGER.log(Level.SEVERE, "Admin login not allowed for {0}!", name);
+                    } else if (usertype != null && tempusername != null) {
+                        session.setAttribute("usrusertype", usertype);
+                        session.setAttribute("usrusername", tempusername);
+                        session.setAttribute("ALLOW_ADMIN", ALLOW_ADMIN);
+                        if (usrgivenname != null) {
+                            session.setAttribute("usrgivenname", usrgivenname);
+                        }
+                        if (usrprefix != null) {
+                            session.setAttribute("usrprefix", usrprefix);
+                        }
+                        if (usrsurname != null) {
+                            session.setAttribute("usrsurname", usrsurname);
+                        }
+                        if (usremail != null) {
+                            session.setAttribute("usremail", usremail);
+                        }
+                        if (usrprincipal != null) {
+                            session.setAttribute("usrprincipal", usrprincipal);
+                        }
+                        if (usrrole != null) {
+                            session.setAttribute("usrrole", usrrole);
+                        }
+                        if (usrorg != null) {
+                            session.setAttribute("usrorg", usrorg);
+                        }
+                        redirectToSamlAddAccount();
+                    } else {
+                        loginFailed = true;
+                        if (tempusername == null) {
+                            errMessage = "Unable to determine a unique user id";
+                        } else {
+                            errMessage = "You are not allowed to log in using your federation account";
+                        }
+                        String name = ((usrprincipal != null) ? usrprincipal : ((usremail != null) ? usremail : "unknown"));
+                        LOGGER.log(Level.INFO, "Login not allowed for {0}!", name);
+                    }
+                }
+            } catch (Exception e) {
+                errMessage = e.toString();
+                LOGGER.log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+    private String resolveProtocol(int portNumber) {
+        //String protocol = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase();
+        //Something went wrong in setting the protocol according to the request. Hard coded based on the port number
+        
+        switch (portNumber) {
+            case 443:
+                return "https";
+            case 80:
+            default:
+                return "http";
+        }
+        
+    }
+
+    private String dvnLogin(VDCUser user, Long studyId) {
+        LOGGER.log(Level.FINE, "dvnLogin for user {0}", user.getUserName());
+        LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");
+        LOGGER.log(Level.FINE, "Workflow available; processing login");
+        return lwf.processLogin(user, studyId);
+    }
+
+    public String samlLogin() {
+        // Unused as of now
+        return null;
+    }
+
+    /**
+     * Getter for property loginFailed.
+     * @return Value of property loginFailed.
+     */
+    public boolean isLoginFailed() {
+        return this.loginFailed;
+    }
+
+    /**
+     * Setter for property loginFailed.
+     * @param loginFailed New value of property loginFailed.
+     */
+    public void setLoginFailed(boolean loginFailed) {
+        this.loginFailed = loginFailed;
+    }
+
+    /**
+     * Getter for property errMessage.
+     * @return Value of property errMessage.
+     */
+    public String getErrMessage() {
+        return errMessage;
+    }
+
+    /**
+     * Setter for property errMessage.
+     * @param errMessage New value of property errMessage.
+     */
+    public void setErrMessage(String errMessage) {
+        this.errMessage = errMessage;
+    }
+
+    /**
+     * Getter for property redirect.
+     * @return Value of property redirect.
+     */
+    public String getRedirect() {
+        return this.redirect;
+    }
+
+    /**
+     * Setter for property redirect.
+     * @param redirect New value of property redirect.
+     */
+    public void setRedirect(String redirect) {
+        this.redirect = redirect;
+    }
+
+    /**
+     * Getter for property studyId.
+     * @return Value of property studyId.
+     */
+    public Long getStudyId() {
+        return this.studyId;
+    }
+
+    /**
+     * Setter for property studyId.
+     * @param studyId New value of property studyId.
+     */
+    public void setStudyId(Long studyId) {
+        this.studyId = studyId;
+    }
+
+    /**
+     * Get the value of tab
+     *
+     * @return the value of tab
+     */
+    public String getTab() {
+        return tab;
+    }
+
+    /**
+     * Set the value of tab
+     *
+     * @param tab new value of tab
+     */
+    public void setTab(String tab) {
+        this.tab = tab;
+    }
+
+    /**
+     * Getter for property hiddenStudyId.
+     * @return Value of property hiddenStudyId.
+     */
+    public HtmlInputHidden getHiddenStudyId() {
+        return this.hiddenStudyId;
+    }
+
+    /**
+     * Setter for property hiddenStudyId.
+     * @param hiddenStudyId New value of property hiddenStudyId.
+     */
+    public void setHiddenStudyId(HtmlInputHidden hiddenStudyId) {
+        this.hiddenStudyId = hiddenStudyId;
+    }
+
+    public Boolean isClearWorkflow() {
+        return clearWorkflow;
+    }
+
+    public void setClearWorkflow(Boolean clearWorkflow) {
+        this.clearWorkflow = clearWorkflow;
+    }
+
+    private void readPropertiesFile() {
+        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+        HttpSession session = (HttpSession) context.getSession(true);
+        
+        request = (HttpServletRequest) FacesContext.getCurrentInstance()
+                .getExternalContext().getRequest();
+        
+        shibProps = getShibAttValuesFromTestshib(request);
+
+
+
+//        try {
+//            LOGGER.log(Level.INFO, "Read attribute value from shibboleth env");
+//            /* User attribute names */
+//            if ( request.getAttribute("saml.attributes.email") != null) {
+//                ATTR_NAME_EMAIL = configuration.getProperty("saml.attributes.email");
+//                LOGGER.log(Level.FINE, "Email attribute: {0}", ATTR_NAME_EMAIL);
+//            }
+//            if (configuration.containsKey("saml.attributes.givenname")) {
+//                ATTR_NAME_GIVENNAME = configuration.getProperty("saml.attributes.givenname");
+//                LOGGER.log(Level.FINE, "Given name attribute: {0}", ATTR_NAME_GIVENNAME);
+//            }
+//            if (configuration.containsKey("saml.attributes.givenname")) {
+//                ATTR_NAME_SURNAME = configuration.getProperty("saml.attributes.surname");
+//                LOGGER.log(Level.FINE, "Surname attribute: {0}", ATTR_NAME_SURNAME);
+//            }
+//            if (configuration.containsKey("saml.attributes.prefix")) {
+//                ATTR_NAME_PREFIX = configuration.getProperty("saml.attributes.prefix");
+//                LOGGER.log(Level.FINE, "Surname prefix attribute: {0}", ATTR_NAME_PREFIX);
+//            }
+//            if (configuration.containsKey("saml.attributes.organization")) {
+//                ATTR_NAME_ORG = configuration.getProperty("saml.attributes.organization");
+//                LOGGER.log(Level.FINE, "Organization attribute: {0}", ATTR_NAME_ORG);
+//            }
+//            if (configuration.containsKey("saml.attributes.role")) {
+//                ATTR_NAME_ROLE = configuration.getProperty("saml.attributes.role");
+//                LOGGER.log(Level.FINE, "Role attribute: {0}", ATTR_NAME_ROLE);
+//            }
+//            /* Role access */
+//            if (configuration.containsKey("saml.access.admin")) {
+//                ACL_ADMIN = configuration.getProperty("saml.access.admin");
+//            }
+//            if (configuration.containsKey("saml.access.creator")) {
+//                ACL_CREATOR = configuration.getProperty("saml.access.creator");
+//            }
+//            if (configuration.containsKey("saml.access.user")) {
+//                ACL_USER = configuration.getProperty("saml.access.user");
+//            }
+//            /* User name generation */
+//            if (configuration.containsKey("saml.username.method")) {
+//                USERID_METHOD = configuration.getProperty("saml.username.method");
+//            }
+//            if (configuration.containsKey("saml.username.attribute")) {
+//                USERID_ATTR = configuration.getProperty("saml.username.attribute");
+//            }
+//            if (configuration.containsKey("saml.username.prefix")) {
+//                USERID_PREFIX = configuration.getProperty("saml.username.prefix");
+//            }
+//            if (configuration.containsKey("saml.redirect.referer")) {
+//                USE_REFERER = "yes".equalsIgnoreCase(configuration.getProperty("saml.redirect.referer"));
+//            }
+//            /* Admin access */
+//            if (configuration.containsKey("saml.access.allow.admin")) {
+//                ALLOW_ADMIN = "yes".equalsIgnoreCase(configuration.getProperty("saml.access.allow.admin"));
+//            }
+//        } catch (IOException ex) {
+//            Logger.getLogger(SamlLoginPage.class.getName()).log(Level.SEVERE, "Could not open properties file " + pFileName, ex);
+//        }
+    }
+
+    private Boolean evaluateAccess(final String acl, final HashMap userdata) {
+        Boolean access = false;
+        try {
+            AccessExpressionParser aep = new AccessExpressionParser(acl);
+            access = aep.evaluate(userdata);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error evaluating access", e);
+        }
+        return access;
+    }
+
+    private String getUserType(HashMap userdata) {
+        if (ACL_ADMIN != null && evaluateAccess(ACL_ADMIN, userdata)) {
+            LOGGER.log(Level.FINE, "User type Admin");
+            return "admin";
+        }
+        if (ACL_CREATOR != null && evaluateAccess(ACL_CREATOR, userdata)) {
+            LOGGER.log(Level.FINE, "User type Creator");
+            return "creator";
+        }
+        if (ACL_USER != null && evaluateAccess(ACL_USER, userdata)) {
+            LOGGER.log(Level.FINE, "User type User");
+            return "user";
+        }
+        return null;
+    }
+    
+    public String getUUID() {
+        return UUID.randomUUID().toString().toLowerCase();
+    }
+
+    public String stripNonAlphaNum(String in) {
+        String out = "";
+        if (in == null) {
+            return "";
+        }
+        int l = in.length();
+        for (int i = 0; i < l; i++) {
+            char c = in.charAt(i);
+            if ((c >= 'A' & c <= 'Z')
+                    || (c >= 'a' & c <= 'z')
+                    || (c >= '0' & c <= '9')) {
+                out += c;
+            }
+        }
+        return out;
+    }
+
+    private String uniqueUserId(HashMap data) {
+        if ("uuid".equalsIgnoreCase(USERID_METHOD)) {
+            LOGGER.log(Level.FINE, "User Id generation method: UUID");
+            String uuid = stripNonAlphaNum(getUUID());
+            LOGGER.log(Level.INFO, "Generated user id {0}.", uuid);
+            return uuid;
+        }
+        if ("attr".equalsIgnoreCase(USERID_METHOD)) {
+            LOGGER.log(Level.FINE, "User Id generation method: attribute {0}", USERID_ATTR);
+            String base = null;
+            if ("surname".equalsIgnoreCase(USERID_ATTR)) {
+                base = (String) data.get("surname");
+            } else if ("givenname".equalsIgnoreCase(USERID_ATTR)) {
+                base = (String) data.get("givenname");
+            } else if ("principal".equalsIgnoreCase(USERID_ATTR)) {
+                base = (String) data.get("principal");
+            } else { // email
+                final List emaillist = (List) data.get("email");
+                if (emaillist != null && emaillist.size() > 0) {
+                    base = (String) emaillist.get(0); // first item in list
+                }
+            }
+            if (base != null) {
+                if (USERID_PREFIX != null) {
+                    base = USERID_PREFIX + base;
+                }
+                String tuid = stripNonAlphaNum(base);
+                String xuid = tuid;
+                LOGGER.log(Level.FINE, "Base user id {0}.", tuid);
+                int n = 0;
+                Boolean unique = false;
+                while (!unique) {
+                    VDCUser user = userService.findByUserName(xuid);
+                    unique = (user == null);
+                    if (!unique) {
+                        n++;
+                        xuid = tuid + Integer.toString(n);
+                    }
+                }
+                LOGGER.log(Level.INFO, "Generated user id {0}.", xuid);
+                return xuid;
+            }
+        }
+        LOGGER.log(Level.SEVERE, "Unable to generate user id");
+        return null;
+    }
+
+    private HttpServletResponse getHttpResponse() {
+        if (response == null) {
+            ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+            HttpSession session = (HttpSession) context.getSession(true);
+            response = (HttpServletResponse) context.getResponse();
+        }
+        return response;
+    }
+
+    private void redirectToSamlAddAccount() {
+        FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
+        HttpServletResponse hresponse = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();
+        String requestContextPath = fc.getExternalContext().getRequestContextPath();
+        try {
+            hresponse.sendRedirect(requestContextPath + "/faces/login/SamlAddAccountPage.xhtml");
+            fc.responseComplete();
+        } catch (IOException ex) {
+            throw new RuntimeException("IOException thrown while trying to redirect to addaccount");
+        }
+    }
+
+//    private void dumpUserAssertAttributes(UserAssertion userAssert) {
+//        LOGGER.log(Level.FINEST, "Dump of received attributes:");
+//        ArrayList l = new ArrayList(userAssert.getAllAttributes());
+//        for (Iterator it = l.iterator(); it.hasNext();) {
+//            UserAttribute a = (UserAttribute) it.next();
+//            String aname = a.getName();
+//            String aval  = a.getValues().toString();
+//            LOGGER.log(Level.FINEST, "{0}: {1}", new String[]{aname, aval});
+//        }
+//    }
+//    
+    
+    
+    private String AJP_ATTR_NAME_EMAIL = "AJP_Shib_email";
+    private String AJP_ATTR_NAME_SURNAME = "AJP_Shib_surName";
+    private String AJP_ATTR_NAME_PREFIX = "prefix";
+    private String AJP_ATTR_NAME_GIVENNAME = "AJP_Shib_givenName";
+    private String AJP_ATTR_NAME_ROLE = "eduPersonAffiliation";//TODO!!!!
+    private String AJP_ATTR_NAME_ORG = "AJP_Shib_HomeOrg";
+    private String AJP_ATTR_NAME_PRINCIPAL = "AJP_Shib_eduPersonPN";
+    
+    private Map<String, String> getShibAttValues(HttpServletRequest request) {
+    	Map<String, String> shibAtt = new HashMap<String, String>();
+    	//urn:mace:dir:attribute-def:mail
+    	if (request.getAttribute(AJP_ATTR_NAME_EMAIL) != null) {
+    		shibAtt.put(ATTR_NAME_EMAIL, (String)request.getAttribute(AJP_ATTR_NAME_EMAIL));
+    	}
+    	
+    	//urn:mace:dir:attribute-def:sn
+    	if (request.getAttribute(AJP_ATTR_NAME_SURNAME) != null) {
+    		shibAtt.put(ATTR_NAME_SURNAME, (String)request.getAttribute(AJP_ATTR_NAME_SURNAME));
+    	}
+    	
+    	//snPrefix NOTE: Dit attribuut wordt niet aangeleverd door SURFnet; er is een verstekwaarde ingevuld
+    	if (request.getAttribute(AJP_ATTR_NAME_PREFIX) != null) {
+    		shibAtt.put(AJP_ATTR_NAME_PREFIX, "PREFIX");
+    	} 
+    	
+    	//urn:mace:dir:attribute-def:givenName
+    	if (request.getAttribute(AJP_ATTR_NAME_GIVENNAME) != null) {
+    		shibAtt.put(ATTR_NAME_GIVENNAME, (String)request.getAttribute(AJP_ATTR_NAME_GIVENNAME));
+    	}
+    	
+    	//urn:mace:terena.org:attribute-def:schacHomeOrganization
+    	if (request.getAttribute(AJP_ATTR_NAME_ORG) != null) {
+    		shibAtt.put(ATTR_NAME_ORG, (String)request.getAttribute(AJP_ATTR_NAME_ORG));
+    	}
+
+    	//TODO!!!!!!!!!!!!!!!!!
+    	//urn:mace:dir:attribute-def:eduPersonAffiliation
+    	if (request.getAttribute(AJP_ATTR_NAME_ROLE) != null) {
+    		shibAtt.put(ATTR_NAME_ROLE, (String)request.getAttribute(AJP_ATTR_NAME_ROLE));
+    	}
+
+    	
+    	//urn:mace:dir:attribute-def:eduPersonPrincipalName
+    	if (request.getAttribute(AJP_ATTR_NAME_PRINCIPAL) != null) {
+    		shibAtt.put(ATTR_NAME_PRINCIPAL, (String)request.getAttribute(AJP_ATTR_NAME_PRINCIPAL));
+    	}
+    	
+    	return shibAtt;
+    }
+    
+    
+    /**
+    
+    {unscoped-affiliation=Member;Staff, 
+    Shib-Session-ID=_5f36c617c057ec2dc801c2432bb2295d, 
+    sn=And I, 
+    Shib-Authentication-Instant=2014-04-08T10:14:47.798Z, 
+    javax.servlet.request.key_size=128, 
+    givenName=Me Myself, 
+    Shib-Session-Index=_2aab515b6c2d446f6e7510c2de7df057, 
+    Shib-AuthnContext-Class=urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport, 
+    eppn=myself@testshib.org, 
+    javax.servlet.request.ssl_session_id=245C3110140E337B7DFE40C7C8E786A5DCCE33C5CDF0F3E0C32B302986540D74, 
+    Shib-Authentication-Method=urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport, 
+    persistent-id=https://idp.testshib.org/idp/shibboleth!https://sp.dans.knaw.nl/shibboleth!W43vdLyU8zPDSSI6rzkd3Jbwlik=, 
+    cn=Me Myself And I, 
+    Shib-Application-ID=default, 
+    telephoneNumber=555-5555, 
+    AJP_REMOTE_PORT=53547, 
+    affiliation=Member@testshib.org;
+    Staff@testshib.org, 
+    Shib-Identity-Provider=https://idp.testshib.org/idp/shibboleth, j
+    avax.servlet.request.cipher_suite=DHE-RSA-AES128-SHA, 
+    entitlement=urn:mace:dir:entitlement:common-lib-terms}
+     
+     
+    */
+	private Map<String, String> getShibAttValuesFromTestshib(HttpServletRequest request) {
+		Map<String, String> shibAtt = new HashMap<String, String>();
+		//urn:mace:dir:attribute-def:mail
+		if (request.getAttribute("eppn") != null) {
+			shibAtt.put(ATTR_NAME_EMAIL, (String)request.getAttribute("eppn"));
+		}
+		
+		//urn:mace:dir:attribute-def:sn
+		if (request.getAttribute("sn") != null) {
+			shibAtt.put(ATTR_NAME_SURNAME, (String)request.getAttribute("sn"));
+		}
+		
+		//snPrefix NOTE: Dit attribuut wordt niet aangeleverd door SURFnet; er is een verstekwaarde ingevuld
+		if (request.getAttribute(AJP_ATTR_NAME_PREFIX) != null) {
+			shibAtt.put(AJP_ATTR_NAME_PREFIX, "PREFIX");
+		} 
+		
+		//urn:mace:dir:attribute-def:givenName
+		if (request.getAttribute("givenName") != null) {
+			shibAtt.put(ATTR_NAME_GIVENNAME, (String)request.getAttribute("givenName"));
+		}
+		
+		//urn:mace:terena.org:attribute-def:schacHomeOrganization
+		if (request.getAttribute(AJP_ATTR_NAME_ORG) != null) {
+			shibAtt.put(ATTR_NAME_ORG, (String)request.getAttribute(AJP_ATTR_NAME_ORG));
+		}
+	
+		//TODO!!!!!!!!!!!!!!!!!
+		//urn:mace:dir:attribute-def:eduPersonAffiliation
+		if (request.getAttribute("affiliation") != null) {
+			shibAtt.put(ATTR_NAME_ROLE, (String)request.getAttribute("affiliation"));
+		}
+	
+		
+		//urn:mace:dir:attribute-def:eduPersonPrincipalName
+		if (request.getAttribute("cn") != null) {
+			shibAtt.put(ATTR_NAME_PRINCIPAL, (String)request.getAttribute("cn"));
+		}
+		
+		return shibAtt;
+	}
+}

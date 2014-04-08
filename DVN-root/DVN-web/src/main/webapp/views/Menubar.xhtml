@@ -74,18 +74,23 @@
                                         </li>
                                     </ice:outputText>
                                     <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.logoutPage or VDCSession.loginBean.user==null}">
-                                        <li class="dvn_navUserName">
+                                        <!--  li class="dvn_navUserName">
                                             <ice:form rendered="#{!VDCRequest.readOnlyDatabase}">
-                                                <ice:commandLink action="#{LoginWorkflowBean.beginContributorWorkflow}" title="Create Account">
+                                                <ice:commandLink action="#{LoginWorkflowBean.beginContributorWorkflow}" title="Create Account - EKO 7">
                                                     <ice:outputText value="#{bundle.createaccountLabel}"/>
                                                 </ice:commandLink>
                                             </ice:form>
-                                        </li>
+                                        </li -->
                                         <ice:outputText nospan="true" escape="false" rendered="#{!VDCRequest.logoutPage and VDCSession.ipUserGroup.friendlyName != null}">
                                             <li class="dvn_navUserGroup">
                                                 <ice:outputText value="#{VDCSession.ipUserGroup.friendlyName}"/>
                                             </li>
                                         </ice:outputText>
+                                        <li>
+                                        	<ice:outputLink value="https://sp.dans.knaw.nl/Shibboleth.sso/Login?target=%2Fdvn%2Ffaces%2Flogin%2FShibLoginPage.xhtml?clearWorkflow=true" title="Federated Log In">
+            									<ice:outputText value="Log In"/>
+          									</ice:outputLink>
+                                        </li>
                                         <li>
                                             <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml?clearWorkflow=true" title="Log In">
                                                 <ice:outputText value="#{bundle.loginLabel}"/>

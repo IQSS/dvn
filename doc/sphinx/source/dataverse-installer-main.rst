@@ -590,6 +590,8 @@ Add the following JVM options:
 
 ``-Ddoi.password=<password of your EZID account>``
 
+``-Ddoi.baseurlstring=https://ezid.cdlib.org``
+
 Note: The DVN app comes bundled with the EZID API client libraries. You do not need to install these separately.
 
 Appendix

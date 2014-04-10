@@ -50,4 +50,6 @@ public interface NetworkRoleServiceLocal extends java.io.Serializable  {
     
     public NetworkRole  getCreatorRole();     
     
+    public NetworkRole getNetworkAdminRole();     
+
 }

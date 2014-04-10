@@ -43,6 +43,8 @@ public interface MailServiceLocal  extends java.io.Serializable  {
     
     public void sendPasswordUpdateNotification(String userEmail, String userFirstName, String userName, String newPassword);
     
+    public void sendNetworkAdminAccountNotification(String adminEmail, String userName);
+    
     public void sendCreatorAccountNotification(String adminEmail, String userName);
 
     public void sendContributorAccountNotification(String adminEmail, String userName, String dataverseName);

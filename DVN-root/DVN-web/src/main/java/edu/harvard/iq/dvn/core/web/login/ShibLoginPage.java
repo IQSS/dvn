@@ -242,7 +242,7 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
                         if (usrorg != null) {
                             session.setAttribute("usrorg", usrorg);
                         }
-                        redirectToSamlAddAccount();
+                        redirectToShibAddAccount();
                     } else {
                         loginFailed = true;
                         if (tempusername == null) {
@@ -518,12 +518,12 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
         return response;
     }
 
-    private void redirectToSamlAddAccount() {
+    private void redirectToShibAddAccount() {
         FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
         HttpServletResponse hresponse = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();
         String requestContextPath = fc.getExternalContext().getRequestContextPath();
         try {
-            hresponse.sendRedirect(requestContextPath + "/faces/login/SamlAddAccountPage.xhtml");
+            hresponse.sendRedirect(requestContextPath + "/faces/login/ShibAddAccountPage.xhtml");
             fc.responseComplete();
         } catch (IOException ex) {
             throw new RuntimeException("IOException thrown while trying to redirect to addaccount");

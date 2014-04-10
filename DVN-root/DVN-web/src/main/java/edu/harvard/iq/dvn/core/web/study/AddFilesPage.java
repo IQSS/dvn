@@ -1200,13 +1200,13 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             //fileTypesOther = new SelectItem[1];
 
             fileTypes.add( new SelectItem("", "Choose a Data Type", "", true) );
-            fileTypesSubsettable[0] = new SelectItem("por", "SPSS/POR");
-            fileTypesSubsettable[1] = new SelectItem("sav", "SPSS/SAV");
-            fileTypesSubsettable[2] = new SelectItem("dta", "Stata");
-            fileTypesSubsettable[3] = new SelectItem("rdata", "RData");
-            fileTypesSubsettable[4] = new SelectItem("spss", "CSV (w/SPSS card)");
-            fileTypesSubsettable[5] = new SelectItem("ddi", "TAB (w/DDI)");
-            fileTypesSubsettable[6] = new SelectItem("porextra", "SPSS/POR,(w/labels)");
+//            fileTypesSubsettable[0] = new SelectItem("por", "SPSS/POR");
+//            fileTypesSubsettable[1] = new SelectItem("sav", "SPSS/SAV");
+//            fileTypesSubsettable[2] = new SelectItem("dta", "Stata");
+//            fileTypesSubsettable[3] = new SelectItem("rdata", "RData");
+//            fileTypesSubsettable[4] = new SelectItem("spss", "CSV (w/SPSS card)");
+//            fileTypesSubsettable[5] = new SelectItem("ddi", "TAB (w/DDI)");
+//            fileTypesSubsettable[6] = new SelectItem("porextra", "SPSS/POR,(w/labels)");
 
             /* 
              * Commenting out RData, for the 3.4 release: 
@@ -1216,15 +1216,15 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             * when you put it back!)
             * */
 
-            fileTypes.add( new SelectItemGroup("Tabular Data", "", false, fileTypesSubsettable) );
-
-            fileTypesNetwork[0] = new SelectItem("graphml", "GraphML");
-
-            fileTypes.add( new SelectItemGroup("Network Data", "", false, fileTypesNetwork) );
-            
-            fileTypes.add( new SelectItem("multizip", "Zip Archive (Multiple Files)"));
-            fileTypes.add( new SelectItem("multitar", "Tar Archive (Multiple Files)"));
-            fileTypes.add( new SelectItem("fits", "FITS file"));
+//            fileTypes.add( new SelectItemGroup("Tabular Data", "", false, fileTypesSubsettable) );
+//
+//            fileTypesNetwork[0] = new SelectItem("graphml", "GraphML");
+//
+//            fileTypes.add( new SelectItemGroup("Network Data", "", false, fileTypesNetwork) );
+//            
+//            fileTypes.add( new SelectItem("multizip", "Zip Archive (Multiple Files)"));
+//            fileTypes.add( new SelectItem("multitar", "Tar Archive (Multiple Files)"));
+//            fileTypes.add( new SelectItem("fits", "FITS file"));
             fileTypes.add( new SelectItem("other", "Other") );
         }
 

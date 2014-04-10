@@ -34,14 +34,13 @@ import edu.harvard.iq.dvn.core.web.util.AccessExpressionParser;
 
 /**
  *
- * @author mpieters
+ * @author Eko Indarto
  */
-@ViewScoped
 @Named("ShibLoginPage")
+@ViewScoped
 public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
 
 
-    private final static Logger LOGGER = Logger.getLogger(ShibLoginPage.class.getPackage().getName());
     @EJB
     UserServiceLocal userService;
     @EJB
@@ -49,6 +48,8 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
     @EJB
     VDCNetworkServiceLocal vdcNetworkService;
     // ---
+    
+    private final static Logger LOGGER = Logger.getLogger(ShibLoginPage.class.getPackage().getName());
     String refererUrl = "";
     private String errMessage = "";
     String userId = "";
@@ -77,18 +78,7 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
     private String USERID_PREFIX = "";
     private HashMap userdata = new HashMap();
     private Map<String, String> shibProps;
-
-    /**
-     * <p>Construct a new Page bean instance.</p>
-     */
-    public ShibLoginPage() {
-        super();
-        LOGGER.log(Level.FINE, "Instantiating ShibLogin");
-        readPropertiesFile();
-        System.out.println("XXXXXXXXXXXXXXXXXXXXXX userService" + userService );
-        if (shibProps != null)
-        	init();
-    }
+    private String SHIB_PROPS_SESSION = "shibPropsSession";
 
     /**
      * <p>Callback method that is called whenever a page is navigated to,
@@ -105,23 +95,19 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
     @Override
     public void init() {
         super.init();
-        if (clearWorkflow != null) {
-            LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");
-            lwf.clearWorkflowState();
-        }
+        
+        
         ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
         HttpSession session = (HttpSession) context.getSession(true);
         request = (HttpServletRequest) context.getRequest();
         response = (HttpServletResponse) context.getResponse();
-        int x = request.getServerPort();
-        String s = request.getContextPath();
-        //String protocol = resolveProtocol(request.getServerPort());
+        String protocol = resolveProtocol(request.getServerPort());
         String defaultPage = "";
-        //String serverPort = (request.getServerPort() != 80) ? ":" + request.getServerPort() : "";
-        if (getVDCRequestBean() != null && getVDCRequestBean().getCurrentVDC() != null) {
-            defaultPage = "http" + "://" + request.getServerName() + request.getContextPath() + "/dv/" + getVDCRequestBean().getCurrentVDC().getAlias();
+        String serverPort = (request.getServerPort() != 80) ? ":" + request.getServerPort() : "";
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath() + "/dv/" + getVDCRequestBean().getCurrentVDC().getAlias();
         } else {
-            defaultPage = "https" + "://" + request.getServerName() + request.getContextPath();
+            defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath();
         }
         if (USE_REFERER && request.getHeader("referer") != null && !request.getHeader("referer").equals("")) {
             if (request.getHeader("referer").indexOf("/login/") != -1 || request.getHeader("referer").contains("/admin/") || request.getHeader("referer").contains("/networkAdmin/")) {
@@ -132,8 +118,10 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
         } else {
             refererUrl = defaultPage;
         }
-
+        
         // see if SAML login has completed already
+        //UserAssertion userAssert = (UserAssertion) session.getAttribute(assertName); NOTE: There is no session.setAttribute(assertName) in the UU code, so I think it is done in the oiosaml war.
+        shibProps = (Map<String, String>)session.getAttribute(SHIB_PROPS_SESSION);
         
         if (shibProps == null) {
             errMessage = "No assertion; this stage should never be reached; check the Shibboleth configuration";
@@ -148,16 +136,18 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
             //dumpUserAssertAttributes(userAssert);
             //final Iterator email_list = attr_email.getValues().iterator();
             
-            final Iterator email_list = Arrays.asList(attr_email.split(",")).iterator();//EKO, todo: CHECK IF NULL
+            final Iterator<String> email_list = Arrays.asList(attr_email.split(",")).iterator();//EKO, todo: CHECK IF attr_email is NULL; Why a user can have more than 1 email?
             VDCUser user = null;
             try {
                 while (email_list.hasNext() && user == null) {
                     String email = (String) email_list.next();
                     user = userService.findByEmail(email);
                 }
+                VDCUser user1 = userService.findByUserName("e.indart@gmail.com");
+                List users = userService.findAll();
                 if (user != null) {
                     if (user.isActive()) {
-                        LOGGER.log(Level.INFO, "User {0} is active!", user.getUserName());
+                        LOGGER.log(Level.INFO, "User is active!", user.getUserName());
                         if (!user.isNetworkAdmin() || ALLOW_ADMIN) {
                             final String forward = dvnLogin(user, studyId);
                             LOGGER.log(Level.INFO, "User forwarded to {0}", forward);
@@ -181,6 +171,7 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
                         LOGGER.log(Level.INFO, "User {0} not active!", user.getUserName());
                     }
                 } else {
+                	
                     final String usrgivenname = shibProps.get(ATTR_NAME_GIVENNAME);
                     final String usrprefix = shibProps.get(ATTR_NAME_PREFIX);
                     final String usrsurname = shibProps.get(ATTR_NAME_SURNAME);
@@ -190,35 +181,35 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
                     final String usrorg = shibProps.get(ATTR_NAME_ORG);
 
                     if (usrgivenname != null) {
-                        LOGGER.log(Level.FINE, "Given Name: {0}", usrgivenname);
+                        LOGGER.log(Level.INFO, "Given Name: ", usrgivenname);
                         userdata.put("givenname", usrgivenname);
                     }
                     if (usrprefix != null) {
-                        LOGGER.log(Level.FINE, "Prefix: {0}", usrprefix);
+                        LOGGER.log(Level.INFO, "Prefix: ", usrprefix);
                         userdata.put("prefix", usrprefix);
                     }
                     if (usrsurname != null) {
-                        LOGGER.log(Level.FINE, "Surname: {0}", usrsurname);
+                        LOGGER.log(Level.INFO, "Surname: ", usrsurname);
                         userdata.put("surname", usrsurname);
                     }
                     if (usremail != null) {
-                        LOGGER.log(Level.FINE, "Email: {0}", usremail);
+                        LOGGER.log(Level.INFO, "Email: ", usremail);
                         userdata.put("email", usremail);
                     }
                     if (usrprincipal != null) {
-                        LOGGER.log(Level.FINE, "Principal Name: {0}", usrprincipal);
+                        LOGGER.log(Level.INFO, "Principal Name: ", usrprincipal);
                         userdata.put("principal", usrprincipal);
                     }
                     if (usrrole != null) {
-                        LOGGER.log(Level.FINE, "Role: {0}", usrrole);
+                        LOGGER.log(Level.INFO, "Role: ", usrrole);
                         userdata.put("role", usrrole);
                     }
                     if (usrorg != null) {
-                        LOGGER.log(Level.FINE, "Organization: {0}", usrorg);
+                        LOGGER.log(Level.INFO, "Organization:", usrorg);
                         userdata.put("organization", usrorg);
                     }
                     final String usertype = getUserType(userdata);
-                    LOGGER.log(Level.FINE, "User type: {0}", usertype);
+                    LOGGER.log(Level.INFO, "User type: {0}", usertype);
                     final String tempusername = uniqueUserId(userdata);
 
                     if (!ALLOW_ADMIN && "admin".equals(usertype)) {
@@ -284,10 +275,17 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
         
     }
 
+    /** 
+     * <p>Construct a new Page bean instance.</p>
+     */
+    public ShibLoginPage() {
+    	readShibProps();
+    }
+    
     private String dvnLogin(VDCUser user, Long studyId) {
-        LOGGER.log(Level.FINE, "dvnLogin for user {0}", user.getUserName());
+        LOGGER.log(Level.INFO, "dvnLogin for user {0}", user.getUserName());
         LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");
-        LOGGER.log(Level.FINE, "Workflow available; processing login");
+        LOGGER.log(Level.INFO, "Workflow available; processing login");
         return lwf.processLogin(user, studyId);
     }
 
@@ -402,74 +400,17 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
         this.clearWorkflow = clearWorkflow;
     }
 
-    private void readPropertiesFile() {
+    private void readShibProps() {
         ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
         HttpSession session = (HttpSession) context.getSession(true);
         
         request = (HttpServletRequest) FacesContext.getCurrentInstance()
                 .getExternalContext().getRequest();
         
-        shibProps = getShibAttValuesFromTestshib(request);
+        shibProps = getShibAttValuesMock(request);
+        
+        session.setAttribute(SHIB_PROPS_SESSION, shibProps);
 
-
-
-//        try {
-//            LOGGER.log(Level.INFO, "Read attribute value from shibboleth env");
-//            /* User attribute names */
-//            if ( request.getAttribute("saml.attributes.email") != null) {
-//                ATTR_NAME_EMAIL = configuration.getProperty("saml.attributes.email");
-//                LOGGER.log(Level.FINE, "Email attribute: {0}", ATTR_NAME_EMAIL);
-//            }
-//            if (configuration.containsKey("saml.attributes.givenname")) {
-//                ATTR_NAME_GIVENNAME = configuration.getProperty("saml.attributes.givenname");
-//                LOGGER.log(Level.FINE, "Given name attribute: {0}", ATTR_NAME_GIVENNAME);
-//            }
-//            if (configuration.containsKey("saml.attributes.givenname")) {
-//                ATTR_NAME_SURNAME = configuration.getProperty("saml.attributes.surname");
-//                LOGGER.log(Level.FINE, "Surname attribute: {0}", ATTR_NAME_SURNAME);
-//            }
-//            if (configuration.containsKey("saml.attributes.prefix")) {
-//                ATTR_NAME_PREFIX = configuration.getProperty("saml.attributes.prefix");
-//                LOGGER.log(Level.FINE, "Surname prefix attribute: {0}", ATTR_NAME_PREFIX);
-//            }
-//            if (configuration.containsKey("saml.attributes.organization")) {
-//                ATTR_NAME_ORG = configuration.getProperty("saml.attributes.organization");
-//                LOGGER.log(Level.FINE, "Organization attribute: {0}", ATTR_NAME_ORG);
-//            }
-//            if (configuration.containsKey("saml.attributes.role")) {
-//                ATTR_NAME_ROLE = configuration.getProperty("saml.attributes.role");
-//                LOGGER.log(Level.FINE, "Role attribute: {0}", ATTR_NAME_ROLE);
-//            }
-//            /* Role access */
-//            if (configuration.containsKey("saml.access.admin")) {
-//                ACL_ADMIN = configuration.getProperty("saml.access.admin");
-//            }
-//            if (configuration.containsKey("saml.access.creator")) {
-//                ACL_CREATOR = configuration.getProperty("saml.access.creator");
-//            }
-//            if (configuration.containsKey("saml.access.user")) {
-//                ACL_USER = configuration.getProperty("saml.access.user");
-//            }
-//            /* User name generation */
-//            if (configuration.containsKey("saml.username.method")) {
-//                USERID_METHOD = configuration.getProperty("saml.username.method");
-//            }
-//            if (configuration.containsKey("saml.username.attribute")) {
-//                USERID_ATTR = configuration.getProperty("saml.username.attribute");
-//            }
-//            if (configuration.containsKey("saml.username.prefix")) {
-//                USERID_PREFIX = configuration.getProperty("saml.username.prefix");
-//            }
-//            if (configuration.containsKey("saml.redirect.referer")) {
-//                USE_REFERER = "yes".equalsIgnoreCase(configuration.getProperty("saml.redirect.referer"));
-//            }
-//            /* Admin access */
-//            if (configuration.containsKey("saml.access.allow.admin")) {
-//                ALLOW_ADMIN = "yes".equalsIgnoreCase(configuration.getProperty("saml.access.allow.admin"));
-//            }
-//        } catch (IOException ex) {
-//            Logger.getLogger(SamlLoginPage.class.getName()).log(Level.SEVERE, "Could not open properties file " + pFileName, ex);
-//        }
     }
 
     private Boolean evaluateAccess(final String acl, final HashMap userdata) {
@@ -520,15 +461,15 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
         return out;
     }
 
-    private String uniqueUserId(HashMap data) {
+    private String uniqueUserId(Map<String, Object> data) {
         if ("uuid".equalsIgnoreCase(USERID_METHOD)) {
-            LOGGER.log(Level.FINE, "User Id generation method: UUID");
+            LOGGER.log(Level.INFO, "User Id generation method: UUID");
             String uuid = stripNonAlphaNum(getUUID());
             LOGGER.log(Level.INFO, "Generated user id {0}.", uuid);
             return uuid;
         }
         if ("attr".equalsIgnoreCase(USERID_METHOD)) {
-            LOGGER.log(Level.FINE, "User Id generation method: attribute {0}", USERID_ATTR);
+            LOGGER.log(Level.INFO, "User Id generation method: attribute {0}", USERID_ATTR);
             String base = null;
             if ("surname".equalsIgnoreCase(USERID_ATTR)) {
                 base = (String) data.get("surname");
@@ -537,6 +478,7 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
             } else if ("principal".equalsIgnoreCase(USERID_ATTR)) {
                 base = (String) data.get("principal");
             } else { // email
+            	 
                 final List emaillist = (List) data.get("email");
                 if (emaillist != null && emaillist.size() > 0) {
                     base = (String) emaillist.get(0); // first item in list
@@ -548,7 +490,7 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
                 }
                 String tuid = stripNonAlphaNum(base);
                 String xuid = tuid;
-                LOGGER.log(Level.FINE, "Base user id {0}.", tuid);
+                LOGGER.log(Level.INFO, "Base user id {0}.", tuid);
                 int n = 0;
                 Boolean unique = false;
                 while (!unique) {
@@ -601,56 +543,155 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
 //    
     
     
-    private String AJP_ATTR_NAME_EMAIL = "AJP_Shib_email";
-    private String AJP_ATTR_NAME_SURNAME = "AJP_Shib_surName";
-    private String AJP_ATTR_NAME_PREFIX = "prefix";
-    private String AJP_ATTR_NAME_GIVENNAME = "AJP_Shib_givenName";
-    private String AJP_ATTR_NAME_ROLE = "eduPersonAffiliation";//TODO!!!!
-    private String AJP_ATTR_NAME_ORG = "AJP_Shib_HomeOrg";
-    private String AJP_ATTR_NAME_PRINCIPAL = "AJP_Shib_eduPersonPN";
+    private String SHIB_ATTR_NAME_EMAIL = "Shib_email";
+    private String SHIB_ATTR_NAME_SURNAME = "Shib_surName";
+    private String SHIB_ATTR_NAME_PREFIX = "prefix";
+    private String SHIB_ATTR_NAME_GIVENNAME = "Shib_givenName";
+    private String SHIB_ATTR_NAME_ROLE = "eduPersonAffiliation";//TODO!!!!
+    private String SHIB_ATTR_NAME_ORG = "Shib_HomeOrg";
+    private String SHIB_ATTR_NAME_PRINCIPAL = "Shib_eduPersonPN";
     
+    
+    /*
+     * SamlLogin.properties mapping to shibboleth
+     * /home/ubudvn_homedir/glassfish3/glassfish/domains/domain1/applications/DVN-web/WEB-INF/SamlLogin.properties
+     */
     private Map<String, String> getShibAttValues(HttpServletRequest request) {
     	Map<String, String> shibAtt = new HashMap<String, String>();
-    	//urn:mace:dir:attribute-def:mail
-    	if (request.getAttribute(AJP_ATTR_NAME_EMAIL) != null) {
-    		shibAtt.put(ATTR_NAME_EMAIL, (String)request.getAttribute(AJP_ATTR_NAME_EMAIL));
+    	
+    	/* User attribute names */
+    	//saml.attributes.email=urn:mace:dir:attribute-def:mail
+    	if (request.getAttribute(SHIB_ATTR_NAME_EMAIL) != null) {
+    		shibAtt.put(ATTR_NAME_EMAIL, (String)request.getAttribute(SHIB_ATTR_NAME_EMAIL));
     	}
     	
-    	//urn:mace:dir:attribute-def:sn
-    	if (request.getAttribute(AJP_ATTR_NAME_SURNAME) != null) {
-    		shibAtt.put(ATTR_NAME_SURNAME, (String)request.getAttribute(AJP_ATTR_NAME_SURNAME));
+    	//saml.attributes.surname=urn:mace:dir:attribute-def:sn
+    	if (request.getAttribute(SHIB_ATTR_NAME_SURNAME) != null) {
+    		shibAtt.put(ATTR_NAME_SURNAME, (String)request.getAttribute(SHIB_ATTR_NAME_SURNAME));
     	}
     	
-    	//snPrefix NOTE: Dit attribuut wordt niet aangeleverd door SURFnet; er is een verstekwaarde ingevuld
-    	if (request.getAttribute(AJP_ATTR_NAME_PREFIX) != null) {
-    		shibAtt.put(AJP_ATTR_NAME_PREFIX, "PREFIX");
+    	//saml.attributes.prefix=snPrefix
+    	//NOTE: Dit attribuut wordt niet aangeleverd door SURFnet; er is een verstekwaarde ingevuld
+    	if (request.getAttribute(SHIB_ATTR_NAME_PREFIX) != null) {
+    		shibAtt.put(SHIB_ATTR_NAME_PREFIX, "shib");
     	} 
     	
-    	//urn:mace:dir:attribute-def:givenName
-    	if (request.getAttribute(AJP_ATTR_NAME_GIVENNAME) != null) {
-    		shibAtt.put(ATTR_NAME_GIVENNAME, (String)request.getAttribute(AJP_ATTR_NAME_GIVENNAME));
+    	//saml.attributes.givenname=urn:mace:dir:attribute-def:givenName
+    	if (request.getAttribute(SHIB_ATTR_NAME_GIVENNAME) != null) {
+    		shibAtt.put(ATTR_NAME_GIVENNAME, (String)request.getAttribute(SHIB_ATTR_NAME_GIVENNAME));
     	}
     	
-    	//urn:mace:terena.org:attribute-def:schacHomeOrganization
-    	if (request.getAttribute(AJP_ATTR_NAME_ORG) != null) {
-    		shibAtt.put(ATTR_NAME_ORG, (String)request.getAttribute(AJP_ATTR_NAME_ORG));
+    	//saml.attributes.organization=urn:mace:terena.org:attribute-def:schacHomeOrganization
+    	if (request.getAttribute(SHIB_ATTR_NAME_ORG) != null) {
+    		shibAtt.put(ATTR_NAME_ORG, (String)request.getAttribute(SHIB_ATTR_NAME_ORG));
     	}
-
-    	//TODO!!!!!!!!!!!!!!!!!
-    	//urn:mace:dir:attribute-def:eduPersonAffiliation
-    	if (request.getAttribute(AJP_ATTR_NAME_ROLE) != null) {
-    		shibAtt.put(ATTR_NAME_ROLE, (String)request.getAttribute(AJP_ATTR_NAME_ROLE));
-    	}
-
     	
-    	//urn:mace:dir:attribute-def:eduPersonPrincipalName
-    	if (request.getAttribute(AJP_ATTR_NAME_PRINCIPAL) != null) {
-    		shibAtt.put(ATTR_NAME_PRINCIPAL, (String)request.getAttribute(AJP_ATTR_NAME_PRINCIPAL));
+    	//NOTE: role: de rol bij de organisatie. De SURFfederatie kent de waarden student, employee, staff, alum en affiliate. Dit attribuut is meerwaardig.
+    	//attribute role
+    	//saml.attributes.role=urn:mace:dir:attribute-def:eduPersonAffiliation
+    	if (request.getAttribute(SHIB_ATTR_NAME_ROLE) != null) {
+    		shibAtt.put(ATTR_NAME_ROLE, (String)request.getAttribute(SHIB_ATTR_NAME_ROLE));
     	}
+
+    	//saml.attributes.principal=urn:mace:dir:attribute-def:eduPersonPrincipalName
+    	if (request.getAttribute(SHIB_ATTR_NAME_PRINCIPAL) != null) {
+    		shibAtt.put(ATTR_NAME_PRINCIPAL, (String)request.getAttribute(SHIB_ATTR_NAME_PRINCIPAL));
+    	}
+    	
+    	//TODO: Should be not here. Very ugly coding
+    	
+    	/* Role access */
+    	//saml.access.admin=  
+    	ACL_ADMIN = "";
+    	
+    	//saml.access.creator=email=*&role=employee&organization=uu.nl|email=*&role=employee&organization=umcutrecht.nl|email=*&role=employee&organization=maastrichtuniversity.nl|email=*&role=employee&organization=utwente.nl|email=*&role=employee&organization=rsm.nl|email=*&role=employee&organization=nioo.knaw.nl|
+    	ACL_CREATOR = "email=*&role=employee&organization=uu.nl|email=*&role=employee&organization=umcutrecht.nl|email=*&role=employee&organization=maastrichtuniversity.nl|email=*&role=employee&organization=utwente.nl|email=*&role=employee&organization=rsm.nl|email=*&role=employee&organization=nioo.knaw.nl|";
+    	
+    	//saml.access.user=email=*
+    	ACL_USER = "email=*";
+    	
+    	//saml.username.method=attr
+    	USERID_METHOD = "attr";
+    	
+    	//saml.username.attribute=email
+    	USERID_ATTR = "email";
+    	
+    	//saml.username.prefix=
+    	USERID_PREFIX = "";
+    	
+    	//# saml.redirect.referer=yes 
+    	//NOTE: saml.redirect.referer=yes is unused (#).
+    	USE_REFERER = false;
+    	
+    	/* Admin access */
+    	//saml.access.allow.admin=no
+    	ALLOW_ADMIN = false;
     	
     	return shibAtt;
     }
     
+    //TODO: Should be use other class, using interface. Very ugly coding.
+    private Map<String, String> getShibAttValuesMock(HttpServletRequest request) {
+    	Map<String, String> shibAtt = new HashMap<String, String>();
+    	
+    	/* User attribute names */
+    	//saml.attributes.email=urn:mace:dir:attribute-def:mail
+    	shibAtt.put(ATTR_NAME_EMAIL, "j.hollanderoud@uu.nl");
+    	
+    	//saml.attributes.surname=urn:mace:dir:attribute-def:sn
+    	shibAtt.put(ATTR_NAME_SURNAME, (String)request.getAttribute(SHIB_ATTR_NAME_SURNAME));
+    	
+    	//saml.attributes.prefix=snPrefix
+    	//NOTE: Dit attribuut wordt niet aangeleverd door SURFnet; er is een verstekwaarde ingevuld
+    	shibAtt.put(SHIB_ATTR_NAME_PREFIX, "shib");
+    	
+    	//saml.attributes.givenname=urn:mace:dir:attribute-def:givenName
+    	shibAtt.put(ATTR_NAME_GIVENNAME, "ekoi");
+    	
+    	//saml.attributes.organization=urn:mace:terena.org:attribute-def:schacHomeOrganization
+    	shibAtt.put(ATTR_NAME_ORG, "DANS");
+    	
+    	
+    	//NOTE: role: de rol bij de organisatie. De SURFfederatie kent de waarden student, employee, staff, alum en affiliate. Dit attribuut is meerwaardig.
+    	//attribute role
+    	//saml.attributes.role=urn:mace:dir:attribute-def:eduPersonAffiliation
+    	shibAtt.put(ATTR_NAME_ROLE,"staff");
+    	
+    	//eppn
+    	//NOTE, klopt dit? principal: dit enkelvoudige attribuut bevat een unieke naam binnen de federatie om de gebruiker aan te duiden. Meestal is dit in de vorm van gebruikersnaam@instelling, bijvoorbeeld pietje.puk@example.com.
+    	//saml.attributes.principal=urn:mace:dir:attribute-def:eduPersonPrincipalName
+    	shibAtt.put(ATTR_NAME_PRINCIPAL, (String)request.getAttribute(SHIB_ATTR_NAME_PRINCIPAL));
+    	
+    	
+    	/* Role access */
+    	//saml.access.admin=  
+    	ACL_ADMIN = "";
+    	
+    	//saml.access.creator=email=*&role=employee&organization=uu.nl|email=*&role=employee&organization=umcutrecht.nl|email=*&role=employee&organization=maastrichtuniversity.nl|email=*&role=employee&organization=utwente.nl|email=*&role=employee&organization=rsm.nl|email=*&role=employee&organization=nioo.knaw.nl|
+    	ACL_CREATOR = "email=*&role=employee&organization=uu.nl|email=*&role=employee&organization=umcutrecht.nl|email=*&role=employee&organization=maastrichtuniversity.nl|email=*&role=employee&organization=utwente.nl|email=*&role=employee&organization=rsm.nl|email=*&role=employee&organization=nioo.knaw.nl|";
+    	
+    	//saml.access.user=email=*
+    	ACL_USER = "email=*";
+    	
+    	//saml.username.method=attr
+    	USERID_METHOD = "attr";
+    	
+    	//saml.username.attribute=email
+    	USERID_ATTR = "email";
+    	
+    	//saml.username.prefix=
+    	USERID_PREFIX = "";
+    	
+    	//# saml.redirect.referer=yes 
+    	//NOTE: saml.redirect.referer=yes is unused (#).
+    	USE_REFERER = false;
+    	
+    	/* Admin access */
+    	//saml.access.allow.admin=no
+    	ALLOW_ADMIN = false;
+    	
+    	return shibAtt;
+    }
     
     /**
     
@@ -669,7 +710,7 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
     cn=Me Myself And I, 
     Shib-Application-ID=default, 
     telephoneNumber=555-5555, 
-    AJP_REMOTE_PORT=53547, 
+    SHIB_REMOTE_PORT=53547, 
     affiliation=Member@testshib.org;
     Staff@testshib.org, 
     Shib-Identity-Provider=https://idp.testshib.org/idp/shibboleth, j
@@ -678,45 +719,45 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
      
      
     */
-	private Map<String, String> getShibAttValuesFromTestshib(HttpServletRequest request) {
-		Map<String, String> shibAtt = new HashMap<String, String>();
-		//urn:mace:dir:attribute-def:mail
-		if (request.getAttribute("eppn") != null) {
-			shibAtt.put(ATTR_NAME_EMAIL, (String)request.getAttribute("eppn"));
-		}
-		
-		//urn:mace:dir:attribute-def:sn
-		if (request.getAttribute("sn") != null) {
-			shibAtt.put(ATTR_NAME_SURNAME, (String)request.getAttribute("sn"));
-		}
-		
-		//snPrefix NOTE: Dit attribuut wordt niet aangeleverd door SURFnet; er is een verstekwaarde ingevuld
-		if (request.getAttribute(AJP_ATTR_NAME_PREFIX) != null) {
-			shibAtt.put(AJP_ATTR_NAME_PREFIX, "PREFIX");
-		} 
-		
-		//urn:mace:dir:attribute-def:givenName
-		if (request.getAttribute("givenName") != null) {
-			shibAtt.put(ATTR_NAME_GIVENNAME, (String)request.getAttribute("givenName"));
-		}
-		
-		//urn:mace:terena.org:attribute-def:schacHomeOrganization
-		if (request.getAttribute(AJP_ATTR_NAME_ORG) != null) {
-			shibAtt.put(ATTR_NAME_ORG, (String)request.getAttribute(AJP_ATTR_NAME_ORG));
-		}
-	
-		//TODO!!!!!!!!!!!!!!!!!
-		//urn:mace:dir:attribute-def:eduPersonAffiliation
-		if (request.getAttribute("affiliation") != null) {
-			shibAtt.put(ATTR_NAME_ROLE, (String)request.getAttribute("affiliation"));
-		}
-	
-		
-		//urn:mace:dir:attribute-def:eduPersonPrincipalName
-		if (request.getAttribute("cn") != null) {
-			shibAtt.put(ATTR_NAME_PRINCIPAL, (String)request.getAttribute("cn"));
-		}
-		
-		return shibAtt;
-	}
+//	private Map<String, String> getShibAttValuesFromTestshib(HttpServletRequest request) {
+//		Map<String, String> shibAtt = new HashMap<String, String>();
+//		//urn:mace:dir:attribute-def:mail
+//		if (request.getAttribute("eppn") != null) {
+//			shibAtt.put(ATTR_NAME_EMAIL, (String)request.getAttribute("eppn"));
+//		}
+//		
+//		//urn:mace:dir:attribute-def:sn
+//		if (request.getAttribute("sn") != null) {
+//			shibAtt.put(ATTR_NAME_SURNAME, (String)request.getAttribute("sn"));
+//		}
+//		
+//		//snPrefix NOTE: Dit attribuut wordt niet aangeleverd door SURFnet; er is een verstekwaarde ingevuld
+//		if (request.getAttribute(SHIB_ATTR_NAME_PREFIX) != null) {
+//			shibAtt.put(SHIB_ATTR_NAME_PREFIX, "shib");
+//		} 
+//		
+//		//urn:mace:dir:attribute-def:givenName
+//		if (request.getAttribute("givenName") != null) {
+//			shibAtt.put(ATTR_NAME_GIVENNAME, (String)request.getAttribute("givenName"));
+//		}
+//		
+//		//urn:mace:terena.org:attribute-def:schacHomeOrganization
+//		if (request.getAttribute(SHIB_ATTR_NAME_ORG) != null) {
+//			shibAtt.put(ATTR_NAME_ORG, (String)request.getAttribute(SHIB_ATTR_NAME_ORG));
+//		}
+//	
+//		//TODO!!!!!!!!!!!!!!!!!
+//		//urn:mace:dir:attribute-def:eduPersonAffiliation
+//		if (request.getAttribute("affiliation") != null) {
+//			shibAtt.put(ATTR_NAME_ROLE, (String)request.getAttribute("affiliation"));
+//		}
+//	
+//		
+//		//urn:mace:dir:attribute-def:eduPersonPrincipalName
+//		if (request.getAttribute("cn") != null) {
+//			shibAtt.put(ATTR_NAME_PRINCIPAL, (String)request.getAttribute("cn"));
+//		}
+//		
+//		return shibAtt;
+//	}
 }

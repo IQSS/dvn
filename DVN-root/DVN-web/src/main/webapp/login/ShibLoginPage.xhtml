@@ -1,18 +1,27 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:gui="http://java.sun.com/jsf/facelets"
-      xmlns:ice="http://www.icesoft.com/icefaces/component"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
     <head>
-        <meta http-equiv="Refresh" content="0;url=#{ShibLoginPage.redirect}" rendered="#{ShibLoginPage.redirect != null}"/>        
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <title>SAML Login Page</title>
+         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>Shibboleth Login Page</title>
     </head>
     <body>
-        <gui:composition template="/vanilla_template.xhtml">
-            <gui:param name="pageTitle" value="#{bundlePageInfo.loginTitle} - #{VDCRequest.dataversePageTitle}"/>
-            <gui:define name="body">
+        <ui:composition template="/vanilla_template.xhtml">
+            <ui:param name="pageTitle" value="#{bundlePageInfo.loginTitle} - #{VDCRequest.dataversePageTitle}"/>
+            <ui:define name="metadata">
+                <f:metadata>
+                    <f:viewParam name="redirect" value="#{ShibLoginPage.redirect}"/>
+                    <f:viewParam name="studyId" value="#{ShibLoginPage.studyId}"/>
+                    <!-- f:viewParam name="clearWorkflow" value="#{ShibLoginPage.clearWorkflow}"/ -->
+                    <f:viewParam name="tab" value="#{ShibLoginPage.tab}"/>
+                    <f:event type="preRenderView" listener="#{ShibLoginPage.preRenderView}"/>
+                </f:metadata>
+            </ui:define>
+            <ui:define name="body">
                 <div id="dvnLoginPageWrap">
                     <div class="dvnRound">
                         <ice:form id="vanillaLoginForm">
@@ -58,8 +67,8 @@
                         </ice:form>
                     </div>
                 </div>
-            </gui:define>
-        </gui:composition>
+            </ui:define>
+        </ui:composition>
     </body>
 </html>
 

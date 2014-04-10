@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,7 +72,7 @@ public class AccessExpressionParser {
         return tree;
     }
     
-    public Boolean evaluate(HashMap data) {
+    public Boolean evaluate(Map<String, String> data) {
         if (expTree != null) {
             LOGGER.log(Level.FINE, "Evaluating data");
             return expTree.evaluate(data);
@@ -146,18 +147,18 @@ public class AccessExpressionParser {
                 return result;
         }
         
-        public Boolean evaluate(HashMap data) {
+        public Boolean evaluate(Map<String, String> data) {
             if (left != null) {
                 Object v = data.get(left);
                 Boolean result = false;
                 if (v instanceof String) {
-                    LOGGER.log(Level.FINEST, "Evaluating String value {0}", v);
+                    LOGGER.log(Level.INFO, "Evaluating String value {0}", v);
                     result = evaluateString((String) v);
                 } else if (v instanceof List) {
-                    LOGGER.log(Level.FINEST, "Evaluating List value {0}", v.toString());
+                    LOGGER.log(Level.INFO, "Evaluating List value {0}", v.toString());
                     result = evaluateList((List) v);            
                 }
-                LOGGER.log(Level.FINEST, "Evaluating " + this.toString() + ": {0}", result);
+                LOGGER.log(Level.INFO, "Evaluating " + this.toString() + ": {0}", result);
                 return result;
             }
             return false;
@@ -172,7 +173,11 @@ public class AccessExpressionParser {
 
     private class expressionNode extends ArrayList {
 
-        private expressionOperator op = null;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		private expressionOperator op = null;
         private Condition condition = null;
         private expressionNode parent = null;
 
@@ -186,7 +191,7 @@ public class AccessExpressionParser {
             this.op = op;
         }
 
-        public Boolean evaluate(HashMap data) {
+        public Boolean evaluate(Map<String, String> data) {
             if (condition != null) {
                 Boolean result = condition.evaluate(data);
                 return result;

@@ -123,7 +123,7 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
         //UserAssertion userAssert = (UserAssertion) session.getAttribute(assertName); NOTE: There is no session.setAttribute(assertName) in the UU code, so I think it is done in the oiosaml war.
         shibProps = (Map<String, String>)session.getAttribute(SHIB_PROPS_SESSION);
         
-        if (shibProps == null) {
+        if (shibProps == null || shibProps.isEmpty()) {
             errMessage = "No assertion; this stage should never be reached; check the Shibboleth configuration";
             loginFailed = true;
             LOGGER.log(Level.SEVERE, errMessage);
@@ -407,7 +407,7 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
         request = (HttpServletRequest) FacesContext.getCurrentInstance()
                 .getExternalContext().getRequest();
         
-        shibProps = getShibAttValuesMock(request);
+        shibProps = getShibAttValues(request);
         
         session.setAttribute(SHIB_PROPS_SESSION, shibProps);
 

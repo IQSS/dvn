@@ -592,12 +592,12 @@
 </navigation-rule>
 
 <!-- new navigation rules for SAML login handling -->
-<navigation-rule>
+<!-- navigation-rule>
     <from-view-id>/login/ShibAddAccountPage.xhtml</from-view-id>
     <navigation-case>
         <from-outcome>viewAccount</from-outcome>
         <to-view-id>/login/AccountPage.xhtml</to-view-id>
     </navigation-case>
-</navigation-rule>
+</navigation-rule -->
 
 </faces-config>

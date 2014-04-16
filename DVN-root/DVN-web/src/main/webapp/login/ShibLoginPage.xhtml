@@ -35,18 +35,18 @@
                                             <div styleClass="dvnLoginFailed" rendered="#{ShibLoginPage.loginFailed}">
                                                 <ice:outputText styleClass="errorMessage" value="#{ShibLoginPage.errMessage}"/>
                                             </div>
-                                            <p>Welcome. Please click!!!! "<a href="../../saml/Logout">Log out</a>" to log out of the federated account.</p>
+                                            <p>Welcome. Please click "<a href="/dvn/faces/login/LogoutPage.xhtml">Log out</a>" to log out of the federated account.</p>
                                             <p>
-                                                <input type="button" value="Log Out" onClick="window.location.href='../../saml/Logout';"/>
+                                                <input type="button" value="Log Out" onClick="window.location.href='/dvn/faces/login/LogoutPage.xhtml';"/>
                                             </p>
                                         </fieldset>
 
                                         <!-- ************ Username login section ******************* -->
                                         <p>
-                                            <a href="ShibLoginPage.xhtml">Login111</a>
+                                            <a href="ShibLoginPage.xhtml">Login</a>
                                         </p>
                                         <p>
-                                            <a href="LoginPage.xhtml">Login with DVN Account111</a>
+                                            <a href="LoginPage.xhtml">Login with DVN Account</a>
                                         </p>
                                         <!-- ************* end username login section *************** -->
 

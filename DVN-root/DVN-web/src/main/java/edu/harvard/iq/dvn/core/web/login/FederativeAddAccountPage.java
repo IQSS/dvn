@@ -26,8 +26,8 @@ import edu.harvard.iq.dvn.core.web.common.StatusMessage;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 
 @ViewScoped
-@Named("ShibAddAccountPage")
-public class ShibAddAccountPage extends VDCBaseBean implements java.io.Serializable {
+@Named("FederativeAddAccountPage")
+public class FederativeAddAccountPage extends VDCBaseBean implements java.io.Serializable {
 
     @EJB
     EditUserService editUserService;
@@ -38,7 +38,7 @@ public class ShibAddAccountPage extends VDCBaseBean implements java.io.Serializa
     @EJB
     StudyServiceLocal studyService;
     
-    private final static Logger LOGGER = Logger.getLogger(ShibAddAccountPage.class.getPackage().getName());
+    private final static Logger LOGGER = Logger.getLogger(FederativeAddAccountPage.class.getPackage().getName());
     
     private String username;
     private String givenname;
@@ -56,13 +56,13 @@ public class ShibAddAccountPage extends VDCBaseBean implements java.io.Serializa
     private Boolean createFailed = false;
     private String errMessage = "";
 
-    public ShibAddAccountPage() {
+    public FederativeAddAccountPage() {
     }
 
     @Override
     public void init() {
         super.init();
-        if (isFromPage("ShibAddAccountPage")) {
+        if (isFromPage("FederativeAddAccountPage")) {
             editUserService = (EditUserService) sessionGet(editUserService.getClass().getName());
             user = editUserService.getUser();
         } else {
@@ -314,7 +314,7 @@ public class ShibAddAccountPage extends VDCBaseBean implements java.io.Serializa
                 getRequestMap().put("statusMessage", msg);
                 forwardPage = "viewAccount";
             }
-            LoginWorkflowBean loginWorkflowBean = (LoginWorkflowBean) ShibAddAccountPage.getBean("LoginWorkflowBean");
+            LoginWorkflowBean loginWorkflowBean = (LoginWorkflowBean) FederativeAddAccountPage.getBean("LoginWorkflowBean");
             loginWorkflowBean.processAddAccount(user);
             LOGGER.log(Level.INFO, "User created (ID={0}); setting permissions", user.getId());
 

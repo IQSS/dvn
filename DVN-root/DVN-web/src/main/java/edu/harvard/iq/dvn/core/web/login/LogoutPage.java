@@ -88,7 +88,7 @@ public class LogoutPage extends VDCBaseBean implements java.io.Serializable  {
 					.getRequestContextPath();
 			try {
 				session.invalidate();
-				response.sendRedirect(requestContextPath + "/Session.sso/Logout");
+				response.sendRedirect(requestContextPath + "/faces/login/LogoutPage.xhtml");
 			} catch (IOException e) {
 				LOGGER.log(Level.INFO, "Logout exception. Message: " + e.getMessage());
 			}

@@ -593,7 +593,7 @@
 
 <!-- new navigation rules for SAML login handling -->
 <!-- navigation-rule>
-    <from-view-id>/login/ShibAddAccountPage.xhtml</from-view-id>
+    <from-view-id>/login/FederativeAddAccountPage.xhtml</from-view-id>
     <navigation-case>
         <from-outcome>viewAccount</from-outcome>
         <to-view-id>/login/AccountPage.xhtml</to-view-id>

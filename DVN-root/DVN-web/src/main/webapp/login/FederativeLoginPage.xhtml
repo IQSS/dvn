@@ -7,18 +7,18 @@
       xmlns:ice="http://www.icesoft.com/icefaces/component">
     <head>
          <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <title>Shibboleth Login Page</title>
+        <title>Federative Login Page</title>
     </head>
     <body>
         <ui:composition template="/vanilla_template.xhtml">
             <ui:param name="pageTitle" value="#{bundlePageInfo.loginTitle} - #{VDCRequest.dataversePageTitle}"/>
             <ui:define name="metadata">
                 <f:metadata>
-                    <f:viewParam name="redirect" value="#{ShibLoginPage.redirect}"/>
-                    <f:viewParam name="studyId" value="#{ShibLoginPage.studyId}"/>
-                    <!-- f:viewParam name="clearWorkflow" value="#{ShibLoginPage.clearWorkflow}"/ -->
-                    <f:viewParam name="tab" value="#{ShibLoginPage.tab}"/>
-                    <f:event type="preRenderView" listener="#{ShibLoginPage.preRenderView}"/>
+                    <f:viewParam name="redirect" value="#{FederativeLoginPage.redirect}"/>
+                    <f:viewParam name="studyId" value="#{FederativeLoginPage.studyId}"/>
+                    <!-- f:viewParam name="clearWorkflow" value="#{FederativeLoginPage.clearWorkflow}"/ -->
+                    <f:viewParam name="tab" value="#{FederativeLoginPage.tab}"/>
+                    <f:event type="preRenderView" listener="#{FederativeLoginPage.preRenderView}"/>
                 </f:metadata>
             </ui:define>
             <ui:define name="body">
@@ -26,14 +26,14 @@
                     <div class="dvnRound">
                         <ice:form id="vanillaLoginForm">
                             <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-                            <ice:inputHidden binding="#{ShibLoginPage.hiddenStudyId}" value="#{ShibLoginPage.studyId}"/>
+                            <ice:inputHidden binding="#{FederativeLoginPage.hiddenStudyId}" value="#{FederativeLoginPage.studyId}"/>
                             <div id="layoutPanel1" class="dvnLoginContent">
                                 <div class="dvnLoginInputArea">
                                     <div id="samllogin">
                                         <fieldset>
                                             <legend>SAML Login</legend>
-                                            <div styleClass="dvnLoginFailed" rendered="#{ShibLoginPage.loginFailed}">
-                                                <ice:outputText styleClass="errorMessage" value="#{ShibLoginPage.errMessage}"/>
+                                            <div styleClass="dvnLoginFailed" rendered="#{FederativeLoginPage.loginFailed}">
+                                                <ice:outputText styleClass="errorMessage" value="#{FederativeLoginPage.errMessage}"/>
                                             </div>
                                             <p>Welcome. Please click "<a href="/dvn/faces/login/LogoutPage.xhtml">Log out</a>" to log out of the federated account.</p>
                                             <p>
@@ -43,7 +43,7 @@
 
                                         <!-- ************ Username login section ******************* -->
                                         <p>
-                                            <a href="ShibLoginPage.xhtml">Login</a>
+                                            <a href="FederativeLoginPage.xhtml">Login</a>
                                         </p>
                                         <p>
                                             <a href="LoginPage.xhtml">Login with DVN Account</a>

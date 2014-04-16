@@ -13,7 +13,7 @@
         <ui:composition template="/template.xhtml">
             <ui:param name="pageTitle" value="#{bundlePageInfo.createAccountTitle} - #{VDCRequest.dataversePageTitle}"/>
             <ui:define name="metadata">
-        	<f:event type="preRenderView" listener="#{ShibAddAccountPage.preRenderView}"/>  
+        	<f:event type="preRenderView" listener="#{FederativeAddAccountPage.preRenderView}"/>  
     		</ui:define>
             <ui:define name="body">
                 <ice:form id="form1">
@@ -52,22 +52,22 @@
                                 <div jsfc="ice:panelGroup" styleClass="dvn_margin12">
                                     <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
                                                    columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2">
-                                        <div styleClass="dvnLoginFailed" rendered="#{ShibAddAccountPage.createFailed}">
-                                            <ice:outputText styleClass="errorMessage" value="#{ShibAddAccountPage.errMessage}"/>
+                                        <div styleClass="dvnLoginFailed" rendered="#{FederativeAddAccountPage.createFailed}">
+                                            <ice:outputText styleClass="errorMessage" value="#{FederativeAddAccountPage.errMessage}"/>
                                         </div>
                                         <div id="groupPanel1" jsfc="ice:panelGroup">
                                             <ice:outputText>Hello </ice:outputText>
-                                            <ice:outputText value="#{ShibAddAccountPage.givenname}" />
-                                            <ice:outputText value="#{ShibAddAccountPage.prefix}" />
-                                            <ice:outputText value="#{ShibAddAccountPage.surname}" />
+                                            <ice:outputText value="#{FederativeAddAccountPage.givenname}" />
+                                            <ice:outputText value="#{FederativeAddAccountPage.prefix}" />
+                                            <ice:outputText value="#{FederativeAddAccountPage.surname}" />
                                             <ice:outputText value=". "/>
-                                            <ice:outputText value="#{bundlePageInfo.createShibAccountHelp}" escape="false" />
+                                            <ice:outputText value="#{bundlePageInfo.createFederativeAccountHelp}" escape="false" />
                                         </div>
                                     </ice:panelGrid>
                                     <div class="dvnFormPadding dvnFormMargin">
-                                        <ice:commandButton value="Create Account" action="#{ShibAddAccountPage.createAccount}"/>
-                                        <ice:commandButton immediate="true" value="Cancel" action="#{ShibAddAccountPage.cancel}"/>
-                                        <input rendered="#{ShibAddAccountPage.createFailed}" type="button" value="Log Out" onClick="window.location.href='../../saml/Logout';"/>
+                                        <ice:commandButton value="Create Account" action="#{FederativeAddAccountPage.createAccount}"/>
+                                        <ice:commandButton immediate="true" value="Cancel" action="#{FederativeAddAccountPage.cancel}"/>
+                                        <input rendered="#{FederativeAddAccountPage.createFailed}" type="button" value="Log Out" onClick="window.location.href='../../saml/Logout';"/>
                                     </div>
                                 </div>
                             </div>

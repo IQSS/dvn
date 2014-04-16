@@ -125,8 +125,8 @@
     </managed-bean>
     <!-- **************** Login ***************** -->
     <managed-bean>
-        <managed-bean-name>ShibLoginPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.iq.dvn.core.web.login.ShibLoginPage</managed-bean-class>
+        <managed-bean-name>FederativeLoginPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.login.FederativeLoginPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>redirect</property-name>

@@ -36,9 +36,9 @@ import edu.harvard.iq.dvn.core.web.util.AccessExpressionParser;
  *
  * @author Eko Indarto
  */
-@Named("ShibLoginPage")
+@Named("FederativeLoginPage")
 @ViewScoped
-public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
+public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializable {
 
 
     @EJB
@@ -49,7 +49,7 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
     VDCNetworkServiceLocal vdcNetworkService;
     // ---
     
-    private final static Logger LOGGER = Logger.getLogger(ShibLoginPage.class.getPackage().getName());
+    private final static Logger LOGGER = Logger.getLogger(FederativeLoginPage.class.getPackage().getName());
     String refererUrl = "";
     private String errMessage = "";
     String userId = "";
@@ -278,7 +278,7 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
     /** 
      * <p>Construct a new Page bean instance.</p>
      */
-    public ShibLoginPage() {
+    public FederativeLoginPage() {
     	readShibProps();
     }
     
@@ -478,11 +478,15 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
             } else if ("principal".equalsIgnoreCase(USERID_ATTR)) {
                 base = (String) data.get("principal");
             } else { // email
-            	 
+            	Object o = data.get("email");
+            	if (o instanceof List) {
                 final List emaillist = (List) data.get("email");
                 if (emaillist != null && emaillist.size() > 0) {
                     base = (String) emaillist.get(0); // first item in list
                 }
+            	} else {
+            		base = (String)o;
+            	}
             }
             if (base != null) {
                 if (USERID_PREFIX != null) {
@@ -523,7 +527,7 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
         HttpServletResponse hresponse = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();
         String requestContextPath = fc.getExternalContext().getRequestContextPath();
         try {
-            hresponse.sendRedirect(requestContextPath + "/faces/login/ShibAddAccountPage.xhtml");
+            hresponse.sendRedirect(requestContextPath + "/faces/login/FederativeAddAccountPage.xhtml");
             fc.responseComplete();
         } catch (IOException ex) {
             throw new RuntimeException("IOException thrown while trying to redirect to addaccount");
@@ -558,7 +562,32 @@ public class ShibLoginPage extends VDCBaseBean implements java.io.Serializable {
      */
     private Map<String, String> getShibAttValues(HttpServletRequest request) {
     	Map<String, String> shibAtt = new HashMap<String, String>();
-    	
+    	Object o1 = request.getAttribute("Shib_eduPersonPN");
+    	LOGGER.log(Level.INFO, ">>>>>YYYY - Shib_eduPersonPN: " + o1);
+    	Object o2 = request.getAttribute("Shib_commonName");
+    	LOGGER.log(Level.INFO, ">>>>>YYYY - Shib_commonName: " + o2);
+    	Object o3 = request.getAttribute("Shib_givenName");
+    	LOGGER.log(Level.INFO, ">>>>>YYYY - Shib_givenName: " + o3);
+    	Object o4 = request.getAttribute("Shib_surName");
+    	LOGGER.log(Level.INFO, ">>>>>YYYY - Shib_surName: " + o4);
+    	Object o5 = request.getAttribute("Shib_email");
+    	LOGGER.log(Level.INFO, ">>>>>YYYY - Shib_email: " + o5);
+    	Object o6 = request.getAttribute("Shib_memberOf");
+    	LOGGER.log(Level.INFO, ">>>>>YYYY - Shib_memberOf: " + o6);
+    	Object o7 = request.getAttribute("Shib_uid");
+    	LOGGER.log(Level.INFO, ">>>>>YYYY - Shib_uid: " + o7);
+    	Object o8 = request.getAttribute("Shib_user");
+    	LOGGER.log(Level.INFO, ">>>>>YYYY - Shib_user: " + o8);
+    	LOGGER.log(Level.INFO, ">>>>>XXX-Shib_eduPersonPN" + request.getAttribute("Shib_eduPersonPN"));
+    	LOGGER.log(Level.INFO, ">>>>>XXX-Shib_eduPersonPN" + request.getAttribute("AJP_Shib_eduPersonPN"));
+    	LOGGER.log(Level.INFO, ">>>>>XXX-AJP_Shib_commonName" + request.getAttribute("AJP_Shib_commonName"));
+    	LOGGER.log(Level.INFO, ">>>>>XXX-Shib_commonName" + request.getAttribute("Shib_commonName"));
+    	LOGGER.log(Level.INFO, ">>>>>XXX-AJP_Shib_givenName" + request.getAttribute("AJP_Shib_givenName"));
+    	LOGGER.log(Level.INFO, ">>>>>XXX-Shib_givenName" + request.getAttribute("Shib_givenName"));
+    	LOGGER.log(Level.INFO, ">>>>>XXX-Shib_surName" + request.getAttribute("Shib_surName"));
+    	LOGGER.log(Level.INFO, ">>>>>XXX-AJP_Shib_surName" + request.getAttribute("AJP_Shib_surName"));
+    	LOGGER.log(Level.INFO, ">>>>>XXX-Shib_email" + request.getAttribute("Shib_email"));
+    	LOGGER.log(Level.INFO, ">>>>>XXX-AJP_Shib_email" + request.getAttribute("AJP_Shib_email"));
     	/* User attribute names */
     	//saml.attributes.email=urn:mace:dir:attribute-def:mail
     	if (request.getAttribute(SHIB_ATTR_NAME_EMAIL) != null) {

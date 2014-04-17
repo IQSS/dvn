@@ -68,6 +68,16 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
     private String ATTR_NAME_ROLE = "eduPersonAffiliation";
     private String ATTR_NAME_ORG = "schacHomeOrganization";
     private String ATTR_NAME_PRINCIPAL = "eduPersonPrincipalName";
+    
+    /* Shibboleth attributes */
+    private String SHIB_ATTR_NAME_EMAIL = "Shib_email";
+    private String SHIB_ATTR_NAME_SURNAME = "Shib_surName";
+    private String SHIB_ATTR_NAME_PREFIX = "prefix";
+    private String SHIB_ATTR_NAME_GIVENNAME = "Shib_givenName";
+    private String SHIB_ATTR_NAME_ROLE = "Shib_eduPersonPN";//"eduPersonAffiliation";
+    private String SHIB_ATTR_NAME_ORG = "Shib_HomeOrg";
+    private String SHIB_ATTR_NAME_PRINCIPAL = "Shib_eduPersonPN";
+    
     private String ACL_ADMIN = null;
     private String ACL_CREATOR = null;
     private String ACL_USER = null;
@@ -119,8 +129,6 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
             refererUrl = defaultPage;
         }
         
-        // see if SAML login has completed already
-        //UserAssertion userAssert = (UserAssertion) session.getAttribute(assertName); NOTE: There is no session.setAttribute(assertName) in the UU code, so I think it is done in the oiosaml war.
         shibProps = (Map<String, String>)session.getAttribute(SHIB_PROPS_SESSION);
         
         if (shibProps == null || shibProps.isEmpty()) {
@@ -128,13 +136,8 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
             loginFailed = true;
             LOGGER.log(Level.SEVERE, errMessage);
         } else {
-            // SAML login complete
-            //LOGGER.log(Level.FINE, "Reading email attribute as \"{0}\"", ATTR_NAME_EMAIL);
         	LOGGER.log(Level.INFO, "Reading email attribute as ", shibProps.get(ATTR_NAME_EMAIL));
-        	//final UserAttribute attr_email = userAssert.getAttribute(ATTR_NAME_EMAIL);
             String attr_email = shibProps.get(ATTR_NAME_EMAIL);
-            //dumpUserAssertAttributes(userAssert);
-            //final Iterator email_list = attr_email.getValues().iterator();
             
             final Iterator<String> email_list = Arrays.asList(attr_email.split(",")).iterator();//EKO, todo: CHECK IF attr_email is NULL; Why a user can have more than 1 email?
             VDCUser user = null;
@@ -534,27 +537,6 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
         }
     }
 
-//    private void dumpUserAssertAttributes(UserAssertion userAssert) {
-//        LOGGER.log(Level.FINEST, "Dump of received attributes:");
-//        ArrayList l = new ArrayList(userAssert.getAllAttributes());
-//        for (Iterator it = l.iterator(); it.hasNext();) {
-//            UserAttribute a = (UserAttribute) it.next();
-//            String aname = a.getName();
-//            String aval  = a.getValues().toString();
-//            LOGGER.log(Level.FINEST, "{0}: {1}", new String[]{aname, aval});
-//        }
-//    }
-//    
-    
-    
-    private String SHIB_ATTR_NAME_EMAIL = "Shib_email";
-    private String SHIB_ATTR_NAME_SURNAME = "Shib_surName";
-    private String SHIB_ATTR_NAME_PREFIX = "prefix";
-    private String SHIB_ATTR_NAME_GIVENNAME = "Shib_givenName";
-    private String SHIB_ATTR_NAME_ROLE = "eduPersonAffiliation";//TODO!!!!
-    private String SHIB_ATTR_NAME_ORG = "Shib_HomeOrg";
-    private String SHIB_ATTR_NAME_PRINCIPAL = "Shib_eduPersonPN";
-    
     
     /*
      * SamlLogin.properties mapping to shibboleth
@@ -665,7 +647,7 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
     	
     	/* User attribute names */
     	//saml.attributes.email=urn:mace:dir:attribute-def:mail
-    	shibAtt.put(ATTR_NAME_EMAIL, "j.hollanderoud@uu.nl");
+    	shibAtt.put(ATTR_NAME_EMAIL, "eko.indarto@dans.knaw.nl");
     	
     	//saml.attributes.surname=urn:mace:dir:attribute-def:sn
     	shibAtt.put(ATTR_NAME_SURNAME, (String)request.getAttribute(SHIB_ATTR_NAME_SURNAME));
@@ -723,7 +705,7 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
     }
     
     /**
-    
+    testshib.org
     {unscoped-affiliation=Member;Staff, 
     Shib-Session-ID=_5f36c617c057ec2dc801c2432bb2295d, 
     sn=And I, 
@@ -748,45 +730,5 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
      
      
     */
-//	private Map<String, String> getShibAttValuesFromTestshib(HttpServletRequest request) {
-//		Map<String, String> shibAtt = new HashMap<String, String>();
-//		//urn:mace:dir:attribute-def:mail
-//		if (request.getAttribute("eppn") != null) {
-//			shibAtt.put(ATTR_NAME_EMAIL, (String)request.getAttribute("eppn"));
-//		}
-//		
-//		//urn:mace:dir:attribute-def:sn
-//		if (request.getAttribute("sn") != null) {
-//			shibAtt.put(ATTR_NAME_SURNAME, (String)request.getAttribute("sn"));
-//		}
-//		
-//		//snPrefix NOTE: Dit attribuut wordt niet aangeleverd door SURFnet; er is een verstekwaarde ingevuld
-//		if (request.getAttribute(SHIB_ATTR_NAME_PREFIX) != null) {
-//			shibAtt.put(SHIB_ATTR_NAME_PREFIX, "shib");
-//		} 
-//		
-//		//urn:mace:dir:attribute-def:givenName
-//		if (request.getAttribute("givenName") != null) {
-//			shibAtt.put(ATTR_NAME_GIVENNAME, (String)request.getAttribute("givenName"));
-//		}
-//		
-//		//urn:mace:terena.org:attribute-def:schacHomeOrganization
-//		if (request.getAttribute(SHIB_ATTR_NAME_ORG) != null) {
-//			shibAtt.put(ATTR_NAME_ORG, (String)request.getAttribute(SHIB_ATTR_NAME_ORG));
-//		}
-//	
-//		//TODO!!!!!!!!!!!!!!!!!
-//		//urn:mace:dir:attribute-def:eduPersonAffiliation
-//		if (request.getAttribute("affiliation") != null) {
-//			shibAtt.put(ATTR_NAME_ROLE, (String)request.getAttribute("affiliation"));
-//		}
-//	
-//		
-//		//urn:mace:dir:attribute-def:eduPersonPrincipalName
-//		if (request.getAttribute("cn") != null) {
-//			shibAtt.put(ATTR_NAME_PRINCIPAL, (String)request.getAttribute("cn"));
-//		}
-//		
-//		return shibAtt;
-//	}
+
 }

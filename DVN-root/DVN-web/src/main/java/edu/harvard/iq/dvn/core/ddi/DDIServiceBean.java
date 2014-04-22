@@ -1608,6 +1608,12 @@ public class DDIServiceBean implements DDIServiceLocal {
         if (dv.getFileStartPosition() != null) writeAttribute( xmlw, "StartPos", dv.getFileStartPosition().toString() );
         if (dv.getFileEndPosition() != null) writeAttribute( xmlw, "EndPos", dv.getFileEndPosition().toString() );
         if (dv.getRecordSegmentNumber() != null) writeAttribute( xmlw, "width", dv.getRecordSegmentNumber().toString());
+        /* 
+         *  Why "width"?? - this should be RecSegNo!
+         *  not such a big deal - because the DVN never stores files in fixed-field 
+         *  format natively; so we never really export DDIs with fixed-field files...
+         *  still, this is wrong. -- L.A., Dec. 2013
+         */
         writeAttribute( xmlw, "fileid", "f" + dv.getDataTable().getStudyFile().getId().toString() );
 
         // labl

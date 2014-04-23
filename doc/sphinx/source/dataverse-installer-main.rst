@@ -1062,6 +1062,8 @@ To set to Read Only Mode:
       | ``update vdcnetwork set statusnotice = "";``
       | ``END;``
 
+Please note that you must restart Glassfish after entering Read Only Mode because previously open connections will still have write access.
+
 To return to regular service:
 
       | ``BEGIN;``
@@ -1071,6 +1073,8 @@ To return to regular service:
       | ``Alter user "dvnApp" set default_transaction_read_only=off;``
       | ``update vdcnetwork set statusnotice = "";``
       | ``END;``
+
+Please note that you must restart Glassfish after exiting Read Only Mode.
 
 Backup and Restore
 ================================

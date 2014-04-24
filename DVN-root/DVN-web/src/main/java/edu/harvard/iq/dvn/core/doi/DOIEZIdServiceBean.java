@@ -42,7 +42,7 @@ import javax.ejb.Stateless;
 public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdServiceLocal {
     EZIDService ezidService;
     EZIDServiceRequest ezidServiceRequest;    
-    String baseURLString = "https://n2t.net/ezid/";  
+    String baseURLString =  "https://ezid.cdlib.org";  
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.index.DOIEZIdServiceBean");
     
@@ -52,9 +52,11 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
     private String PASSWORD = "";    
     
     public DOIEZIdServiceBean(){
+        baseURLString = System.getProperty("doi.baseurlstring");
         ezidService = new EZIDService (baseURLString); 
         USERNAME  = System.getProperty("doi.username");
         PASSWORD  = System.getProperty("doi.password");
+        logger.log(Level.INFO, "baseURLString " + baseURLString);
         try {
            ezidService.login(USERNAME, PASSWORD);  
         } catch(Exception e){
@@ -89,7 +91,7 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
    
     public HashMap getIdentifierMetadata(Study studyIn){
         String identifier = getIdentifierFromStudy(studyIn);        
-        HashMap metadata = new HashMap();
+        HashMap metadata;
        try {
               metadata = ezidService.getMetadata(identifier);
             }  catch (EZIDException e){                
@@ -98,7 +100,7 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
             logger.log(Level.INFO, "localized message " + e.getLocalizedMessage());
             logger.log(Level.INFO, "cause " + e.getCause());
             logger.log(Level.INFO, "message " + e.getMessage());    
-            return metadata;
+            return null;
         }         
        return metadata;
     }
@@ -205,7 +207,18 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
     
     @Override
     public void publicizeIdentifier(Study studyIn) {
-        updateIdentifierStatus(studyIn, "public");
+        String identifier = getIdentifierFromStudy(studyIn);
+        HashMap metadata = getMetadataFromStudyForCreateIndicator(studyIn);
+        metadata.put("_status", "public");
+        try {
+            ezidService.setMetadata(identifier, metadata);
+        } catch (EZIDException e) {
+            logger.log(Level.INFO, "modifyMetadata failed");
+            logger.log(Level.INFO, "String " + e.toString());
+            logger.log(Level.INFO, "localized message " + e.getLocalizedMessage());
+            logger.log(Level.INFO, "cause " + e.getCause());
+            logger.log(Level.INFO, "message " + e.getMessage());
+        }
     }
     
     private void updateIdentifierStatus(Study studyIn, String statusIn){
@@ -224,7 +237,7 @@ public class DOIEZIdServiceBean implements edu.harvard.iq.dvn.core.doi.DOIEZIdSe
         
     }
     
-    
+      
     public static String generateYear()
     {
         StringBuffer guid = new StringBuffer();

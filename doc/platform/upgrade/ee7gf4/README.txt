@@ -12,6 +12,9 @@ to start with asadmin domain-start.
 
 Start the domain. Go to https://localhost:4848 and set the admin password. 
 
+When you start Netbeans 7.4, answer 'no' when asked whether to import 
+your existing settings and projects. 
+
 
 2. Building the application: 
 
@@ -26,35 +29,46 @@ experiment. The project will open with errors ("some files are not in
 the local repository"), go ahead and do clean and build - and that
 will make it repopulate your ~/.m2/repository.
 
-Before you deploy, do the following: 
+Before you try to deploy, do the following: 
 
 Stop glassfish with asadmin; 
 
 a. Install the postgres driver: 
-Just use the one you've been using with GF3: 
-(for example)
-cp /Applications/NetBeans/glassfish-3.1.2/glassfish/lib/postgresql-9.1-902.jdbc4.jar /usr/local/glassfish4/glassfish/lib
+   Just use the one you've been using with GF3: 
+   (for example)
+   cp /Applications/NetBeans/glassfish-3.1.2/glassfish/lib/postgresql-9.1-902.jdbc4.jar /usr/local/glassfish4/glassfish/lib
 
 b. Install javassist jar: (needed by Weld)
 
-Find javassist-3.1.jar online;
-put the jar into <GLASSFISH LOCATION>/glassfish/lib 
+   Download javassist-3.1.jar from here: 
 
-c. Upgrade Weld to 2.0.2. 
+   http://repo1.maven.org/maven2/jboss/javassist/3.1/javassist-3.1.jar
 
-Find weld-osgi-bundle-2.0.2.Final.jar online; 
-rename it weld-osgi-bundle.jar and place it into <GLASSFISH LOCATION>/glassfish/modules. 
+   put the jar into <GLASSFISH LOCATION>/glassfish/lib 
+
+c. Upgrade Weld to 2.0.2 (you really want 2.0.2; do not upgrade to 2.1.0, etc.) 
+
+   Download weld-osgi-bundle-2.0.2.Final.jar from here: 
+
+   http://repo1.maven.org/maven2/org/jboss/weld/weld-osgi-bundle/2.0.2.Final/weld-osgi-bundle-2.0.2.Final.jar
+
+   rename it weld-osgi-bundle.jar and place it into <GLASSFISH LOCATION>/glassfish/modules. 
 
 c. Install domain.xml from this directory.
 
-(it has the pools and connections pre-configured; assumes the default dvnDb database, user dvnApp, etc.)
+   (it has the pools and connections pre-configured; assumes the default dvnDb database, user dvnApp, etc.)
 
-save your domain.xml somewhere; then put mine in its place.
-*Before starting glassfish again, edit this domain.xml*, and replace the line:
+   save your domain.xml somewhere (as domain.xml.PRESERVED, for example); then put mine in its place: 
 
-<secure-admin special-admin-indicator="4de31578-ac8c-49cf-884e-77faada83599">
+   cd <DOMAIN_DIR>/config
+   cp domain.xml domain.xml.PRESERVED
+   cp <THIS DIRECTORY>/domain.xml . 
 
-with the one from your original domain.xml. Start glassfish.
+   *Before starting glassfish again, edit this domain.xml*, and replace the line:
+
+   <secure-admin special-admin-indicator="4de31578-ac8c-49cf-884e-77faada83599">
+
+   with the one from your original domain.xml. Start glassfish.
 
 
 3. Deployment - encountered problems and solutions: 

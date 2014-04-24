@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+	<codeBook xmlns="http://www.icpsr.umich.edu/DDI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.icpsr.umich.edu/DDI http://www.icpsr.umich.edu/DDI/Version2-0.xsd" version="2.0" source="DVN_3_0">
+		<stdyDscr>
+			<citation>
+				<titlStmt>
+					<titl>Test Study Title</titl>
+				</titlStmt>
+				<rspStmt>
+					<AuthEnty>LastName, FirstName</AuthEnty>
+				</rspStmt>
+			</citation>
+		<stdyInfo>
+			<abstract>This is a description or abstract.</abstract>
+		</stdyInfo>
+		</stdyDscr>
+	</codeBook>

@@ -371,16 +371,18 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 		last; 
 	    }
 	}
-	for $pg_minor_version ( "4", "3" )
+	if (!$pg_major_version)
 	{
-	    if ( -x "/Library/PostgreSQL/8." . $pg_minor_version . "/bin/psql" ) 
+	    for $pg_minor_version ( "4", "3" )
 	    {
-		$pg_major_version = 8; 
-		$psql_exec = "/Library/PostgreSQL/8." . $pg_minor_version . "/bin";
-		last; 
+		if ( -x "/Library/PostgreSQL/8." . $pg_minor_version . "/bin/psql" ) 
+		{
+		    $pg_major_version = 8; 
+		    $psql_exec = "/Library/PostgreSQL/8." . $pg_minor_version . "/bin";
+		    last; 
+		}
 	    }
 	}
-
     }
 
     if ( $psql_exec eq "" )
@@ -452,7 +454,6 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
     if (!system ($psql_exec . "/psql -c 'SELECT * FROM pg_roles' > /dev/null 2>&1"))
     {
 	print "Yes, it is.\n";
-	chdir ($cwd); 
     }
     else
     {
@@ -478,10 +479,12 @@ if ( $CONFIG_DEFAULTS{'POSTGRES_SERVER'} eq 'localhost' )
 
     # 4c. CHECK IF THIS DB ALREADY EXISTS:
     
-    chdir ("/tmp"); 
     $psql_command_dbcheck = $psql_exec . "/psql -c \"\" -d " . $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} . ">/dev/null 2>&1"; 
     if ( ($exitcode = system($psql_command_dbcheck)) == 0 )
     {
+	# switch back to root uid:
+	$> = 0; 
+	$< = 0; 
 	chdir ($cwd); 
 
 	print "WARNING! Database " . $CONFIG_DEFAULTS{'POSTGRES_DATABASE'} . " already exists!\n";

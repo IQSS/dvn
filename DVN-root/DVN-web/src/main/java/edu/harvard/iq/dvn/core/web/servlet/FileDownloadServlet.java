@@ -1309,7 +1309,7 @@ public class FileDownloadServlet extends HttpServlet {
     
     public FileDownloadObject getImageThumb (StudyFile file, FileDownloadObject fileDownload) {
         if (file != null && file.getFileType().substring(0, 6).equalsIgnoreCase("image/")) {
-            if (generateImageThumb(file.getFileSystemLocation())) {
+            if (generateImageThumb(file)) {
                 File imgThumbFile = new File(file.getFileSystemLocation() + ".thumb");
 
                 if (imgThumbFile != null && imgThumbFile.exists()) {
@@ -1729,8 +1729,12 @@ public class FileDownloadServlet extends HttpServlet {
         return "";
     }
 
-    private boolean generateImageThumb(String fileLocation) {
+    private boolean generateImageThumb(StudyFile file) {
 
+        String fileLocation = file.getFileSystemLocation();
+        if (fileLocation == null || fileLocation.trim().equals("")) {
+            return false; 
+        }
         String thumbFileLocation = fileLocation + ".thumb";
 
         // see if the thumb is already generated and saved:
@@ -1741,20 +1745,74 @@ public class FileDownloadServlet extends HttpServlet {
 
         // let's attempt to generate the thumb:
 
-        // (I'm scaling all the images down to 64 pixels horizontally;
-        // I picked the number 64 totally arbitrarily;
-        // TODO: (?) make the default thumb size configurable
-        // through a JVM option??
+        // the default size of the thumbnail is 64 pixels horizontally.
+        // The number 64 was picked arbitrarily; if a different size is 
+        // desired, it can be configured via the dvn.image.thumbnail.size 
+        // JVM option.
+        
+        Long thumbSize = Long.valueOf(64);
 
+        
+        String thumbSizeOption = System.getProperty("dvn.image.thumbnail.size");
 
-        if (new File("/usr/bin/convert").exists()) {
+        if ( thumbSizeOption != null ) {
+            Long thumbSizeOptionValue = null;
+            try {
+                thumbSizeOptionValue = new Long(thumbSizeOption);
+            } catch (NumberFormatException nfe) {
+                // if the supplied option value is invalid/unparseable, we
+                // ignore it and fall back to the default value. 
+            }
+            if ( thumbSizeOptionValue != null && thumbSizeOptionValue.longValue() > 0 ) {
+                thumbSize = thumbSizeOptionValue;
+            }
+        }
+        
+        // it is also possible to configure the thumbnail size for a 
+        // specific dataverse: 
+        
+        VDC vdc = file.getStudy().getOwner(); 
+        
+        if (vdc != null) {
+            thumbSizeOption = System.getProperty("dvn.image.thumbnail.size."+vdc.getAlias());
 
-            String ImageMagick = "/usr/bin/convert -size 64x64 " + fileLocation + " -resize 64 -flatten png:" + thumbFileLocation;
+            if ( thumbSizeOption != null ) {
+                Long thumbSizeOptionValue = null;
+                try {
+                    thumbSizeOptionValue = new Long(thumbSizeOption);
+                } catch (NumberFormatException nfe) {
+                // if the supplied option value is invalid/unparseable, we
+                // ignore it and fall back to the default value. 
+                }
+                if ( thumbSizeOptionValue != null && thumbSizeOptionValue.longValue() > 0 ) {
+                    thumbSize = thumbSizeOptionValue;
+                }
+            }
+        }
+        
+        // This is the default location of the "convert" executable from the
+        // ImageMagick package. If it's installed in a different locaiton, 
+        // it can be configured via the dvn.image.convert.exec JVM option. 
+        
+        String imageMagickConvertExec = "/usr/bin/convert"; 
+        
+        String imageMagickConvertExecOption = System.getProperty("dvn.image.convrt.exec");
+
+        if ( imageMagickConvertExecOption != null ) {
+            if (!imageMagickConvertExecOption.trim().equals("")) {
+                imageMagickConvertExec = imageMagickConvertExecOption.trim();
+            }
+        }
+
+        if (new File(imageMagickConvertExec).exists()) {
+            String sizeOption = " -size " + thumbSize + "x" + thumbSize + " ";
+
+            String ImageMagickCommandLine = imageMagickConvertExec + sizeOption + fileLocation + " -resize " + thumbSize + " -flatten png:" + thumbFileLocation;
             int exitValue = 1;
 
             try {
                 Runtime runtime = Runtime.getRuntime();
-                Process process = runtime.exec(ImageMagick);
+                Process process = runtime.exec(ImageMagickCommandLine);
                 exitValue = process.waitFor();
             } catch (Exception e) {
                 exitValue = 1;
@@ -1777,14 +1835,14 @@ public class FileDownloadServlet extends HttpServlet {
 		return false; 
 	    }
 
-            double scaleFactor = ((double) 64) / (double) fullSizeImage.getWidth(null);
+            double scaleFactor = (thumbSize.doubleValue()) / (double) fullSizeImage.getWidth(null);
             int thumbHeight = (int) (fullSizeImage.getHeight(null) * scaleFactor);
 
 	    // We are willing to spend a few extra CPU cycles to generate
 	    // better-looking thumbnails, hence the SCALE_SMOOTH flag. 
 	    // SCALE_FAST would trade quality for speed. 
 
-	    java.awt.Image thumbImage = fullSizeImage.getScaledInstance(64, thumbHeight, java.awt.Image.SCALE_SMOOTH);
+	    java.awt.Image thumbImage = fullSizeImage.getScaledInstance(thumbSize.intValue(), thumbHeight, java.awt.Image.SCALE_SMOOTH);
 
             ImageWriter writer = null;
             Iterator iter = ImageIO.getImageWritersByFormatName("png");
@@ -1794,7 +1852,7 @@ public class FileDownloadServlet extends HttpServlet {
                 return false;
             }
 
-            BufferedImage lowRes = new BufferedImage(64, thumbHeight, BufferedImage.TYPE_INT_RGB);
+            BufferedImage lowRes = new BufferedImage(thumbSize.intValue(), thumbHeight, BufferedImage.TYPE_INT_RGB);
             lowRes.getGraphics().drawImage(thumbImage, 0, 0, null);
 
             ImageOutputStream ios = ImageIO.createImageOutputStream(new File(thumbFileLocation));

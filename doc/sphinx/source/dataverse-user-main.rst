@@ -3975,8 +3975,8 @@ following manner:
 #. Also place in the directory any additional files that you choose to
    upload for that study.
 
-For an example of a simple study DDI, refer to the Metadata Reference
-section of the appendix.
+For an example of a simple study DDI, refer to the :ref:`Metadata References <metadata-references>`
+section.
 
 **Handle Utilities**
 
@@ -4683,10 +4683,10 @@ title, author, description, keyword, and topic classification cataloging
 information fields suitable for use with batch import.
 
 |image9|
-`catalogingfields11apr08.pdf <http://guides.thedata.org/files/thedatanew_guides/files/catalogingfields11apr08.pdf>`__
+`catalogingfields11apr08.pdf <https://github.com/IQSS/dvn/blob/develop/doc/sphinx/source/datausers-guides_files/catalogingfields11apr08.pdf>`__
 
 |image10|
-`simple\_study.xml <http://guides.thedata.org/files/thedatanew_guides/files/simple_study_1.xml>`__
+`simple\_study.xml <https://github.com/IQSS/dvn/blob/develop/doc/sphinx/source/datausers-guides_files/simple_study_1.xml>`__
 
 Zelig Interface
 ==========
@@ -4736,7 +4736,7 @@ the Dataverse Network: 
   advanced analysis models.
 
 |image11|
-`configzeliggui.xml <http://guides.thedata.org/files/thedatanew_guides/files/configzeliggui_0.xml>`__
+`configzeliggui.xml <https://github.com/IQSS/dvn/blob/develop/doc/sphinx/source/datausers-guides_files/configzeliggui_0.xml>`__
 
 .. |image9| image:: ./appendix-0_files/application-pdf.png
 .. |image10| image:: ./appendix-0_files/application-octet-stream.png

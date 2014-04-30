@@ -82,6 +82,7 @@ public class FederativeAddAccountPage extends VDCBaseBean implements java.io.Ser
             user.setEmail(usremail);
             String usrorg = this.getOrganization();
             user.setInstitution(usrorg);
+            //user.setPosition(getPosition()); 
 
             HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
             if (request.getAttribute("studyId") != null) {
@@ -256,6 +257,24 @@ public class FederativeAddAccountPage extends VDCBaseBean implements java.io.Ser
     public void setOrganization(String org) {
         this.organization = org;
     }
+    
+    public String getPosition() {
+        String role;
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        if (session.getAttribute("usrrole") != null) {
+        	role = session.getAttribute("usrrole").toString();
+            setRole(role);
+        } else {
+        	role = "";
+            setOrganization(role);
+        }
+
+        return role;
+    }
+
+    public void setRole(String org) {
+        this.organization = org;
+    }
 
     /**
      * Getter for property contributorRequest.
@@ -297,7 +316,7 @@ public class FederativeAddAccountPage extends VDCBaseBean implements java.io.Ser
         String workflowValue = null;
 
         //trying to set proper permissions
-        String workflowusertype = getUsertype();
+        String workflowusertype = "user";//getUsertype();
 
         Boolean doCreate = "user".equalsIgnoreCase(workflowusertype)
                 || "creator".equalsIgnoreCase(workflowusertype)

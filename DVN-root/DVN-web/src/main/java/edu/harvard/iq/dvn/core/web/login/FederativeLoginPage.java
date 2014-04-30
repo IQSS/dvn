@@ -74,7 +74,7 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
     private String SHIB_ATTR_NAME_SURNAME = "Shib_surName";
     private String SHIB_ATTR_NAME_PREFIX = "prefix";
     private String SHIB_ATTR_NAME_GIVENNAME = "Shib_givenName";
-    private String SHIB_ATTR_NAME_ROLE = "Shib_eduPersonPN";//"eduPersonAffiliation";
+    private String SHIB_ATTR_NAME_ROLE = "Shib_affiliation";//"eduPersonAffiliation";
     private String SHIB_ATTR_NAME_ORG = "Shib_HomeOrg";
     private String SHIB_ATTR_NAME_PRINCIPAL = "Shib_eduPersonPN";
     
@@ -544,32 +544,7 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
      */
     private Map<String, String> getShibAttValues(HttpServletRequest request) {
     	Map<String, String> shibAtt = new HashMap<String, String>();
-    	Object o1 = request.getAttribute("Shib_eduPersonPN");
-    	LOGGER.log(Level.INFO, ">>>>>YYYY - Shib_eduPersonPN: " + o1);
-    	Object o2 = request.getAttribute("Shib_commonName");
-    	LOGGER.log(Level.INFO, ">>>>>YYYY - Shib_commonName: " + o2);
-    	Object o3 = request.getAttribute("Shib_givenName");
-    	LOGGER.log(Level.INFO, ">>>>>YYYY - Shib_givenName: " + o3);
-    	Object o4 = request.getAttribute("Shib_surName");
-    	LOGGER.log(Level.INFO, ">>>>>YYYY - Shib_surName: " + o4);
-    	Object o5 = request.getAttribute("Shib_email");
-    	LOGGER.log(Level.INFO, ">>>>>YYYY - Shib_email: " + o5);
-    	Object o6 = request.getAttribute("Shib_memberOf");
-    	LOGGER.log(Level.INFO, ">>>>>YYYY - Shib_memberOf: " + o6);
-    	Object o7 = request.getAttribute("Shib_uid");
-    	LOGGER.log(Level.INFO, ">>>>>YYYY - Shib_uid: " + o7);
-    	Object o8 = request.getAttribute("Shib_user");
-    	LOGGER.log(Level.INFO, ">>>>>YYYY - Shib_user: " + o8);
-    	LOGGER.log(Level.INFO, ">>>>>XXX-Shib_eduPersonPN" + request.getAttribute("Shib_eduPersonPN"));
-    	LOGGER.log(Level.INFO, ">>>>>XXX-Shib_eduPersonPN" + request.getAttribute("AJP_Shib_eduPersonPN"));
-    	LOGGER.log(Level.INFO, ">>>>>XXX-AJP_Shib_commonName" + request.getAttribute("AJP_Shib_commonName"));
-    	LOGGER.log(Level.INFO, ">>>>>XXX-Shib_commonName" + request.getAttribute("Shib_commonName"));
-    	LOGGER.log(Level.INFO, ">>>>>XXX-AJP_Shib_givenName" + request.getAttribute("AJP_Shib_givenName"));
-    	LOGGER.log(Level.INFO, ">>>>>XXX-Shib_givenName" + request.getAttribute("Shib_givenName"));
-    	LOGGER.log(Level.INFO, ">>>>>XXX-Shib_surName" + request.getAttribute("Shib_surName"));
-    	LOGGER.log(Level.INFO, ">>>>>XXX-AJP_Shib_surName" + request.getAttribute("AJP_Shib_surName"));
-    	LOGGER.log(Level.INFO, ">>>>>XXX-Shib_email" + request.getAttribute("Shib_email"));
-    	LOGGER.log(Level.INFO, ">>>>>XXX-AJP_Shib_email" + request.getAttribute("AJP_Shib_email"));
+    	
     	/* User attribute names */
     	//saml.attributes.email=urn:mace:dir:attribute-def:mail
     	if (request.getAttribute(SHIB_ATTR_NAME_EMAIL) != null) {
@@ -616,7 +591,7 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
     	ACL_ADMIN = "";
     	
     	//saml.access.creator=email=*&role=employee&organization=uu.nl|email=*&role=employee&organization=umcutrecht.nl|email=*&role=employee&organization=maastrichtuniversity.nl|email=*&role=employee&organization=utwente.nl|email=*&role=employee&organization=rsm.nl|email=*&role=employee&organization=nioo.knaw.nl|
-    	ACL_CREATOR = "email=*&role=employee&organization=uu.nl|email=*&role=employee&organization=umcutrecht.nl|email=*&role=employee&organization=maastrichtuniversity.nl|email=*&role=employee&organization=utwente.nl|email=*&role=employee&organization=rsm.nl|email=*&role=employee&organization=nioo.knaw.nl|";
+    	ACL_CREATOR = "email=*&role=student&organization=diy.surfconext.nl|email=*&role=employee&organization=uu.nl|email=*&role=employee&organization=umcutrecht.nl|email=*&role=employee&organization=maastrichtuniversity.nl|email=*&role=employee&organization=utwente.nl|email=*&role=employee&organization=rsm.nl|email=*&role=employee&organization=nioo.knaw.nl|";
     	
     	//saml.access.user=email=*
     	ACL_USER = "email=*";
@@ -641,94 +616,4 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
     	return shibAtt;
     }
     
-    //TODO: Should be use other class, using interface. Very ugly coding.
-    private Map<String, String> getShibAttValuesMock(HttpServletRequest request) {
-    	Map<String, String> shibAtt = new HashMap<String, String>();
-    	
-    	/* User attribute names */
-    	//saml.attributes.email=urn:mace:dir:attribute-def:mail
-    	shibAtt.put(ATTR_NAME_EMAIL, "eko.indarto@dans.knaw.nl");
-    	
-    	//saml.attributes.surname=urn:mace:dir:attribute-def:sn
-    	shibAtt.put(ATTR_NAME_SURNAME, (String)request.getAttribute(SHIB_ATTR_NAME_SURNAME));
-    	
-    	//saml.attributes.prefix=snPrefix
-    	//NOTE: Dit attribuut wordt niet aangeleverd door SURFnet; er is een verstekwaarde ingevuld
-    	shibAtt.put(SHIB_ATTR_NAME_PREFIX, "shib");
-    	
-    	//saml.attributes.givenname=urn:mace:dir:attribute-def:givenName
-    	shibAtt.put(ATTR_NAME_GIVENNAME, "ekoi");
-    	
-    	//saml.attributes.organization=urn:mace:terena.org:attribute-def:schacHomeOrganization
-    	shibAtt.put(ATTR_NAME_ORG, "DANS");
-    	
-    	
-    	//NOTE: role: de rol bij de organisatie. De SURFfederatie kent de waarden student, employee, staff, alum en affiliate. Dit attribuut is meerwaardig.
-    	//attribute role
-    	//saml.attributes.role=urn:mace:dir:attribute-def:eduPersonAffiliation
-    	shibAtt.put(ATTR_NAME_ROLE,"staff");
-    	
-    	//eppn
-    	//NOTE, klopt dit? principal: dit enkelvoudige attribuut bevat een unieke naam binnen de federatie om de gebruiker aan te duiden. Meestal is dit in de vorm van gebruikersnaam@instelling, bijvoorbeeld pietje.puk@example.com.
-    	//saml.attributes.principal=urn:mace:dir:attribute-def:eduPersonPrincipalName
-    	shibAtt.put(ATTR_NAME_PRINCIPAL, (String)request.getAttribute(SHIB_ATTR_NAME_PRINCIPAL));
-    	
-    	
-    	/* Role access */
-    	//saml.access.admin=  
-    	ACL_ADMIN = "";
-    	
-    	//saml.access.creator=email=*&role=employee&organization=uu.nl|email=*&role=employee&organization=umcutrecht.nl|email=*&role=employee&organization=maastrichtuniversity.nl|email=*&role=employee&organization=utwente.nl|email=*&role=employee&organization=rsm.nl|email=*&role=employee&organization=nioo.knaw.nl|
-    	ACL_CREATOR = "email=*&role=employee&organization=uu.nl|email=*&role=employee&organization=umcutrecht.nl|email=*&role=employee&organization=maastrichtuniversity.nl|email=*&role=employee&organization=utwente.nl|email=*&role=employee&organization=rsm.nl|email=*&role=employee&organization=nioo.knaw.nl|";
-    	
-    	//saml.access.user=email=*
-    	ACL_USER = "email=*";
-    	
-    	//saml.username.method=attr
-    	USERID_METHOD = "attr";
-    	
-    	//saml.username.attribute=email
-    	USERID_ATTR = "email";
-    	
-    	//saml.username.prefix=
-    	USERID_PREFIX = "";
-    	
-    	//# saml.redirect.referer=yes 
-    	//NOTE: saml.redirect.referer=yes is unused (#).
-    	USE_REFERER = false;
-    	
-    	/* Admin access */
-    	//saml.access.allow.admin=no
-    	ALLOW_ADMIN = false;
-    	
-    	return shibAtt;
-    }
-    
-    /**
-    testshib.org
-    {unscoped-affiliation=Member;Staff, 
-    Shib-Session-ID=_5f36c617c057ec2dc801c2432bb2295d, 
-    sn=And I, 
-    Shib-Authentication-Instant=2014-04-08T10:14:47.798Z, 
-    javax.servlet.request.key_size=128, 
-    givenName=Me Myself, 
-    Shib-Session-Index=_2aab515b6c2d446f6e7510c2de7df057, 
-    Shib-AuthnContext-Class=urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport, 
-    eppn=myself@testshib.org, 
-    javax.servlet.request.ssl_session_id=245C3110140E337B7DFE40C7C8E786A5DCCE33C5CDF0F3E0C32B302986540D74, 
-    Shib-Authentication-Method=urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport, 
-    persistent-id=https://idp.testshib.org/idp/shibboleth!https://sp.dans.knaw.nl/shibboleth!W43vdLyU8zPDSSI6rzkd3Jbwlik=, 
-    cn=Me Myself And I, 
-    Shib-Application-ID=default, 
-    telephoneNumber=555-5555, 
-    SHIB_REMOTE_PORT=53547, 
-    affiliation=Member@testshib.org;
-    Staff@testshib.org, 
-    Shib-Identity-Provider=https://idp.testshib.org/idp/shibboleth, j
-    avax.servlet.request.cipher_suite=DHE-RSA-AES128-SHA, 
-    entitlement=urn:mace:dir:entitlement:common-lib-terms}
-     
-     
-    */
-
 }

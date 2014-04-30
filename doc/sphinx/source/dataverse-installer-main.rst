@@ -1054,10 +1054,9 @@ To set to Read Only Mode:
       | ``SET TRANSACTION READ WRITE;``
       | ``-- Note database and user strings may have to be modified for your particular installation;``
       | ``-- You may also customize the status notice which will appear on all pages of the application;``
-      | ``update vdcnetwork set statusnotice = "This network is currently in Read Only state. No saving of data will be allowed.";``
+      | ``update vdcnetwork set statusnotice = 'This network is currently in Read Only state. No saving of data will be allowed.';``
       | ``ALTER DATABASE "dvnDb" set default_transaction_read_only=on;``
       | ``Alter user "dvnApp" set default_transaction_read_only=on;``
-      | ``update vdcnetwork set statusnotice = "";``
       | ``END;``
 
 To return to regular service:
@@ -1067,7 +1066,7 @@ To return to regular service:
       | ``-- Note database and user strings may have to be modified for your particular installation;``
       | ``ALTER DATABASE "dvnDb" set default_transaction_read_only=off;``
       | ``Alter user "dvnApp" set default_transaction_read_only=off;``
-      | ``update vdcnetwork set statusnotice = "";``
+      | ``update vdcnetwork set statusnotice = '';``
       | ``END;``
 
 Backup and Restore

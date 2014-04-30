@@ -76,7 +76,7 @@
                                     <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.logoutPage or VDCSession.loginBean.user==null}">
                                         <!--  li class="dvn_navUserName">
                                             <ice:form rendered="#{!VDCRequest.readOnlyDatabase}">
-                                                <ice:commandLink action="#{LoginWorkflowBean.beginContributorWorkflow}" title="Create Account - EKO 7">
+                                                <ice:commandLink action="#{LoginWorkflowBean.beginContributorWorkflow}" title="Create Account">
                                                     <ice:outputText value="#{bundle.createaccountLabel}"/>
                                                 </ice:commandLink>
                                             </ice:form>
@@ -87,7 +87,8 @@
                                             </li>
                                         </ice:outputText>
                                         <li>
-                                        	<ice:outputLink value="#{bundle.federativeURL}" title="Federated Log In">
+                                        	<ice:outputLink value="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}/Shibboleth.sso/Login?target=#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}%2Fdvn%2Ffaces%2Flogin%2FFederativeLoginPage.xhtml%3FclearWorkflow%3Dtrue" 
+                                        		title="Federated Log In">
             									<ice:outputText value="Log In"/>
           									</ice:outputLink>
                                         </li>

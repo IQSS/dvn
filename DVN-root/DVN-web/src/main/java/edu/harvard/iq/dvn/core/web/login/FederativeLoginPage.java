@@ -164,14 +164,14 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
                             if (forward != null ) { // && forward.startsWith("/HomePage")
                                 try {
                                     LOGGER.log(Level.INFO, "refererUrl + redirect = {0}", refererUrl + redirect);
-                                    response.sendRedirect(refererUrl);
+                                    response.sendRedirect(refererUrl + redirect);
                                 	//response.sendRedirect(redirect); // `refererUrl + redirect`?!
                                 } catch (IOException ex) {
                                     errMessage = ex.toString();
                                     LOGGER.log(Level.SEVERE, null, ex);
                                 }
                             } else {
-                            	LOGGER.log(Level.SEVERE, "No forward location received, sending user back to referring page.");
+                            	LOGGER.log(Level.SEVERE, "No forward location received, sending user back to {0}.", refererUrl);
                             	try {
                                     response.sendRedirect(refererUrl);
                                     //response.sendRedirect(refererUrl + redirect);

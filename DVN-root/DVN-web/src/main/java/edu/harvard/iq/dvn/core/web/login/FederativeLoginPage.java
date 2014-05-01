@@ -163,9 +163,9 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
                              */
                             if (forward != null ) { // && forward.startsWith("/HomePage")
                                 try {
-                                    //response.sendRedirect(refererUrl);
-                                	LOGGER.log(Level.FINE, "refererUrl + redirect = {0}", refererUrl + redirect);
-                                    response.sendRedirect(redirect); // `refererUrl + redirect`?!
+                                    LOGGER.log(Level.INFO, "refererUrl + redirect = {0}", refererUrl + redirect);
+                                    response.sendRedirect(refererUrl);
+                                	//response.sendRedirect(redirect); // `refererUrl + redirect`?!
                                 } catch (IOException ex) {
                                     errMessage = ex.toString();
                                     LOGGER.log(Level.SEVERE, null, ex);
@@ -419,6 +419,9 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
         this.clearWorkflow = clearWorkflow;
     }
 
+    /**
+     * Read the Shibboleth properties from the request and put them in the session variable.
+     */
     private void readShibProps() {
         ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
         HttpSession session = (HttpSession) context.getSession(true);
@@ -554,7 +557,11 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
     }
 
     
-    /*
+    /**
+     * Read the Shibboleth properties from the HTTP request and map them.
+     * FIXME: Instead of reading the mapping from an external file, this 
+     * method specifies the mapping.
+     *  
      * SamlLogin.properties mapping to shibboleth
      * /home/ubudvn_homedir/glassfish3/glassfish/domains/domain1/applications/DVN-web/WEB-INF/SamlLogin.properties
      */

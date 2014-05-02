@@ -136,7 +136,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
 
     }
     
-       public String beginLoginContributorWorkflow() {
+    public String beginLoginContributorWorkflow() {
         clearWorkflowState();
         workflowType =   WORKFLOW_TYPE_CONTRIBUTOR;
  
@@ -145,7 +145,13 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
 
     }
 
-
+    /**
+     * Process the login and say where to go next: 
+     * to "accept terms of use" or just proceeding to next page
+     * @param user the user logging in
+     * @param studyId an optional study ID
+     * @return a String saying where to go next
+     */
     public String processLogin(VDCUser user, Long studyId) {
         this.user = user;
         if (studyId != null) {
@@ -161,7 +167,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         return nextPage;
     }
 
-  public String processAddAccount(VDCUser newUser) {
+    public String processAddAccount(VDCUser newUser) {
         user = newUser;
         String nextPage = null;
         if (workflowType == null) {

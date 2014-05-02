@@ -135,16 +135,27 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
             loginFailed = true;
             LOGGER.log(Level.SEVERE, errMessage);
         } else {
-        	// Shibboleth login worked; find the Dataverse user or proceed to adding the account. 
-        	
-        	LOGGER.log(Level.INFO, "Reading email attribute as ", shibProps.get(ATTR_NAME_EMAIL));
-            String attr_email = shibProps.get(ATTR_NAME_EMAIL);
+        	/*
+        	 * Shibboleth login worked; find the Dataverse user or proceed to adding the account. 
+        	 * 
+        	 * A Shibboleth-authorised user may have zero or more email addresses in mixed case.
+        	 * Make sure we have an email address (to enable lookup) and that it is always in
+        	 * lower case. Case in email addresses may change over time.
+        	 */
             
-            // A Shibboleth-authorised user may have zero or more email addresses.
-            final Iterator<String> email_list = Arrays.asList(attr_email.split(",")).iterator();//EKO, todo: CHECK IF attr_email is NULL; Why a user can have more than 1 email?
+        	LOGGER.log(Level.INFO, "Reading email attribute as ", shibProps.get(ATTR_NAME_EMAIL));
+            String attr_email = shibProps.get(ATTR_NAME_EMAIL).toLowerCase();
+            
+            if (attr_email == null) {
+            	errMessage = "No email address was found";
+            	loginFailed = true;
+            	LOGGER.log(Level.SEVERE, "No email address was found in the Shibboleth attributes.");
+            }
+            
+            final Iterator<String> email_list = Arrays.asList(attr_email.split(",")).iterator();
             VDCUser user = null;
             try {
-            	/**
+            	/*
             	 * Find the user based on her/his email address.
             	 * 
             	 * There may be more than one user with a certain address,
@@ -166,18 +177,20 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
                              * The logs show he (and others) should have been forwarded to /login/AccountTermsOfUsePage?faces-redirect=true
                              * Ben assumes the redirect somehow stopped here (i.e. was not performed),
                              *  because of the requirement of `forward.startsWith("/HomePage")`.
+                             * Put the check back in place.
                              */
-                            if (forward != null ) { // && forward.startsWith("/HomePage")
+                            if (forward != null && forward.startsWith("/HomePage")) {
                                 try {
                                     LOGGER.log(Level.INFO, "refererUrl + redirect = {0}", refererUrl + redirect);
-                                    response.sendRedirect(refererUrl + redirect);
+                                    response.sendRedirect(refererUrl);
+                                    //response.sendRedirect(refererUrl + redirect);
                                 	//response.sendRedirect(redirect); // `refererUrl + redirect`?!
                                 } catch (IOException ex) {
                                     errMessage = ex.toString();
                                     LOGGER.log(Level.SEVERE, null, ex);
                                 }
-                            } else {
-                            	LOGGER.log(Level.SEVERE, "No forward location received, sending user back to {0}.", refererUrl);
+                            } /* else {
+                            	LOGGER.log(Level.SEVERE, "No forward location received or , sending user back to {0}.", refererUrl);
                             	try {
                                     response.sendRedirect(refererUrl);
                                     //response.sendRedirect(refererUrl + redirect);
@@ -185,7 +198,7 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
                                     errMessage = ex.toString();
                                     LOGGER.log(Level.SEVERE, null, ex);
                                 }
-                            }
+                            } */
                         } else {
                             loginFailed = true;
                             errMessage = "Admin access is not allowed using federated login";
@@ -196,7 +209,9 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
                         LOGGER.log(Level.INFO, "User {0} not active!", user.getUserName());
                     }
                 } else {
-                	
+                	/*
+                	 * User is not in the database, prepare to create a new account.
+                	 */
                     final String usrgivenname = shibProps.get(ATTR_NAME_GIVENNAME);
                     final String usrprefix = shibProps.get(ATTR_NAME_PREFIX);
                     final String usrsurname = shibProps.get(ATTR_NAME_SURNAME);
@@ -307,6 +322,12 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
     	readShibProps();
     }
     
+    /**
+     * Process the login for a user (possibly looking at a study).
+     * @param user the user
+     * @param studyId an optional study ID
+     * @return a String of the next page to go to
+     */
     private String dvnLogin(VDCUser user, Long studyId) {
         LOGGER.log(Level.INFO, "dvnLogin for user {0}", user.getUserName());
         LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");
@@ -458,6 +479,12 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
         return access;
     }
 
+    /**
+     * Determine the user type (admin, creator or user) based on user's characteristics.
+     * Check, in order of most rights, whether the user is admin, creator or normal user.
+     * @param userdata user data
+     * @return String "admin", "creator", "user" or null after evaluating the ACLs
+     */
     private String getUserType(HashMap userdata) {
         if (ACL_ADMIN != null && evaluateAccess(ACL_ADMIN, userdata)) {
             LOGGER.log(Level.FINE, "User type Admin");

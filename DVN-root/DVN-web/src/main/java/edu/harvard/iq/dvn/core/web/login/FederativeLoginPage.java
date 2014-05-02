@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+// Licence info to be added
 package edu.harvard.iq.dvn.core.web.login;
 
 import java.io.IOException;
@@ -129,25 +126,34 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
             refererUrl = defaultPage;
         }
         
+        // Get Shibboleth session variables
         shibProps = (Map<String, String>)session.getAttribute(SHIB_PROPS_SESSION);
         
         if (shibProps == null || shibProps.isEmpty()) {
+        	// There is no Shibboleth session; configuration is messed up
             errMessage = "No assertion; this stage should never be reached; check the Shibboleth configuration";
             loginFailed = true;
             LOGGER.log(Level.SEVERE, errMessage);
         } else {
+        	// Shibboleth login worked; find the Dataverse user or proceed to adding the account. 
+        	
         	LOGGER.log(Level.INFO, "Reading email attribute as ", shibProps.get(ATTR_NAME_EMAIL));
             String attr_email = shibProps.get(ATTR_NAME_EMAIL);
             
+            // A Shibboleth-authorised user may have zero or more email addresses.
             final Iterator<String> email_list = Arrays.asList(attr_email.split(",")).iterator();//EKO, todo: CHECK IF attr_email is NULL; Why a user can have more than 1 email?
             VDCUser user = null;
             try {
+            	/**
+            	 * Find the user based on her/his email address.
+            	 * 
+            	 * There may be more than one user with a certain address,
+            	 * though only one should be active at a time.
+            	 */
                 while (email_list.hasNext() && user == null) {
                     String email = (String) email_list.next();
                     user = userService.findByEmail(email);
                 }
-                VDCUser user1 = userService.findByUserName("e.indart@gmail.com");
-                List users = userService.findAll();
                 if (user != null) {
                     if (user.isActive()) {
                         LOGGER.log(Level.INFO, "User is active!", user.getUserName());
@@ -159,7 +165,7 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
                              * Theo Engelman reported not being forwarded to the next page after logging in.
                              * The logs show he (and others) should have been forwarded to /login/AccountTermsOfUsePage?faces-redirect=true
                              * Ben assumes the redirect somehow stopped here (i.e. was not performed),
-                             * because of the requirement of `forward.startsWith("/HomePage")`.
+                             *  because of the requirement of `forward.startsWith("/HomePage")`.
                              */
                             if (forward != null ) { // && forward.startsWith("/HomePage")
                                 try {
@@ -435,6 +441,12 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
 
     }
 
+    /**
+     * Evaluate whether the user data matches the ACL
+     * @param acl an encoded access control list
+     * @param userdata the user data
+     * @return true when the user data matches the ACL, false otherwise
+     */
     private Boolean evaluateAccess(final String acl, final HashMap userdata) {
         Boolean access = false;
         try {
@@ -466,6 +478,11 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
         return UUID.randomUUID().toString().toLowerCase();
     }
 
+    /**
+     * Return a copy of a string without non alpha-numeric characters.
+     * @param in a string
+     * @return a copy of the input string without character outside the [a-zA-Z0-9] range
+     */
     public String stripNonAlphaNum(String in) {
         String out = "";
         if (in == null) {
@@ -483,6 +500,11 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
         return out;
     }
 
+    /**
+     * Generate a unique user ID either based on the provided user data or a UUID
+     * @param data user data. If <code>USERID_METHOD</code> is <code>attr</code>, this should not be null.
+     * @return a unique user ID
+     */
     private String uniqueUserId(Map<String, Object> data) {
         if ("uuid".equalsIgnoreCase(USERID_METHOD)) {
             LOGGER.log(Level.INFO, "User Id generation method: UUID");

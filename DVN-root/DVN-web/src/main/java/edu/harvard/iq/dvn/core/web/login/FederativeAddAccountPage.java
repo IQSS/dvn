@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+// Licence info to be added
 package edu.harvard.iq.dvn.core.web.login;
 
 import java.util.List;
@@ -102,17 +99,17 @@ public class FederativeAddAccountPage extends VDCBaseBean implements java.io.Ser
 
     public String getUsername() {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
-        String usrgivenname;
+        String usrUsername;
 
         if (session.getAttribute("usrusername") != null) {
-            usrgivenname = session.getAttribute("usrusername").toString();
-            setGivenname(usrgivenname);
+            usrUsername = session.getAttribute("usrusername").toString();
+            setUsername(usrUsername);
         } else {
-            usrgivenname = "";
-            setGivenname(usrgivenname);
+            usrUsername = "";
+            setUsername(usrUsername);
         }
 
-        return usrgivenname;
+        return usrUsername;
     }
 
     public void setUsername(String usrusername) {

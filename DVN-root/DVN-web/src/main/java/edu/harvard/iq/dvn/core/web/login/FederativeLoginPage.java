@@ -609,7 +609,7 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
     /**
      * Read the Shibboleth properties from the HTTP request and map them.
      * FIXME: Instead of reading the mapping from an external file, this 
-     * method specifies the mapping.
+     * method specifies the mapping. This means you have to redeploy when something changes.
      *  
      * SamlLogin.properties mapping to shibboleth
      * /home/ubudvn_homedir/glassfish3/glassfish/domains/domain1/applications/DVN-web/WEB-INF/SamlLogin.properties
@@ -644,7 +644,8 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
     		shibAtt.put(ATTR_NAME_ORG, (String)request.getAttribute(SHIB_ATTR_NAME_ORG));
     	}
     	
-    	//NOTE: role: de rol bij de organisatie. De SURFfederatie kent de waarden student, employee, staff, alum en affiliate. Dit attribuut is meerwaardig.
+    	//NOTE: role: de rol bij de organisatie. De SURFfederatie kent de waarden student, employee, staff, alum en affiliate. 
+    	// Dit attribuut is meerwaardig.
     	//attribute role
     	//saml.attributes.role=urn:mace:dir:attribute-def:eduPersonAffiliation
     	if (request.getAttribute(SHIB_ATTR_NAME_ROLE) != null) {

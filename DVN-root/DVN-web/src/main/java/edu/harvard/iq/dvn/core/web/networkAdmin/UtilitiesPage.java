@@ -1104,6 +1104,8 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                     }
                     
                 } catch (Exception ex) {
+                	logger.warning("Error while checking studyId's handle '"+studyId.toString()
+                			+"': "+ ex.getMessage());
                     checkOutput = checkOutput.concat(studyId + "\t\tNO SUCH STUDY\n");
                 }
                 studyId = studyId + 1;
@@ -1129,6 +1131,8 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                 handleCheckReport = checkOutput;
                 
             } catch (Exception ex) {
+            	logger.warning("Error while checking single studyId's handle '"+studyIdRange
+            			+"': "+ ex.getMessage());
                 addMessage("handleMessage", "No such study: id="+studyIdRange);
             }
         }

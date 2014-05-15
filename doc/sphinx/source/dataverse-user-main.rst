@@ -3092,7 +3092,7 @@ Harvesting Section
 =======================
 
 Create a New Harvesting Dataverse
-------------------------------
+---------------------------------
 
 A harvesting dataverse allows studies from another site to be imported
 so they appear to be local, though data files remain on the remote site.
@@ -3334,7 +3334,7 @@ information. Some information intended to a LOCKSS server administrator
 is available in the `"Using LOCKSS with Dataverse Network (DVN)"
 <http://guides.thedata.org/book/h-using-lockss-dvn>`__  of the
 `Dataverse Network Installers Guide <http://guides.thedata.org/book/installers-guides>`__
- (our primary sysadmin-level manual). 
+(our primary sysadmin-level manual). 
 
 **Configuration Tasks:**
 
@@ -3677,9 +3677,9 @@ V = View
 
 **Notes:**
 
-*\Same as Curator
+\* Same as Curator
 
-**\Same as Curator + D2
+\** Same as Curator + D2
 
 +\ Contributor actions (E,D3,S,V) depend on new DV permission settings. A
 contributor role can act on their own studies (default) or all studies
@@ -4034,7 +4034,7 @@ Appendix
 Additional documentation complementary to Users Guides.
 
 Control Card-Based Data Ingest
-=====================
+===============================
 
 As of version 2.2 the DVN supports ingesting plain text data files, in
 addition to SPSS and STATA formats. This allows users and institutions
@@ -4059,7 +4059,7 @@ The specifics of the formats are documented in the 2 sections below.
 .. _controlcard-datafile-ingest:
 
 CSV Data, SPSS-style Control Card
-------------------------------
+---------------------------------
 
 Unlike other supported “subsettable” formats, this ingest mechanism
 requires 2 files: the CSV raw data file proper and an SPSS Setup file
@@ -4194,13 +4194,13 @@ For example,
 This command is actually redundant if you explicitly supply the variable
 formats in the ``DATA LIST`` section above.
 
-**NOTE:** It appears that the only reason the``FORMATS`` command exists is
+**NOTE:** It appears that the only reason the ``FORMATS`` command exists is
 that ``DATA LIST`` syntax does not support explicit fortran-style format
 definitions when fixed-field data is defined. So it is in fact redundant
 when we're dealing with delimited files only.
 
-Please supply valid, fortran-style variable formats in the ``DATA
-LIST`` section, as described above.
+Please supply valid, fortran-style variable formats in the ``DATA LIST``
+section, as described above.
 
 **6. MISSING VALUES**
 
@@ -4295,7 +4295,7 @@ Is there any reason we may want to support ``RECODE`` command also?
 .. _ddixml-datafile-ingest:
 
 Tab Data, with DDI Metadata
-------------------------
+----------------------------
 
 As of version 2.2, another method of ingesting raw TAB-delimited data
 files has been added to the Dataverse Network. Similarly to the SPSS control
@@ -4537,8 +4537,10 @@ regardless of the current time zones, it is recommended that the time
 zone is explicitly defined. For example: 
 
      attr(timevalue,"tzone")<-"PST"
+
 or 
-   timevalue<-as.POSIXct("03/19/2013 12:57:00", format = "%m/%d/%Y %H:%M:%OS", tz="PST");
+
+     timevalue<-as.POSIXct("03/19/2013 12:57:00", format = "%m/%d/%Y %H:%M:%OS", tz="PST");
 
 Now the value will always be displayed as "12:57 PST", regardless of
 the time zone that is current for the OS ... **BUT ONLY** if the OS
@@ -4689,7 +4691,7 @@ information fields suitable for use with batch import.
 `simple\_study.xml <https://github.com/IQSS/dvn/blob/develop/doc/sphinx/source/datausers-guides_files/simple_study_1.xml>`__
 
 Zelig Interface
-==========
+===============
 
 Zelig is statistical software for everyone: researchers, instructors,
 and students. It is a front-end and back-end for R (Zelig is written in

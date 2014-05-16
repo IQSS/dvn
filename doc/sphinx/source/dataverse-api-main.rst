@@ -519,6 +519,15 @@ Per http://curl.haxx.se/docs/manpage.html
 * `--upload-file` is an HTTP `PUT`
 * `--data-binary` is an HTTP `POST`
 
+dvn package on CRAN
+===================
+The `dvn package on CRAN
+<http://cran.r-project.org/web/packages/dvn/index.html>`__ provides
+access to the Dataverse Network Data Deposit API to integrate data (and
+metadata) archiving directly into the R workflow with just a few simple
+functions. Developed by: `Thomas Leeper <http://thomasleeper.com>`__.
+Follow its development at https://github.com/ropensci/dvn
+
 DVN Data Deposit API v1 client sample code (Python)
 ===================================================
 

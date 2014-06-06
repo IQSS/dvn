@@ -382,6 +382,11 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
         return baseUrl + handle;
     }
     
+    /**
+     * Test whether a handle prefix is an authority in this DVN
+     * @param prefix a prefix to test
+     * @return true when this DVN has the prefix in its list of authoritative handle prefixes, false otherwise
+     */
     private boolean isAuthority(String prefix){
         VDCNetwork network = vdcNetworkService.find();
         String vdcAuthority = network.getAuthority(); 

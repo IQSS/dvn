@@ -129,176 +129,192 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
         // Get Shibboleth session variables
         shibProps = (Map<String, String>)session.getAttribute(SHIB_PROPS_SESSION);
         
+
         if (shibProps == null || shibProps.isEmpty()) {
-        	// There is no Shibboleth session; configuration is messed up
+        	errMessage = "ERROR:  is empty. Try to read shibboleth properties again.";
+        	LOGGER.log(Level.SEVERE, errMessage);
+        	//try to read the shibboleth environment 
+        	readShibProps();
+        } 
+        ///check the shibProps again and if it is still null redirect to surfconnect
+        if (shibProps == null || shibProps.isEmpty()) {
+        	String baseUrl = request.getRequestURL().substring(0, request.getRequestURL().length() - request.getRequestURI().length());
+        	String surfconnectUrl = baseUrl + "/Shibboleth.sso/Login?target=" + baseUrl + "%2Fdvn%2Ffaces%2Flogin%2FFederativeLoginPage.xhtml%3FclearWorkflow%3Dtrue";
+        	try {
+        		LOGGER.log(Level.INFO, "surfconnectUrl: " + surfconnectUrl);
+				response.sendRedirect(surfconnectUrl);
+			} catch (IOException e) {
+				LOGGER.log(Level.SEVERE, e.getMessage());
+			}
             errMessage = "No assertion; this stage should never be reached; check the Shibboleth configuration";
             loginFailed = true;
             LOGGER.log(Level.SEVERE, errMessage);
-        } else {
+        }
+    
+    	/*
+    	 * Shibboleth login worked; find the Dataverse user or proceed to adding the account. 
+    	 * 
+    	 * A Shibboleth-authorised user may have zero or more email addresses in mixed case.
+    	 * Make sure we have an email address (to enable lookup) and that it is always in
+    	 * lower case. Case in email addresses may change over time.
+    	 */
+        
+    	LOGGER.log(Level.INFO, "Reading email attribute as ", shibProps.get(ATTR_NAME_EMAIL));
+        String attr_email = shibProps.get(ATTR_NAME_EMAIL).toLowerCase();
+        
+        if (attr_email == null) {
+        	errMessage = "No email address was found";
+        	loginFailed = true;
+        	LOGGER.log(Level.SEVERE, "No email address was found in the Shibboleth attributes.");
+        }
+        
+        final Iterator<String> email_list = Arrays.asList(attr_email.split(",")).iterator();
+        VDCUser user = null;
+        try {
         	/*
-        	 * Shibboleth login worked; find the Dataverse user or proceed to adding the account. 
+        	 * Find the user based on her/his email address.
         	 * 
-        	 * A Shibboleth-authorised user may have zero or more email addresses in mixed case.
-        	 * Make sure we have an email address (to enable lookup) and that it is always in
-        	 * lower case. Case in email addresses may change over time.
+        	 * There may be more than one user with a certain address,
+        	 * though only one should be active at a time.
         	 */
-            
-        	LOGGER.log(Level.INFO, "Reading email attribute as ", shibProps.get(ATTR_NAME_EMAIL));
-            String attr_email = shibProps.get(ATTR_NAME_EMAIL).toLowerCase();
-            
-            if (attr_email == null) {
-            	errMessage = "No email address was found";
-            	loginFailed = true;
-            	LOGGER.log(Level.SEVERE, "No email address was found in the Shibboleth attributes.");
+            while (email_list.hasNext() && user == null) {
+                String email = (String) email_list.next();
+                user = userService.findByEmail(email);
             }
-            
-            final Iterator<String> email_list = Arrays.asList(attr_email.split(",")).iterator();
-            VDCUser user = null;
-            try {
-            	/*
-            	 * Find the user based on her/his email address.
-            	 * 
-            	 * There may be more than one user with a certain address,
-            	 * though only one should be active at a time.
-            	 */
-                while (email_list.hasNext() && user == null) {
-                    String email = (String) email_list.next();
-                    user = userService.findByEmail(email);
-                }
-                if (user != null) {
-                    if (user.isActive()) {
-                        LOGGER.log(Level.INFO, "User is active!", user.getUserName());
-                        if (!user.isNetworkAdmin() || ALLOW_ADMIN) {
-                            final String forward = dvnLogin(user, studyId);
-                            LOGGER.log(Level.INFO, "User forwarded to {0}", forward);
-                            redirect = forward;
-                            /*
-                             * A user reported not being forwarded to the next page after logging in.
-                             * The logs show he (and others) should have been forwarded to /login/AccountTermsOfUsePage?faces-redirect=true
-                             * Ben assumes the redirect somehow stopped here (i.e. was not performed),
-                             *  because of the requirement of `forward.startsWith("/HomePage")`.
-                             * Put the check back in place.
-                             */
-                            if (forward != null && forward.startsWith("/HomePage")) {
-                                try {
-                                    LOGGER.log(Level.INFO, "refererUrl + redirect = {0}", refererUrl + redirect);
-                                    response.sendRedirect(refererUrl);
-                                    //response.sendRedirect(refererUrl + redirect);
-                                	//response.sendRedirect(redirect); // `refererUrl + redirect`?!
-                                } catch (IOException ex) {
-                                    errMessage = ex.toString();
-                                    LOGGER.log(Level.SEVERE, null, ex);
-                                }
-                            } /* else {
-                            	LOGGER.log(Level.SEVERE, "No forward location received or , sending user back to {0}.", refererUrl);
-                            	try {
-                                    response.sendRedirect(refererUrl);
-                                    //response.sendRedirect(refererUrl + redirect);
-                                } catch (IOException ex) {
-                                    errMessage = ex.toString();
-                                    LOGGER.log(Level.SEVERE, null, ex);
-                                }
-                            } */
-                        } else {
-                            loginFailed = true;
-                            errMessage = "Admin access is not allowed using federated login";
-                        }
+            if (user != null) {
+                if (user.isActive()) {
+                    LOGGER.log(Level.INFO, "User is active!", user.getUserName());
+                    if (!user.isNetworkAdmin() || ALLOW_ADMIN) {
+                        final String forward = dvnLogin(user, studyId);
+                        LOGGER.log(Level.INFO, "User forwarded to {0}", forward);
+                        redirect = forward;
+                        /*
+                         * A user reported not being forwarded to the next page after logging in.
+                         * The logs show he (and others) should have been forwarded to /login/AccountTermsOfUsePage?faces-redirect=true
+                         * Ben assumes the redirect somehow stopped here (i.e. was not performed),
+                         *  because of the requirement of `forward.startsWith("/HomePage")`.
+                         * Put the check back in place.
+                         */
+                        if (forward != null && forward.startsWith("/HomePage")) {
+                            try {
+                                LOGGER.log(Level.INFO, "refererUrl + redirect = {0}", refererUrl + redirect);
+                                response.sendRedirect(refererUrl);
+                                //response.sendRedirect(refererUrl + redirect);
+                            	//response.sendRedirect(redirect); // `refererUrl + redirect`?!
+                            } catch (IOException ex) {
+                                errMessage = ex.toString();
+                                LOGGER.log(Level.SEVERE, null, ex);
+                            }
+                        } /* else {
+                        	LOGGER.log(Level.SEVERE, "No forward location received or , sending user back to {0}.", refererUrl);
+                        	try {
+                                response.sendRedirect(refererUrl);
+                                //response.sendRedirect(refererUrl + redirect);
+                            } catch (IOException ex) {
+                                errMessage = ex.toString();
+                                LOGGER.log(Level.SEVERE, null, ex);
+                            }
+                        } */
                     } else {
-                        loginFailed = true;
-                        errMessage = "Account is not active";
-                        LOGGER.log(Level.INFO, "User {0} not active!", user.getUserName());
-                    }
-                } else {
-                	/*
-                	 * User is not in the database, prepare to create a new account.
-                	 */
-                    final String usrgivenname = shibProps.get(ATTR_NAME_GIVENNAME);
-                    final String usrprefix = shibProps.get(ATTR_NAME_PREFIX);
-                    final String usrsurname = shibProps.get(ATTR_NAME_SURNAME);
-                    final String usremail = shibProps.get(ATTR_NAME_EMAIL).toLowerCase();
-                    final String usrprincipal = shibProps.get(ATTR_NAME_PRINCIPAL);
-                    final String usrrole = shibProps.get(ATTR_NAME_ROLE);
-                    final String usrorg = shibProps.get(ATTR_NAME_ORG);
-
-                    if (usrgivenname != null) {
-                        LOGGER.log(Level.INFO, "Given Name: ", usrgivenname);
-                        userdata.put("givenname", usrgivenname);
-                    }
-                    if (usrprefix != null) {
-                        LOGGER.log(Level.INFO, "Prefix: ", usrprefix);
-                        userdata.put("prefix", usrprefix);
-                    }
-                    if (usrsurname != null) {
-                        LOGGER.log(Level.INFO, "Surname: ", usrsurname);
-                        userdata.put("surname", usrsurname);
-                    }
-                    if (usremail != null) {
-                        LOGGER.log(Level.INFO, "Email: ", usremail);
-                        userdata.put("email", usremail);
-                    }
-                    if (usrprincipal != null) {
-                        LOGGER.log(Level.INFO, "Principal Name: ", usrprincipal);
-                        userdata.put("principal", usrprincipal);
-                    }
-                    if (usrrole != null) {
-                        LOGGER.log(Level.INFO, "Role: ", usrrole);
-                        userdata.put("role", usrrole);
-                    }
-                    if (usrorg != null) {
-                        LOGGER.log(Level.INFO, "Organization:", usrorg);
-                        userdata.put("organization", usrorg);
-                    }
-                    final String usertype = getUserType(userdata);
-                    LOGGER.log(Level.INFO, "User type: {0}", usertype);
-                    final String tempusername = uniqueUserId(userdata);
-
-                    if (!ALLOW_ADMIN && "admin".equals(usertype)) {
                         loginFailed = true;
                         errMessage = "Admin access is not allowed using federated login";
-                        String name = ((usrprincipal != null) ? usrprincipal : ((usremail != null) ? usremail : "unknown"));
-                        LOGGER.log(Level.SEVERE, "Admin login not allowed for {0}!", name);
-                    } else if (usertype != null && tempusername != null) {
-                        session.setAttribute("usrusertype", usertype);
-                        session.setAttribute("usrusername", tempusername);
-                        session.setAttribute("ALLOW_ADMIN", ALLOW_ADMIN);
-                        if (usrgivenname != null) {
-                            session.setAttribute("usrgivenname", usrgivenname);
-                        }
-                        if (usrprefix != null) {
-                            session.setAttribute("usrprefix", usrprefix);
-                        }
-                        if (usrsurname != null) {
-                            session.setAttribute("usrsurname", usrsurname);
-                        }
-                        if (usremail != null) {
-                            session.setAttribute("usremail", usremail);
-                        }
-                        if (usrprincipal != null) {
-                            session.setAttribute("usrprincipal", usrprincipal);
-                        }
-                        if (usrrole != null) {
-                            session.setAttribute("usrrole", usrrole);
-                        }
-                        if (usrorg != null) {
-                            session.setAttribute("usrorg", usrorg);
-                        }
-                        redirectToShibAddAccount();
-                    } else {
-                        loginFailed = true;
-                        if (tempusername == null) {
-                            errMessage = "Unable to determine a unique user id";
-                        } else {
-                            errMessage = "You are not allowed to log in using your federation account";
-                        }
-                        String name = ((usrprincipal != null) ? usrprincipal : ((usremail != null) ? usremail : "unknown"));
-                        LOGGER.log(Level.INFO, "Login not allowed for {0}!", name);
                     }
+                } else {
+                    loginFailed = true;
+                    errMessage = "Account is not active";
+                    LOGGER.log(Level.INFO, "User {0} not active!", user.getUserName());
                 }
-            } catch (Exception e) {
-                errMessage = e.toString();
-                LOGGER.log(Level.SEVERE, null, e);
+            } else {
+            	/*
+            	 * User is not in the database, prepare to create a new account.
+            	 */
+                final String usrgivenname = shibProps.get(ATTR_NAME_GIVENNAME);
+                final String usrprefix = shibProps.get(ATTR_NAME_PREFIX);
+                final String usrsurname = shibProps.get(ATTR_NAME_SURNAME);
+                final String usremail = shibProps.get(ATTR_NAME_EMAIL).toLowerCase();
+                final String usrprincipal = shibProps.get(ATTR_NAME_PRINCIPAL);
+                final String usrrole = shibProps.get(ATTR_NAME_ROLE);
+                final String usrorg = shibProps.get(ATTR_NAME_ORG);
+
+                if (usrgivenname != null) {
+                    LOGGER.log(Level.INFO, "Given Name: ", usrgivenname);
+                    userdata.put("givenname", usrgivenname);
+                }
+                if (usrprefix != null) {
+                    LOGGER.log(Level.INFO, "Prefix: ", usrprefix);
+                    userdata.put("prefix", usrprefix);
+                }
+                if (usrsurname != null) {
+                    LOGGER.log(Level.INFO, "Surname: ", usrsurname);
+                    userdata.put("surname", usrsurname);
+                }
+                if (usremail != null) {
+                    LOGGER.log(Level.INFO, "Email: ", usremail);
+                    userdata.put("email", usremail);
+                }
+                if (usrprincipal != null) {
+                    LOGGER.log(Level.INFO, "Principal Name: ", usrprincipal);
+                    userdata.put("principal", usrprincipal);
+                }
+                if (usrrole != null) {
+                    LOGGER.log(Level.INFO, "Role: ", usrrole);
+                    userdata.put("role", usrrole);
+                }
+                if (usrorg != null) {
+                    LOGGER.log(Level.INFO, "Organization:", usrorg);
+                    userdata.put("organization", usrorg);
+                }
+                final String usertype = getUserType(userdata);
+                LOGGER.log(Level.INFO, "User type: {0}", usertype);
+                final String tempusername = uniqueUserId(userdata);
+
+                if (!ALLOW_ADMIN && "admin".equals(usertype)) {
+                    loginFailed = true;
+                    errMessage = "Admin access is not allowed using federated login";
+                    String name = ((usrprincipal != null) ? usrprincipal : ((usremail != null) ? usremail : "unknown"));
+                    LOGGER.log(Level.SEVERE, "Admin login not allowed for {0}!", name);
+                } else if (usertype != null && tempusername != null) {
+                    session.setAttribute("usrusertype", usertype);
+                    session.setAttribute("usrusername", tempusername);
+                    session.setAttribute("ALLOW_ADMIN", ALLOW_ADMIN);
+                    if (usrgivenname != null) {
+                        session.setAttribute("usrgivenname", usrgivenname);
+                    }
+                    if (usrprefix != null) {
+                        session.setAttribute("usrprefix", usrprefix);
+                    }
+                    if (usrsurname != null) {
+                        session.setAttribute("usrsurname", usrsurname);
+                    }
+                    if (usremail != null) {
+                        session.setAttribute("usremail", usremail);
+                    }
+                    if (usrprincipal != null) {
+                        session.setAttribute("usrprincipal", usrprincipal);
+                    }
+                    if (usrrole != null) {
+                        session.setAttribute("usrrole", usrrole);
+                    }
+                    if (usrorg != null) {
+                        session.setAttribute("usrorg", usrorg);
+                    }
+                    redirectToShibAddAccount();
+                } else {
+                    loginFailed = true;
+                    if (tempusername == null) {
+                        errMessage = "Unable to determine a unique user id";
+                    } else {
+                        errMessage = "You are not allowed to log in using your federation account";
+                    }
+                    String name = ((usrprincipal != null) ? usrprincipal : ((usremail != null) ? usremail : "unknown"));
+                    LOGGER.log(Level.INFO, "Login not allowed for {0}!", name);
+                }
             }
+        } catch (Exception e) {
+            errMessage = e.toString();
+            LOGGER.log(Level.SEVERE, null, e);
         }
+        
     }
 
     private String resolveProtocol(int portNumber) {
@@ -657,7 +673,7 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
     		shibAtt.put(ATTR_NAME_PRINCIPAL, (String)request.getAttribute(SHIB_ATTR_NAME_PRINCIPAL));
     	}
     	
-    	//TODO: Should be not here. Very ugly coding
+    	//TODO: Shouldn't be here. Very ugly coding
     	
     	/* Role access */
     	//saml.access.admin=  

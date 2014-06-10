@@ -38,7 +38,8 @@
                                     <div id="samllogin">
                                         <p>
                                             If you are associated to one of the Dutch universities, you can login by clicking the federated link below<br/>
-                                            <a href="#{bundle.federativeURL}">Federated Login</a>
+                                            
+                                            <a href="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}/Shibboleth.sso/Login?target=#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}%2Fdvn%2Ffaces%2Flogin%2FFederativeLoginPage.xhtml%3FclearWorkflow%3Dtrue">Federated Login</a>
                                         
                                         </p>
                                     </div>

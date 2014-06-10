@@ -103,6 +103,10 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
     public void init() {
         super.init();
         
+        if (clearWorkflow != null) {
+            LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");
+            lwf.clearWorkflowState();
+        }
         
         ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
         HttpSession session = (HttpSession) context.getSession(true);
@@ -136,6 +140,10 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
         	//try to read the shibboleth environment 
         	readShibProps();
         } 
+        String baseUrltmp = request.getRequestURL().substring(0, request.getRequestURL().length() - request.getRequestURI().length());
+        String surfconnectUrltmp = baseUrltmp + "/Shibboleth.sso/Login?target=" + baseUrltmp + "%2Fdvn%2Ffaces%2Flogin%2FFederativeLoginPage.xhtml%3FclearWorkflow%3Dtrue";
+    	
+        LOGGER.log(Level.INFO, "surfconnectUrl: " + surfconnectUrltmp);
         ///check the shibProps again and if it is still null redirect to surfconnect
         if (shibProps == null || shibProps.isEmpty()) {
         	String baseUrl = request.getRequestURL().substring(0, request.getRequestURL().length() - request.getRequestURI().length());

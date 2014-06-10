@@ -215,7 +215,7 @@ public class FederativeLoginPage extends VDCBaseBean implements java.io.Serializ
                     final String usrgivenname = shibProps.get(ATTR_NAME_GIVENNAME);
                     final String usrprefix = shibProps.get(ATTR_NAME_PREFIX);
                     final String usrsurname = shibProps.get(ATTR_NAME_SURNAME);
-                    final String usremail = shibProps.get(ATTR_NAME_EMAIL);
+                    final String usremail = shibProps.get(ATTR_NAME_EMAIL).toLowerCase();
                     final String usrprincipal = shibProps.get(ATTR_NAME_PRINCIPAL);
                     final String usrrole = shibProps.get(ATTR_NAME_ROLE);
                     final String usrorg = shibProps.get(ATTR_NAME_ORG);

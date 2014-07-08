@@ -124,6 +124,31 @@
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <!-- **************** Login ***************** -->
+    <managed-bean>
+        <managed-bean-name>FederativeLoginPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.login.FederativeLoginPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>redirect</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{param.redirect}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>studyId</property-name>
+            <property-class>java.lang.Long</property-class>
+            <value>#{param.studyId}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>clearWorkflow</property-name>
+            <property-class>java.lang.Boolean</property-class>
+            <value>#{param.clearWorkflow}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>tab</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{param.tab}</value>
+        </managed-property>
+    </managed-bean>
      <managed-bean>
         <managed-bean-name>ForgotPasswordPage</managed-bean-name>
         <managed-bean-class>edu.harvard.iq.dvn.core.web.login.ForgotPasswordPage</managed-bean-class>

@@ -37,6 +37,10 @@ public interface GNRSServiceLocal  extends java.io.Serializable {
 
     public void createHandle(String handle);
     
+    /**
+     * (Re-)register the given handle.
+     * @param handle a handle
+     */
     public void fixHandle(String handle);
 
     public void registerAll();

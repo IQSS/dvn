@@ -70,6 +70,8 @@ public interface UserServiceLocal extends java.io.Serializable  {
     
     public void setAgreedTermsOfUse(Long userId, boolean agreed);
     
+    public void makeNetworkAdmin(Long userId);
+
     public void makeCreator(Long userId);
     
     public void makeContributor(Long userId, Long vdcId);

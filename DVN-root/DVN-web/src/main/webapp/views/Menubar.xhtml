@@ -47,7 +47,7 @@
                                         </li>
                                     </ice:outputText>
                                     <li>
-                                        <ice:outputLink styleClass="navicon naviconguides" value="/guides" target="_blank" title="Go to User Guides">
+                                        <ice:outputLink styleClass="navicon naviconguides" value="http://guides.thedata.org/pages/users-guides" target="_blank" title="Go to User Guides">
                                             <ice:outputText value="#{bundle.helpLabel}"/>
                                         </ice:outputLink>
                                     </li>
@@ -74,18 +74,24 @@
                                         </li>
                                     </ice:outputText>
                                     <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.logoutPage or VDCSession.loginBean.user==null}">
-                                        <li class="dvn_navUserName">
+                                        <!--  li class="dvn_navUserName">
                                             <ice:form rendered="#{!VDCRequest.readOnlyDatabase}">
                                                 <ice:commandLink action="#{LoginWorkflowBean.beginContributorWorkflow}" title="Create Account">
                                                     <ice:outputText value="#{bundle.createaccountLabel}"/>
                                                 </ice:commandLink>
                                             </ice:form>
-                                        </li>
+                                        </li -->
                                         <ice:outputText nospan="true" escape="false" rendered="#{!VDCRequest.logoutPage and VDCSession.ipUserGroup.friendlyName != null}">
                                             <li class="dvn_navUserGroup">
                                                 <ice:outputText value="#{VDCSession.ipUserGroup.friendlyName}"/>
                                             </li>
                                         </ice:outputText>
+                                        <li>
+                                        	<ice:outputLink value="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}/Shibboleth.sso/Login?target=#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}%2Fdvn%2Ffaces%2Flogin%2FFederativeLoginPage.xhtml%3FclearWorkflow%3Dtrue" 
+                                        		title="Federated Log In">
+            									<ice:outputText value="Log In"/>
+          									</ice:outputLink>
+                                        </li>
                                         <li>
                                             <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml?clearWorkflow=true" title="Log In">
                                                 <ice:outputText value="#{bundle.loginLabel}"/>

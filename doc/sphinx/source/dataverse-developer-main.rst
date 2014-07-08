@@ -279,7 +279,7 @@ select "GlassFish Server 3.1.2", click "Remember in Current IDE Session"
 and click "OK". 
 
 Developing with Git
-++++++++++++++++
++++++++++++++++++++
 
 
 .. _commit:

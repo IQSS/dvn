@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+    <body>
+        <ui:composition template="/template.xhtml">
+            <ui:param name="pageTitle" value="#{bundlePageInfo.createAccountTitle} - #{VDCRequest.dataversePageTitle}"/>
+            <ui:define name="metadata">
+        	<f:event type="preRenderView" listener="#{FederativeAddAccountPage.preRenderView}"/>  
+    		</ui:define>
+            <ui:define name="body">
+                <ice:form id="form1">
+                    <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.plainWorkflow}" styleClass="#{(LoginWorkflowBean.plainWorkflow) ? 'dvn_section' : 'dvn_nostyle'}">
+                        <div class="dvnMsgBlockRound dvnInformationMessage">
+                        </div>
+                    </div>
+                    <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+                    <ice:inputHidden id="studyId" value="#{AddAccountPage.studyId}"/>
+                    <ice:inputHidden binding="#{AddAccountPage.hiddenWorkflow}" value="#{AddAccountPage.workflow}"/>
+                    <input type="hidden" name="pageName" value="AddAccountPage"/>
+                    <div jsfc="ice:panelGroup" styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'dvn_createDvRequest dvn_section dvn_overflow' : 'dvn_section'}">
+                        <div jsfc="ice:panelGroup" styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestHeader dvn_overflow' : 'dvn_sectionTitle'}">
+                            <ice:outputText value="#{bundlePageInfo.createAccountTitle}" rendered="#{LoginWorkflowBean.plainWorkflow}"/>
+                            <ice:outputText value="#{bundlePageInfo.createAccountTitle}" rendered="#{LoginWorkflowBean.fileAccessWorkflow}"/>
+                            <ice:outputText value="Create Account &lt;span&gt;&gt; Create Your Own Dataverse&lt;/span&gt;" rendered="#{LoginWorkflowBean.creatorWorkflow}" escape="false"/>
+                            <ice:outputText value="Create Account &lt;span&gt;&gt; Become a Contributor&lt;/span&gt;" rendered="#{LoginWorkflowBean.contributorWorkflow}" escape="false"/>
+                        </div>
+                        <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestTimeline creatorTimelineStep1">
+                            <div class="requestTimelinePoint creatorWorkflowStep1"><img src="/dvn/resources/images/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong class="requestWorkflowCurrent">Create Account</strong></div>
+                            <div class="requestTimelinePoint creatorWorkflowStep2"><img src="/dvn/resources/images/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Terms of Use</strong></div>
+                            <div class="requestTimelinePoint creatorWorkflowStep3"><img src="/dvn/resources/images/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Name Dataverse</strong></div>
+                            <div class="requestTimelinePoint creatorWorkflowStep4"><img src="/dvn/resources/images/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Success!</strong></div>
+                        </div>
+                        <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.contributorWorkflow}" styleClass="requestTimeline contributorTimelineStep1">
+                            <div class="requestTimelinePoint contributorWorkflowStep1"><img src="/dvn/resources/images/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong class="requestWorkflowCurrent">Create Account</strong></div>
+                            <div class="requestTimelinePoint contributorWorkflowStep2"><img src="/dvn/resources/images/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Terms of Use</strong></div>
+                            <div class="requestTimelinePoint contributorWorkflowStep3"><img src="/dvn/resources/images/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Success!</strong></div>
+                        </div>
+                        <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
+                            <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow}" styleClass="requestContentDescLeft">
+                                <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+                                </div>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContentFormRight' : 'empty'}">
+                                <div jsfc="ice:panelGroup" styleClass="dvn_margin12">
+                                    <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
+                                                   columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2">
+                                        <div styleClass="dvnLoginFailed" rendered="#{FederativeAddAccountPage.createFailed}">
+                                            <ice:outputText styleClass="errorMessage" value="#{FederativeAddAccountPage.errMessage}"/>
+                                        </div>
+                                        <div id="groupPanel1" jsfc="ice:panelGroup">
+                                            <ice:outputText>Hello </ice:outputText>
+                                            <ice:outputText value="#{FederativeAddAccountPage.givenname}" />
+                                            <ice:outputText value="#{FederativeAddAccountPage.prefix}" />
+                                            <ice:outputText value="#{FederativeAddAccountPage.surname}" />
+                                            <ice:outputText value=". "/>
+                                            <ice:outputText value="#{bundlePageInfo.createFederativeAccountHelp}" escape="false" />
+                                        </div>
+                                    </ice:panelGrid>
+                                    <div class="dvnFormPadding dvnFormMargin">
+                                        <ice:commandButton value="Create Account" action="#{FederativeAddAccountPage.createAccount}"/>
+                                        <ice:commandButton immediate="true" value="Cancel" action="#{FederativeAddAccountPage.cancel}"/>
+                                        <input rendered="#{FederativeAddAccountPage.createFailed}" type="button" value="Log Out" onClick="window.location.href='../../faces/login/LogoutPage.xhtml';"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ice:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>
+

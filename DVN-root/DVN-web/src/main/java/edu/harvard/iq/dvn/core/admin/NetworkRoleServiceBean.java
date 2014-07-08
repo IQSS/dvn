@@ -78,4 +78,8 @@ public class NetworkRoleServiceBean implements NetworkRoleServiceLocal {
    public NetworkRole  getCreatorRole() {
        return findByName(NetworkRoleServiceLocal.CREATOR); 
    }   
+
+   public NetworkRole getNetworkAdminRole() {
+       return findByName(NetworkRoleServiceLocal.ADMIN); 
+   }   
 }

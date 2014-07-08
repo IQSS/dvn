@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+    <head>
+         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>Federative Login Page</title>
+    </head>
+    <body>
+        <ui:composition template="/vanilla_template.xhtml">
+            <ui:param name="pageTitle" value="#{bundlePageInfo.loginTitle} - #{VDCRequest.dataversePageTitle}"/>
+            <ui:define name="metadata">
+                <f:metadata>
+                    <f:viewParam name="redirect" value="#{FederativeLoginPage.redirect}"/>
+                    <f:viewParam name="studyId" value="#{FederativeLoginPage.studyId}"/>
+                    <!-- f:viewParam name="clearWorkflow" value="#{FederativeLoginPage.clearWorkflow}"/ -->
+                    <f:viewParam name="tab" value="#{FederativeLoginPage.tab}"/>
+                    <f:event type="preRenderView" listener="#{FederativeLoginPage.preRenderView}"/>
+                </f:metadata>
+            </ui:define>
+            <ui:define name="body">
+                <div id="dvnLoginPageWrap">
+                    <div class="dvnRound">
+                        <ice:form id="vanillaLoginForm">
+                            <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+                            <ice:inputHidden binding="#{FederativeLoginPage.hiddenStudyId}" value="#{FederativeLoginPage.studyId}"/>
+                            <div id="layoutPanel1" class="dvnLoginContent">
+                                <div class="dvnLoginInputArea">
+                                    <div id="samllogin">
+                                        <fieldset>
+                                            <legend>Federative Login</legend>
+                                            <div styleClass="dvnLoginFailed" rendered="#{FederativeLoginPage.loginFailed}">
+                                                <ice:outputText styleClass="errorMessage" value="#{FederativeLoginPage.errMessage}"/>
+                                            </div>
+                                            <p>Welcome. Please click "<a href="/dvn/faces/login/LogoutPage.xhtml">Log out</a>" to log out of the federated account.</p>
+                                            <p>
+                                                <input type="button" value="Log Out" onClick="window.location.href='/dvn/faces/login/LogoutPage.xhtml';"/>
+                                            </p>
+                                        </fieldset>
+
+                                        <!-- ************ Username login section ******************* -->
+                                        <p>
+                                            <a href="FederativeLoginPage.xhtml">Login</a>
+                                        </p>
+                                        <p>
+                                            <a href="LoginPage.xhtml">Login with DVN Account</a>
+                                        </p>
+                                        <!-- ************* end username login section *************** -->
+
+                                    </div>
+                                    <!-- ************* end SAML login section *************** -->
+                                </div>
+                                <div class="dvnLoginContentText">
+                                    <div id="dvnLoginPageHeader">
+                                        <a name="login" title="Dataverse Network Login"><ice:outputText value="#{VDCRequest.vdcNetwork.name} Dataverse Network" styleClass="dvnLoginHeadingText" escape="false"/></a>
+                                    </div>
+                                    <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+                                    </div>
+                                    <div class="dvnLoginContentAreaFooter">
+                                        <a href="http://thedata.org" target="_blank" title="Link to the Dataverse Network Project"><img alt="Powered by the Dataverse Network Project" src="/dvn/resources/images/dvnPoweredByLogo.gif"/></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </ice:form>
+                    </div>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>
+

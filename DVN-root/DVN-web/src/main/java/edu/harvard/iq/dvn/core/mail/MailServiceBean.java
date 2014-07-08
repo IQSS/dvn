@@ -146,6 +146,12 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
         sendDoNotReplyMail(userEmail,subject,msgText);
     }
     
+    public void sendNetworkAdminAccountNotification(String adminEmail, String userName) {
+        String msgText="A new account has been created with Dataverse Network Admin privileges";
+        msgText+=" (user name: "+userName+").";
+        sendDoNotReplyMail(adminEmail,"Dataverse Network: New Network Admin Account",msgText);
+     }
+    
     public void sendCreatorAccountNotification(String adminEmail, String userName) {
         String msgText="A new account has been created with Dataverse Creator privileges";
         msgText+=" (user name: "+userName+").";

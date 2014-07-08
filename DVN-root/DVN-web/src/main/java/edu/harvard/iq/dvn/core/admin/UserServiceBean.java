@@ -217,6 +217,17 @@ public class UserServiceBean implements UserServiceLocal {
         }
     }
     
+    public void makeNetworkAdmin (Long userId) {
+        VDCUser user = em.find(VDCUser.class, userId);
+        VDCNetwork vdcNetwork = vdcNetworkService.find();
+        // If the user already has a networkRole, then he is already a creator or networkAdmin,
+        // so don't need to change the role.
+        if (user.getNetworkRole()==null) {
+            user.setNetworkRole(networkRoleService.getNetworkAdminRole());
+            mailService.sendNetworkAdminAccountNotification(vdcNetwork.getContactEmail(), user.getUserName());   
+        }
+    }
+    
     public void makeCreator(Long userId) {
         VDCUser user = em.find(VDCUser.class, userId);
         VDCNetwork vdcNetwork = vdcNetworkService.find();

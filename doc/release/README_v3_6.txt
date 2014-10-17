@@ -16,7 +16,11 @@ If this is a new installation:
 
 A scripted installer is provided. Please consult the Installers Guide at
 
-http://projects.iq.harvard.edu/thedatanew_guides/book/installers-guides.
+http://thedata.harvard.edu/guides/dataverse-installer-main.html
+
+or
+
+https://github.com/IQSS/dvn/blob/develop/doc/sphinx/source/dataverse-installer-main.rst
 
 The installer package itself can be found here:
 

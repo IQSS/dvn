@@ -548,7 +548,21 @@ To install and set up a local HANDLE.NET server:
 #. Use ``psql`` or ``pgAdmin`` to execute the following SQL
    command: ``update vdcnetwork set handleregistration=true, authority='<your HANDLE.NET prefix>';``
 
- 
+Once the above is done and your DVN is running, you will need to configure the latter so that it can talk to your handlenet service: 
+
+Set the following JVM options in your Glassfish configuration:
+
+#. ``-Ddvn.handle.admcredfile=/$path/admpriv.bin``
+   where ``$path`` is the directory where your handlenet admpriv.bin file resides. (this file was generated during the handle server setup).
+#. ``-Ddvn.handle.admprivphrase=$passphrase``
+   you only need this option if you chose to encrypt the handle server private key with a passphrase (under item 3., above). You don't need it otherwise.
+3. ``-Ddvn.handle.baseUrl=$yourDvnUrl/dvn/study?globalId=hdl:``
+   where ``$yourDvnUrl`` is the main top-level URL address of your installation.
+   For the Harvard IQSS DVN, it is ``http://thedata.harvard.edu``
+   This option specifies the format of the registration entries for your studies.
+   Meaning, if you register a study with the global id ``hdl:xxxxx/yyyyy``, when someone tries to resolve this identifier, via ``http://hdl.handle.net``, they will be redirected to ``$yourDvnUrl/dvn/study?globalId=hdl:xxxxx/yyyyy``
+
+Restart Glassfish.
 
 Note: The DVN app comes bundled with the HANDLE.NET client libraries.
 You do not need to install these separately.
@@ -718,8 +732,8 @@ these steps:
    | study ID registration, add the following (see the "Handles System"
    | section in the "Optional Components" for
    | details):
-   | ``-Ddvn.handle.baseUrl=<-Dataverse Network host URL>/dvn/study?globalId=hdl:``
-   | ``-Ddvn.handle.auth=<authority>``
+   | ``-Ddvn.handle.baseUrl=<Your DVN Host URL>/dvn/study?globalId=hdl:``
+   | ``-Ddvn.handle.admprivphrase=<PASSHPHRASE>`` (OPTIONAL!)
    | ``-Ddvn.handle.admcredfile=/hs/svr_1/admpriv.bin``
 #. | To enable the optional Google Analytics option on the Network Options
    | page and provide access to site usage reports, add the following (see

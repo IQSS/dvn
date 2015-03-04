@@ -228,7 +228,7 @@ public class DDIServiceBean implements DDIServiceLocal {
             }
         }
     }
-
+    
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void exportStudy(Study s, OutputStream os, String xpathExclude, String xpathInclude) {
         if (s == null) {
@@ -247,29 +247,34 @@ public class DDIServiceBean implements DDIServiceLocal {
             if (s.isIsHarvested()) {
                 throw new IllegalArgumentException("Partial export requested on a harvested study. (study id = " + s.getId() + ")");          
             }
-            XMLStreamWriter xmlw = null;
-            try {
-                xmlw = xmlOutputFactory.createXMLStreamWriter(os);
-                xmlw.writeStartDocument();
-                createCodeBook(xmlw, s.getReleasedVersion(), xpathExclude, xpathInclude);
-                xmlw.writeEndDocument();
-            } catch (XMLStreamException ex) {
-                Logger.getLogger("global").log(Level.SEVERE, null, ex);
-                throw new EJBException("ERROR occurred during partial export of a study.", ex);
-            } finally {
-                try {
-                    if (xmlw != null) {
-                        xmlw.close();
-                    }
-                } catch (XMLStreamException ex) {
-                }
-            }
-            
-            
-            
-            
         }
         
+        exportStudyVersion(s.getReleasedVersion(),  os, xpathExclude, xpathInclude);
+    }    
+
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public void exportStudyVersion(StudyVersion sv, OutputStream os, String xpathExclude, String xpathInclude) {
+        if (sv == null) {
+            throw new IllegalArgumentException("ExportStudy called with a null study versiom.");
+        }
+
+        XMLStreamWriter xmlw = null;
+        try {
+            xmlw = xmlOutputFactory.createXMLStreamWriter(os);
+            xmlw.writeStartDocument();
+            createCodeBook(xmlw, sv, xpathExclude, xpathInclude);
+            xmlw.writeEndDocument();
+        } catch (XMLStreamException ex) {
+            Logger.getLogger("global").log(Level.SEVERE, null, ex);
+            throw new EJBException("ERROR occurred during partial export of a study.", ex);
+        } finally {
+            try {
+                if (xmlw != null) {
+                    xmlw.close();
+                }
+            } catch (XMLStreamException ex) {
+            }
+        }        
     }
     
     public void exportDataFile(TabularDataFile tdf, OutputStream os)  {
@@ -716,7 +721,9 @@ public class DDIServiceBean implements DDIServiceLocal {
         xmlw.writeStartElement("verStmt");
         writeAttribute( xmlw, "source", "DVN" );
         xmlw.writeStartElement("version");
-        writeAttribute( xmlw, "date", new SimpleDateFormat("yyyy-MM-dd").format(sv.getReleaseTime()) );
+        if (sv.getReleaseTime() != null) {
+            writeAttribute( xmlw, "date", new SimpleDateFormat("yyyy-MM-dd").format(sv.getReleaseTime()) );
+        }
         writeAttribute( xmlw, "type", sv.getVersionState().toString() );
         xmlw.writeCharacters( sv.getVersionNumber().toString() );
         xmlw.writeEndElement(); // version

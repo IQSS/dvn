@@ -77,6 +77,7 @@ public class DDIExportServlet extends HttpServlet {
 
        if (DSBWrapper.isDSBRequest(req) || isNetworkAdmin(req)) {
             String studyId = req.getParameter("studyId");
+            String versionNumber = req.getParameter("versionNumber");
             String fileId = req.getParameter("fileId");
             String fetchOriginal = req.getParameter("originalImport");
             String exportToLegacyVDC = req.getParameter("legacy");
@@ -128,9 +129,13 @@ public class DDIExportServlet extends HttpServlet {
                             }
 
                         } else {
-                            // otherwise create ddi from data
                             res.setContentType("text/xml");
-                            ddiService.exportStudy(s, out);
+                            // otherwise create ddi from data
+                            if (versionNumber != null) {
+                                ddiService.exportStudyVersion(s.getStudyVersionByNumber(new Long(versionNumber)), out, null, null);
+                            } else {
+                                ddiService.exportStudy(s, out);                                
+                            }                            
                         }
                     } catch (Exception ex) {
                         if (ex.getCause() instanceof IllegalArgumentException) {
@@ -157,7 +162,7 @@ public class DDIExportServlet extends HttpServlet {
         try {
             PrintWriter out = res.getWriter();
             out.println("<HTML>");
-            out.println("<HEAD><TITLE>DDI Export</TITLE></HEAD>");
+            out.println("<HEAD><TITLE>DDI (modified) Export</TITLE></HEAD>");
             out.println("<BODY>");
             out.println("<BIG>" + message + "</BIG>");
             out.println("</BODY></HTML>");

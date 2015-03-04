@@ -27,10 +27,12 @@
  */
 package edu.harvard.iq.dvn.core.ddi;
 
+import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyExporter;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 import javax.ejb.Local;
@@ -48,5 +50,7 @@ public interface DDIServiceLocal extends StudyExporter, java.io.Serializable {
     Map reMapDDI(File ddiFile, StudyVersion studyVersion, Map filesMap);
 
     void exportDataFile(TabularDataFile tdf, OutputStream out);
+    void exportStudyVersion(StudyVersion studyVersion, OutputStream out, String excludeXpath, String includeXpath);     
+    
 
 }
